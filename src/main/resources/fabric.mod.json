@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "musicexpansion",
+  "version": "${version}",
+
+  "name": "Music Expansion",
+  "description": "Expands the musical capabilities in Minecraft",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://github.com/AshIndigo/MusicExpansion",
+    "sources": "https://github.com/AshIndigo/MusicExpansion"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/musicexpansion/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.ashindigo.musicexpansion.MusicExpansion"
+    ],
+    "client": [
+      "com.ashindigo.musicexpansion.MusicExpansionClient"
+    ]
+  },
+  "mixins": [
+    "musicexpansion.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+}
