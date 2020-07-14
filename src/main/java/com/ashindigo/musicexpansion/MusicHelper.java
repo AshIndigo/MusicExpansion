@@ -2,8 +2,6 @@ package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import spinnery.common.inventory.BaseInventory;
@@ -14,7 +12,7 @@ import spinnery.common.inventory.BaseInventory;
  */
 public class MusicHelper {
 
-    static MinecraftClient mc = MinecraftClient.getInstance();
+    static final MinecraftClient mc = MinecraftClient.getInstance();
     static WalkmanMovingSound sound;
     static boolean isPlaying;
 

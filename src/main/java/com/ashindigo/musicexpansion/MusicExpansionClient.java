@@ -20,7 +20,6 @@ public class MusicExpansionClient implements ClientModInitializer {
     private static KeyBinding walkmanNext;
     private static KeyBinding walkmanBack;
     private static KeyBinding walkmanRand;
-    private final static MinecraftClient mc = MinecraftClient.getInstance();
 
     @Override
     public void onInitializeClient() {
@@ -36,50 +35,50 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void tick(MinecraftClient client) {
         if (walkmanPlay.wasPressed()) {
-            int iSlot = MusicExpansion.getWalkman(mc.player.inventory);
+            int iSlot = MusicExpansion.getWalkman(client.player.inventory);
             if (iSlot > -1) {
-                MusicHelper.playTrack(mc.player.inventory.getStack(iSlot));
+                MusicHelper.playTrack(client.player.inventory.getStack(iSlot));
             }
         }
         if (walkmanStop.wasPressed()) {
             MusicHelper.stopTrack();
         }
         if (walkmanNext.wasPressed()) {
-            int iSlot = MusicExpansion.getWalkman(mc.player.inventory);
+            int iSlot = MusicExpansion.getWalkman(client.player.inventory);
             if (iSlot > -1) {
-                int slot = Math.min(8, ItemWalkman.getSelectedSlot(mc.player.inventory.getStack(iSlot)) + 1);
+                int slot = Math.min(8, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
                 ItemWalkman.setSelectedSlot(slot, iSlot);
-                MusicDiscItem disc = MusicHelper.getDiscInSlot(mc.player.inventory.getStack(iSlot), slot);
+                MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
                 if (disc != null) {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
                 } else {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
                 }
             }
         }
         if (walkmanBack.wasPressed()) {
-            int iSlot = MusicExpansion.getWalkman(mc.player.inventory);
+            int iSlot = MusicExpansion.getWalkman(client.player.inventory);
             if (iSlot > -1) {
-                int slot = Math.max(0, ItemWalkman.getSelectedSlot(mc.player.inventory.getStack(iSlot)) - 1);
+                int slot = Math.max(0, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
                 ItemWalkman.setSelectedSlot(slot, iSlot);
-                MusicDiscItem disc = MusicHelper.getDiscInSlot(mc.player.inventory.getStack(iSlot), slot);
+                MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
                 if (disc != null) {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
                 } else {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
                 }
             }
         }
         if (walkmanRand.wasPressed()) {
-            int iSlot = MusicExpansion.getWalkman(mc.player.inventory);
+            int iSlot = MusicExpansion.getWalkman(client.player.inventory);
             if (iSlot > -1) {
-                int slot = mc.player.getRandom().nextInt(9);
+                int slot = client.player.getRandom().nextInt(9);
                 ItemWalkman.setSelectedSlot(slot, iSlot);
-                MusicDiscItem disc = MusicHelper.getDiscInSlot(mc.player.inventory.getStack(iSlot), slot);
+                MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
                 if (disc != null) {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
                 } else {
-                    mc.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+                    client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
                 }
             }
         }

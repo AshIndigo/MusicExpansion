@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 
 public class ItemCustomRecord extends MusicDiscItem {
 
-    private SoundEvent event;
+    private final SoundEvent event;
     private final ItemStack stack;
     private final String name;
     private final Identifier id;
@@ -25,6 +25,7 @@ public class ItemCustomRecord extends MusicDiscItem {
         this.id = identifier;
     }
 
+    // TODO Use for recipe
     public ItemStack getStack() {
         return stack;
     }

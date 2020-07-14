@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class RecordJsonParser { // TODO I feel like I could improve this
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static ArrayList<ItemCustomRecord> parse() throws IOException {
         ArrayList<ItemCustomRecord> records = new ArrayList<>();
         File recordsJson = new File(FabricLoader.getInstance().getConfigDirectory() + "/" + MusicExpansion.MODID + "/records.json");
@@ -32,10 +33,10 @@ public class RecordJsonParser { // TODO I feel like I could improve this
         JsonObject element = gson.fromJson(reader, JsonObject.class);
         if (element != null) {
             for (Map.Entry<String, JsonElement> object : element.entrySet()) {
-                SoundEvent event = new SoundEvent(new Identifier(MusicExpansion.MODID, object.getValue().getAsJsonObject().get("filename").getAsString()));
+                SoundEvent event = new SoundEvent(new Identifier(MusicExpansion.MODID_EXTERNAL, object.getValue().getAsJsonObject().get("filename").getAsString()));
                 Item item = Registry.ITEM.get(Identifier.tryParse(object.getValue().getAsJsonObject().get("item").getAsString()));
                 ItemStack stack = new ItemStack(Objects.requireNonNull(item));
-                records.add(new ItemCustomRecord(new Identifier(MusicExpansion.MODID, object.getValue().getAsJsonObject().get("filename").getAsString()), event, stack, object.getValue().getAsJsonObject().get("name").getAsString()));
+                records.add(new ItemCustomRecord(new Identifier(MusicExpansion.MODID_EXTERNAL, object.getValue().getAsJsonObject().get("filename").getAsString()), event, stack, object.getValue().getAsJsonObject().get("name").getAsString()));
             }
         }
         return records;

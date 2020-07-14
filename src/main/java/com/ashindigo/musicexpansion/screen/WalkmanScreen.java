@@ -27,13 +27,9 @@ public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
             panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 6, 2), Size.of(18, 18)).setInventoryNumber(WalkmanContainer.INVENTORY).setSlotNumber(i);
         }
         // Play button
-        panel.createChild(WButton::new, Position.of(panel).add(9, 24 + 6, 0), Size.of(18, 18)).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-                    MusicHelper.playTrack(playerInv.getStack(MusicExpansion.getWalkman(playerInv)));
-                });
+        panel.createChild(WButton::new, Position.of(panel).add(9, 24 + 6, 0), Size.of(18, 18)).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.playTrack(playerInv.getStack(MusicExpansion.getWalkman(playerInv))));
         // Stop button
-        panel.createChild(WButton::new, Position.of(panel).add(9 + (18 * 2), 24 + 6, 0), Size.of(18, 18)).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            MusicHelper.stopTrack();
-        });
+        panel.createChild(WButton::new, Position.of(panel).add(9 + (18 * 2), 24 + 6, 0), Size.of(18, 18)).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.stopTrack());
         // Previous track
         panel.createChild(WButton::new, Position.of(panel).add(9 + (18 * 4), 24 + 6, 0), Size.of(18, 18)).setLabel("⏮").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
             int slot = Math.max(0, ItemWalkman.getSelectedSlot(playerInv.getStack(MusicExpansion.getWalkman(playerInv))) - 1);

@@ -20,15 +20,19 @@ public class MusicExpansion implements ModInitializer {
 
     public static final String MODID = "musicexpansion";
     public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
+    public static final String MODID_EXTERNAL = MODID + "external";
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ItemWalkman walkman;
+    public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
+
+    // TODO Needed things for custom records
+    // Record recipes or Machine that makes the records
 
     @Override
     public void onInitialize() {
         walkman = new ItemWalkman();
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
         Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), walkman);
-        ArrayList<ItemCustomRecord> records = new ArrayList<>();
         try {
             records = RecordJsonParser.parse();
         } catch (IOException e) {
@@ -36,8 +40,7 @@ public class MusicExpansion implements ModInitializer {
         }
         for (ItemCustomRecord record : records) {
             Registry.register(Registry.ITEM, record.getID(), record);
-//            AutoJsonApi.addEntry(record.getID(), new AutoConfig(AutoConfig.AutoConfigTextureMode.EXTERNAL, AutoConfig.AutoConfigType.ITEM).setLangName(new TranslatableText("item.minecraft.music_disc_13").asString()));
-//            AutoJsonApi.addSoundEntry(record.getID(), record.getEvent()); // TODO Updating AutoJsonApi?
+            Registry.register(Registry.SOUND_EVENT, record.getID(), record.getEvent());
         }
         ServerSidePacketRegistry.INSTANCE.register(CHANGESLOT_PACKET, (packetContext, attachedData) -> {
             int slot = attachedData.readInt();

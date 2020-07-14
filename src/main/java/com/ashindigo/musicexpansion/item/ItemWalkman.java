@@ -2,11 +2,10 @@ package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
-import com.ashindigo.musicexpansion.WalkmanInventory;
+import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -81,7 +80,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         return new WalkmanContainer(syncId, inv); // Useless?
     }
 
-    public static BaseInventory getInventory(ItemStack stack, PlayerInventory inv) {
+    public static BaseInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Hack, fix later
         if (!inv.player.world.isClient || !stack.getTag().contains("inventory")) {
             if (!stack.hasTag() || !stack.getTag().contains("inventory")) {
                 stack.setTag(InventoryUtilities.write(new WalkmanInventory()));
@@ -91,7 +90,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         return InventoryUtilities.read(stack.getTag());
     }
 
-    public static int getSelectedSlot(ItemStack stack) {
+    public static int getSelectedSlot(ItemStack stack) { // TODO Hack, fix later
         if (!stack.hasTag() || !stack.getTag().contains("selected")) {
             stack.getOrCreateTag().putInt("selected", 0);
         }

@@ -1,4 +1,4 @@
-package com.ashindigo.musicexpansion;
+package com.ashindigo.musicexpansion.inventory;
 
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;

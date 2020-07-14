@@ -24,7 +24,7 @@ public class WalkmanContainer extends BaseScreenHandler {
         BaseInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
         addInventory(INVENTORY, walkmanInv);
         walkmanInv.addListener(sender -> {
-            inv.getStack(slot).getTag().put("inventory", InventoryUtilities.write(sender).getCompound("inventory"));
+            inv.getStack(slot).getOrCreateTag().put("inventory", InventoryUtilities.write(sender).getCompound("inventory"));
             inv.markDirty();
         });
         for (int i = 0; i < 9; i++) {
