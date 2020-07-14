@@ -1,3 +1,11 @@
 {
-  "item.musicexpansion.walkman": "Walkman"
+  "item.musicexpansion.walkman": "Walkman",
+  "text.musicexpansion.currenttrack": "Current Track: ",
+  "text.musicexpansion.currenttrack.nothing": "No disc in slot",
+  "category.musicexpansion.binds": "Music Expansion",
+  "key.musicexpansion.walkmanback": "Previous Track",
+  "key.musicexpansion.walkmannext": "Next Track",
+  "key.musicexpansion.walkmanplay": "Play Track",
+  "key.musicexpansion.walkmanstop": "Stop Track",
+  "key.musicexpansion.walkmanrand": "Random Track"
 }

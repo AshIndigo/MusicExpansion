@@ -1,18 +1,21 @@
 package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.MusicHelper;
 import com.ashindigo.musicexpansion.WalkmanInventory;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.MusicDiscItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerFactory;
@@ -28,8 +31,6 @@ import spinnery.common.utility.InventoryUtilities;
 import java.util.List;
 
 public class ItemWalkman extends Item implements ScreenHandlerFactory {
-    // TOOD
-    // Needs Tooltip
 
     public ItemWalkman() {
         super(new Item.Settings().maxCount(1).group(ItemGroup.MISC));
@@ -37,6 +38,14 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+        if (MinecraftClient.getInstance().player != null) {
+            MusicDiscItem disc = MusicHelper.getDiscInSlot(stack, ItemWalkman.getSelectedSlot(stack));
+            if (disc != null) {
+                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()));
+            } else {
+                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack.nothing"));
+            }
+        }
         super.appendTooltip(stack, world, tooltip, context);
     }
 
@@ -46,11 +55,10 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         player.inventory.markDirty();
         if (player.isSneaking()) {
             if (!world.isClient()) {
-                player.openHandledScreen(new ExtendedScreenHandlerFactory() { // TODO Does it need to be extended?
+                player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                     @Override
                     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                        //buf.writeItemStack(player.getStackInHand(hand));
-                        buf.writeInt(player.inventory.getSlotWithStack(player.getStackInHand(hand)));
+                        buf.writeInt(MusicExpansion.getWalkman(player.inventory));
                     }
 
                     @Override
@@ -60,37 +68,25 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
                     @Override
                     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                        return new WalkmanContainer(syncId, inv, player.inventory.getSlotWithStack(player.getStackInHand(hand)));
+                        return new WalkmanContainer(syncId, inv);
                     }
                 });
             }
-//        } else {
-//            if (!getInventory(player.getStackInHand(hand), player.inventory).isEmpty()) { // TODO Check
-//                if (!world.isClient) {
-//                    PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-//                    passedData.writeItemStack(getInventory(player.getStackInHand(hand), player.inventory).getStack(0));
-//                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.PLAYDISK_PACKET, passedData);
-//
-//                }
-//            } else {
-//                if (!world.isClient) {
-//                    PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer()); // No need?
-//                    ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.STOPDISK_PACKET, passedData);
-//                }
-//            }
         }
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new WalkmanContainer(syncId, inv, 0); // Useless?
+        return new WalkmanContainer(syncId, inv); // Useless?
     }
 
     public static BaseInventory getInventory(ItemStack stack, PlayerInventory inv) {
-        if (!stack.hasTag() || !stack.getTag().contains("inventory")) {
-            stack.setTag(InventoryUtilities.write(new WalkmanInventory()));
-            inv.markDirty();
+        if (!inv.player.world.isClient || !stack.getTag().contains("inventory")) {
+            if (!stack.hasTag() || !stack.getTag().contains("inventory")) {
+                stack.setTag(InventoryUtilities.write(new WalkmanInventory()));
+                inv.markDirty();
+            }
         }
         return InventoryUtilities.read(stack.getTag());
     }
@@ -102,7 +98,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         return stack.getTag().getInt("selected");
     }
 
-    public static void setSelectedSlot(ItemStack stack, int slot, int invSlot) {
+    public static void setSelectedSlot(int slot, int invSlot) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(slot);
         buf.writeInt(invSlot);

@@ -8,7 +8,7 @@ public class WalkmanInventory extends SimpleInventory {
 
     public WalkmanInventory() {
         super(9);
-    }
+    } // TODO Functionally useless?
 
     @Override
     public boolean isValid(int slot, ItemStack stack) {

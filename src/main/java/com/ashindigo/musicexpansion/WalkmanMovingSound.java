@@ -26,7 +26,6 @@ public class WalkmanMovingSound extends MovingSoundInstance {
             this.y = (float) this.player.getY();
             this.z = (float) this.player.getZ();
             float f = 1.0f;
-            //this.distance = MathHelper.clamp(this.distance + 0.0025F, 0.0F, 1.0F);
             this.volume = 0.0F + MathHelper.clamp(f, 0.0F, 0.5F) * 0.7F;
         }
     }
