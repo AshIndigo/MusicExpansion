@@ -18,14 +18,16 @@ import java.util.logging.Logger;
 
 public class MusicExpansionResourcePack extends AbstractFileResourcePack {
 
+    private final File fileDir;
+
     public MusicExpansionResourcePack() {
         super(new File(MusicExpansion.MODID_EXTERNAL));
+        fileDir = new File(MinecraftClient.getInstance().runDirectory, "config/" + MusicExpansion.MODID);
     }
 
     @Override
     protected InputStream openFile(String name) throws FileNotFoundException {
         String[] names = name.split("/");
-        File fileDir = new File(MinecraftClient.getInstance().runDirectory, "config/" + MusicExpansion.MODID);
         if (!fileDir.exists()) {
            boolean success = fileDir.mkdirs();
            if (!success) {
@@ -90,10 +92,6 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
             return true;
         }
         return var2.getNamespace().equals(MusicExpansion.MODID_EXTERNAL) && !var2.getPath().endsWith(".mcmeta");
-//        if (var2.getPath().split("/").length > 2) {
-//            return MusicExpansion.records.stream().anyMatch(record -> record.getID().getPath().equals(FilenameUtils.removeExtension(var2.getPath().split("/")[2])));
-//        }
-//        return var2.getPath().equals("sounds.json") || var2.getPath().equals("pack.mcmeta") || var2.getPath().equals("lang/en_us.json");
     }
 
     @Override

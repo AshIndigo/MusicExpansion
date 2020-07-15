@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class MusicExpansion implements ModInitializer {
 
     public static final String MODID = "musicexpansion";
-    public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static final String MODID_EXTERNAL = MODID + "external";
+    public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ItemWalkman walkman;
     public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
@@ -30,9 +30,8 @@ public class MusicExpansion implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        walkman = new ItemWalkman();
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
-        Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), walkman);
+        walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman());
         try {
             records = RecordJsonParser.parse();
         } catch (IOException e) {

@@ -14,11 +14,9 @@ import spinnery.widget.WSlot;
 public class WalkmanContainer extends BaseScreenHandler {
 
     public static final int INVENTORY = 1;
-    //public final int slot;
 
     public WalkmanContainer(int syncId, PlayerInventory inv) {
         super(syncId, inv);
-        //this.slot = slot;
         WInterface mainInterface = getInterface();
         int slot = MusicExpansion.getWalkman(inv);
         BaseInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
