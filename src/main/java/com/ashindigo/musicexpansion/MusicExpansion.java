@@ -29,7 +29,6 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
-    public static ItemWalkman walkman;
     public static Item blankRecord;
     public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
@@ -38,7 +37,7 @@ public class MusicExpansion implements ModInitializer {
     public void onInitialize() {
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
         RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerContainer(syncId, inv, buf.readBlockPos()));
-        walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman());
+        Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman()); // Walkman
         blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().maxCount(64)));
         RecordMakerBlock recordMaker = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
         Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMaker, new Item.Settings().maxCount(64).group(ItemGroup.MISC)));

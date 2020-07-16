@@ -12,6 +12,8 @@ import spinnery.widget.*;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
 
+import java.util.Optional;
+
 public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
 
     public WalkmanScreen(WalkmanContainer container, PlayerInventory playerInv, Text title) {
@@ -51,13 +53,15 @@ public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
     }
 
     private void setActiveTrack(WPanel panel, int selectedSlot) {
-        WSlot slot = (WSlot) panel.getWidgets().stream().filter(wAbstractWidget -> {
+        Optional<WAbstractWidget> slot = panel.getWidgets().stream().filter(wAbstractWidget -> {
             if (wAbstractWidget instanceof WSlot) {
                 return ((WSlot) wAbstractWidget).getSlotNumber() == selectedSlot;
             }
             return false;
-        }).findFirst().get();
-        WStaticImage image = (WStaticImage) panel.getWidgets().stream().filter(wAbstractWidget -> wAbstractWidget instanceof WStaticImage).findFirst().get();
-        image.setPosition(slot.getPosition().setZ(1));
+        }).findFirst();
+        slot.ifPresent(abstractWidget -> {
+            Optional<WAbstractWidget> image = panel.getWidgets().stream().filter(wAbstractWidget -> wAbstractWidget instanceof WStaticImage).findFirst();
+            image.ifPresent(wAbstractWidget -> wAbstractWidget.setPosition(abstractWidget.getPosition().setZ(1)));
+        });
     }
 }

@@ -17,15 +17,17 @@ public class MusicHelper {
     static boolean isPlaying;
 
     public static void playTrack(ItemStack stack) {
-        BaseInventory inv = ItemWalkman.getInventory(stack, mc.player.inventory);
-        if (!isPlaying || !mc.getSoundManager().isPlaying(sound)) {
-            ItemStack disc = inv.getStack(ItemWalkman.getSelectedSlot(stack)); // TODO Make this use getDiscInSlot(stack, slot)?
-            if (!disc.isEmpty()) {
-                MusicDiscItem currentDisc = (MusicDiscItem) disc.getItem();
-                mc.inGameHud.setRecordPlayingOverlay(currentDisc.getDescription());
-                sound = new WalkmanMovingSound(currentDisc.getSound(), mc.player);
-                mc.getSoundManager().play(sound);
-                isPlaying = true;
+        if (mc.player != null) {
+            BaseInventory inv = ItemWalkman.getInventory(stack, mc.player.inventory);
+            if (!isPlaying || !mc.getSoundManager().isPlaying(sound)) {
+                ItemStack disc = inv.getStack(ItemWalkman.getSelectedSlot(stack)); // TODO Make this use getDiscInSlot(stack, slot)?
+                if (!disc.isEmpty() && disc.getItem() instanceof MusicDiscItem) {
+                    MusicDiscItem currentDisc = (MusicDiscItem) disc.getItem();
+                    mc.inGameHud.setRecordPlayingOverlay(currentDisc.getDescription());
+                    sound = new WalkmanMovingSound(currentDisc.getSound(), mc.player);
+                    mc.getSoundManager().play(sound);
+                    isPlaying = true;
+                }
             }
         }
     }
@@ -38,7 +40,7 @@ public class MusicHelper {
 
     public static MusicDiscItem getDiscInSlot(ItemStack stack, int slot) {
         ItemStack discStack = ItemStack.EMPTY;
-        if (mc.player != null && stack.getTag().contains("inventory")) {
+        if (mc.player != null && stack.getTag() != null && stack.getTag().contains("inventory")) {
             discStack = ItemWalkman.getInventory(stack, mc.player.inventory).getStack(slot);
         }
         if (!discStack.isEmpty()) {

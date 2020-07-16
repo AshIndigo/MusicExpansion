@@ -14,7 +14,7 @@ import spinnery.widget.WSlot;
 
 public class RecordMakerContainer extends BaseScreenHandler {
 
-    public RecordMakerEntity recordMaker;
+    public final RecordMakerEntity recordMaker;
     public static final int INVENTORY = 1;
 
     public RecordMakerContainer(int synchronizationID, PlayerInventory playerInventory, BlockPos pos) {

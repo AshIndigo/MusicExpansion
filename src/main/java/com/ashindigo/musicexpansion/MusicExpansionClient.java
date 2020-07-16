@@ -35,6 +35,7 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     }
 
+    @SuppressWarnings("ConstantConditions") // client.player should never be null
     private static void tick(MinecraftClient client) {
         if (walkmanPlay.wasPressed()) {
             int iSlot = MusicExpansion.getWalkman(client.player.inventory);

@@ -26,6 +26,7 @@ public class RecordMakerBlock extends BlockWithEntity {
         super(FabricBlockSettings.of(Material.METAL).breakByHand(true).strength(5, 6));
     }
 
+    @SuppressWarnings("deprecation") // onUse is deprecated for whatever reason.
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {

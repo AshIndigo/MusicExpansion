@@ -78,15 +78,13 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
     @Override
     public ItemStack removeStack(int slot, int amount) {
         markDirty();
-        ItemStack stack = stacks.get(slot).split(amount);
-        return stack;
+        return stacks.get(slot).split(amount);
     }
 
     @Override
     public ItemStack removeStack(int slot) {
         markDirty();
-        ItemStack stack = stacks.remove(slot);
-        return stack;
+        return stacks.remove(slot);
     }
 
     @Override
@@ -102,12 +100,11 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
 
 
     @Override
-    public boolean isValid(int slot, ItemStack stack) {
+    public boolean isValid(int slot, ItemStack stack) { // 0 = blank records, 1 = result records
         if (stack.getItem() == MusicExpansion.blankRecord && slot == 0) {
             return true;
-        } else if (stack.getItem() instanceof MusicDiscItem && slot == 1 && getStack(1).isEmpty()){
-            return true;
+        } else {
+            return stack.getItem() instanceof MusicDiscItem && slot == 1 && getStack(1).isEmpty();
         }
-        return false;
     }
 }
