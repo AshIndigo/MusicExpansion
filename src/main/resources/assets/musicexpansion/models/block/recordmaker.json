@@ -1,0 +1,10 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "musicexpansion:block/recordmaker_top",
+    "side": "musicexpansion:block/recordmaker",
+    "front": "musicexpansion:block/recordmaker_front"
+  }
+}
+
+

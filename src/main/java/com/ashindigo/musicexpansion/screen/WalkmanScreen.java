@@ -14,8 +14,6 @@ import spinnery.widget.api.Size;
 
 public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
 
-
-    //@SuppressWarnings("unused")
     public WalkmanScreen(WalkmanContainer container, PlayerInventory playerInv, Text title) {
         super(container, playerInv, title);
         WInterface mainInterface = getInterface();

@@ -1,49 +1,26 @@
 package com.ashindigo.musicexpansion.item;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
 
 public class ItemCustomRecord extends MusicDiscItem {
 
     private final SoundEvent event;
-    private final ItemStack stack;
-    private final String name;
     private final Identifier id;
 
-    public ItemCustomRecord(Identifier identifier, SoundEvent event, ItemStack stack, String name) {
+    public ItemCustomRecord(Identifier id, SoundEvent event) {
         super(15, event, new Settings().group(ItemGroup.MISC).maxCount(1)); // Sorry redstoners
         this.event = event;
-        this.stack = stack;
-        this.name = name;
-        this.id = identifier;
-    }
-
-    // TODO Use for recipe
-    public ItemStack getStack() {
-        return stack;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public MutableText getDescription() {
-        return new LiteralText(getIName());
-    }
-
-    public String getIName() {
-        return name;
-    }
-
-    public Identifier getID() {
-        return id;
+        this.id = id;
     }
 
     public SoundEvent getEvent() {
         return event;
+    }
+
+    public Identifier getId() {
+        return id;
     }
 }

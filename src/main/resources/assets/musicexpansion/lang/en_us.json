@@ -1,5 +1,7 @@
 {
   "item.musicexpansion.walkman": "Walkman",
+  "item.musicexpansion.blank_record": "Blank Record",
+  "block.musicexpansion.recordmaker": "Record Maker",
   "text.musicexpansion.currenttrack": "Current Track: ",
   "text.musicexpansion.currenttrack.nothing": "No disc in slot",
   "category.musicexpansion.binds": "Music Expansion",

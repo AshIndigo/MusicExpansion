@@ -1,0 +1,37 @@
+package com.ashindigo.musicexpansion.container;
+
+import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.widget.WTooltipDisc;
+import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
+import com.ashindigo.musicexpansion.item.ItemCustomRecord;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.math.BlockPos;
+import spinnery.common.handler.BaseScreenHandler;
+import spinnery.widget.WInterface;
+import spinnery.widget.WSlot;
+
+public class RecordMakerContainer extends BaseScreenHandler {
+
+    public RecordMakerEntity recordMaker;
+    public static final int INVENTORY = 1;
+
+    public RecordMakerContainer(int synchronizationID, PlayerInventory playerInventory, BlockPos pos) {
+        super(synchronizationID, playerInventory);
+        recordMaker = ((RecordMakerEntity) getWorld().getBlockEntity(pos));
+        addInventory(INVENTORY, recordMaker);
+        WInterface mainInterface = getInterface();
+        WSlot.addHeadlessPlayerInventory(mainInterface);
+        mainInterface.createChild(WSlot::new).setSlotNumber(0).setInventoryNumber(INVENTORY).accept(MusicExpansion.blankRecord).setWhitelist(); // Empty disc slot
+        mainInterface.createChild(WSlot::new).setSlotNumber(1).setInventoryNumber(INVENTORY).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist();// Result Slot
+        for (int i = 0; i < MusicExpansion.records.size(); i++) {
+            mainInterface.createChild(WTooltipDisc::new).setStack(new ItemStack(MusicExpansion.records.get(i)));
+        }
+    }
+
+    @Override
+    public ScreenHandlerType<?> getType() {
+        return MusicExpansion.RECORDMAKER_TYPE;
+    }
+}

@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.item.ItemWalkman;
+import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -24,6 +25,7 @@ public class MusicExpansionClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
+        ScreenRegistry.register(MusicExpansion.RECORDMAKER_TYPE, RecordMakerScreen::new);
         walkmanPlay = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanplay", GLFW.GLFW_KEY_Z));
         walkmanStop = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanstop", GLFW.GLFW_KEY_X));
         walkmanNext = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmannext", GLFW.GLFW_KEY_C));
