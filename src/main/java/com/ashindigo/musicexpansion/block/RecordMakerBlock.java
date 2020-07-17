@@ -4,6 +4,7 @@ import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 public class RecordMakerBlock extends BlockWithEntity {
 
     public RecordMakerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).breakByHand(true).strength(5, 6).requiresTool().breakByHand(false));
+        super(FabricBlockSettings.of(Material.METAL).breakByHand(false).strength(3, 5).requiresTool().breakByTool(FabricToolTags.PICKAXES, 2));
     }
 
     @SuppressWarnings("deprecation") // onUse is deprecated for whatever reason.
