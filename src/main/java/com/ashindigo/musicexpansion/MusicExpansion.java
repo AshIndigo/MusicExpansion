@@ -7,6 +7,7 @@ import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
@@ -30,17 +31,21 @@ public class MusicExpansion implements ModInitializer {
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
     public static Item blankRecord;
+    public static ItemWalkman walkman;
     public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
+    public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(
+            new Identifier(MODID, "main"),
+            () -> new ItemStack(walkman));
 
     @Override
     public void onInitialize() {
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
         RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerContainer(syncId, inv, buf.readBlockPos()));
-        Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman()); // Walkman
-        blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().maxCount(64)));
+        walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman()); // Walkman
+        blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().maxCount(64).group(MUSIC_GROUP)));
         RecordMakerBlock recordMaker = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
-        Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMaker, new Item.Settings().maxCount(64).group(ItemGroup.MISC)));
+        Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMaker, new Item.Settings().maxCount(64).group(MUSIC_GROUP)));
         recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMaker).build(null));
         try {
             records = RecordJsonParser.parse();

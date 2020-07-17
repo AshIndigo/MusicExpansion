@@ -1,13 +1,13 @@
 package com.ashindigo.musicexpansion.container;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.screen.ScreenHandlerType;
 import spinnery.common.handler.BaseScreenHandler;
-import spinnery.common.inventory.BaseInventory;
-import spinnery.common.utility.InventoryUtilities;
 import spinnery.widget.WInterface;
 import spinnery.widget.WSlot;
 
@@ -19,11 +19,14 @@ public class WalkmanContainer extends BaseScreenHandler {
         super(syncId, inv);
         WInterface mainInterface = getInterface();
         int slot = MusicExpansion.getWalkman(inv);
-        BaseInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
+        WalkmanInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
         addInventory(INVENTORY, walkmanInv);
         walkmanInv.addListener(sender -> {
-            inv.getStack(slot).getOrCreateTag().put("inventory", InventoryUtilities.write(sender).getCompound("inventory"));
-            inv.markDirty();
+            if (!inv.player.world.isClient) {
+                // Set the walkman tag in inventory, by getting the tag and setting the "Items" tag to the resulting ListTag from Inventories.toTag() using the stacks from the current inventory
+                inv.getStack(slot).getOrCreateTag().put("Items", Inventories.toTag(inv.getStack(slot).getTag(), walkmanInv.getStacks()).getList("Items", 10));
+                inv.markDirty();
+            }
         });
         for (int i = 0; i < 9; i++) {
             mainInterface.createChild(WSlot::new).setSlotNumber(i).setInventoryNumber(INVENTORY);

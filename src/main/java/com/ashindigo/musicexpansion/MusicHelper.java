@@ -1,10 +1,10 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
-import spinnery.common.inventory.BaseInventory;
 
 /**
  * Helper methods for music or walkman related functions
@@ -18,7 +18,7 @@ public class MusicHelper {
 
     public static void playTrack(ItemStack stack) {
         if (mc.player != null) {
-            BaseInventory inv = ItemWalkman.getInventory(stack, mc.player.inventory);
+            WalkmanInventory inv = ItemWalkman.getInventory(stack, mc.player.inventory);
             if (!isPlaying || !mc.getSoundManager().isPlaying(sound)) {
                 ItemStack disc = inv.getStack(ItemWalkman.getSelectedSlot(stack)); // TODO Make this use getDiscInSlot(stack, slot)?
                 if (!disc.isEmpty() && disc.getItem() instanceof MusicDiscItem) {
@@ -40,7 +40,7 @@ public class MusicHelper {
 
     public static MusicDiscItem getDiscInSlot(ItemStack stack, int slot) {
         ItemStack discStack = ItemStack.EMPTY;
-        if (mc.player != null && stack.getTag() != null && stack.getTag().contains("inventory")) {
+        if (mc.player != null && stack.getTag() != null && stack.getTag().contains("Items")) {
             discStack = ItemWalkman.getInventory(stack, mc.player.inventory).getStack(slot);
         }
         if (!discStack.isEmpty()) {

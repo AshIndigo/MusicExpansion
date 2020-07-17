@@ -4,7 +4,10 @@ import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.*;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,6 +18,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
@@ -23,7 +27,7 @@ import net.minecraft.world.World;
 public class RecordMakerBlock extends BlockWithEntity {
 
     public RecordMakerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).breakByHand(true).strength(5, 6));
+        super(FabricBlockSettings.of(Material.METAL).breakByHand(true).strength(5, 6).requiresTool().breakByHand(false));
     }
 
     @SuppressWarnings("deprecation") // onUse is deprecated for whatever reason.
@@ -48,6 +52,20 @@ public class RecordMakerBlock extends BlockWithEntity {
             });
         }
         return ActionResult.PASS;
+    }
+
+    @SuppressWarnings("deprecation") // onStateReplaced is deprecated for whatever reason
+    @Override
+    public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (!state.isOf(newState.getBlock())) {
+            BlockEntity blockEntity = world.getBlockEntity(pos);
+            if (blockEntity instanceof RecordMakerEntity) {
+                ItemScatterer.spawn(world, pos, (RecordMakerEntity) blockEntity);
+                world.updateComparators(pos, this);
+            }
+
+            super.onStateReplaced(state, world, pos, newState, moved);
+        }
     }
 
     @Override

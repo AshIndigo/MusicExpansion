@@ -28,11 +28,12 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         super(handler, playerInventory, name);
         Size slotSize = Size.of(18, 18);
         WInterface mainInterface = getInterface();
-        WPanel panel = mainInterface.createChild(WPanel::new, Position.of(mainInterface), Size.of((10 * 18) + 28, 204));
+        WPanel panel = mainInterface.createChild(WPanel::new, Position.of(mainInterface), Size.of(208, 214));
         panel.center();
-        WVerticalScrollableContainer scrollCont = mainInterface.createChild(WVerticalScrollableContainer::new, Position.of(panel).add(4, 4, 1), Size.of(198, 92));
-        panel.createChild(WSlot::new, Position.of(panel, 9, 120-20, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
-        panel.createChild(WSlot::new, Position.of(panel,9+22, 120-20, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist(); // Result slot
+        panel.setLabel(name);
+        WVerticalScrollableContainer scrollCont = mainInterface.createChild(WVerticalScrollableContainer::new, Position.of(panel).add(4, 14, 1), Size.of(198, 92));
+        panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
+        panel.createChild(WSlot::new, Position.of(panel, 31, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist(); // Result slot
         int c = 0;
         int y = 0;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
@@ -53,7 +54,7 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         if (!scrollCont.contains(row.toArray(new WTooltipDisc[]{}))) {
             scrollCont.addRow(row.toArray(new WTooltipDisc[]{}));
         }
-        WSlot.addPlayerInventory(Position.of(panel).add(9, 120, 2), Size.of(18, 18), panel);
+        WSlot.addPlayerInventory(Position.of(panel).add(9, 130, 2), Size.of(18, 18), panel);
     }
 
 }

@@ -2,8 +2,8 @@ package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
-import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
+import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -11,8 +11,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.network.PacketByteBuf;
@@ -23,16 +23,15 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
-import spinnery.common.inventory.BaseInventory;
-import spinnery.common.utility.InventoryUtilities;
 
 import java.util.List;
 
 public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
     public ItemWalkman() {
-        super(new Item.Settings().maxCount(1).group(ItemGroup.MISC));
+        super(new Item.Settings().maxCount(1).group(MusicExpansion.MUSIC_GROUP));
     }
 
     @Override
@@ -52,7 +51,6 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         getSelectedSlot(player.getStackInHand(hand)); // Hack
         player.inventory.markDirty();
-        if (player.isSneaking()) {
             if (!world.isClient()) {
                 player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                     @Override
@@ -71,7 +69,6 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
                     }
                 });
             }
-        }
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
@@ -80,17 +77,19 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         return new WalkmanContainer(syncId, inv); // Useless?
     }
 
-    public static BaseInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Hack, fix later
-        if (!inv.player.world.isClient || !stack.getTag().contains("inventory")) {
-            if (!stack.hasTag() || !stack.getTag().contains("inventory")) {
-                stack.setTag(InventoryUtilities.write(new WalkmanInventory()));
+    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Maybe clean up?
+        if (!inv.player.world.isClient || !stack.getTag().contains("Items")) {
+            if (!stack.hasTag() || !stack.getTag().contains("Items")) {
+                stack.setTag(Inventories.toTag(stack.getTag(), new WalkmanInventory().getStacks()));
                 inv.markDirty();
             }
         }
-        return InventoryUtilities.read(stack.getTag());
+        DefaultedList<ItemStack> stacks = DefaultedList.ofSize(9, ItemStack.EMPTY);
+        Inventories.fromTag(stack.getTag(), stacks);
+        return new WalkmanInventory(stacks);
     }
 
-    public static int getSelectedSlot(ItemStack stack) { // TODO Hack, fix later
+    public static int getSelectedSlot(ItemStack stack) { // TODO Maybe make better?
         if (!stack.hasTag() || !stack.getTag().contains("selected")) {
             stack.getOrCreateTag().putInt("selected", 0);
         }
