@@ -35,20 +35,27 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
         panel.createChild(WSlot::new, Position.of(panel, 31, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist(); // Result slot
         int c = 0;
-        int y = 0;
+        int y = 1;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
-        for (MusicDiscItem disc : MusicExpansion.records) {
-           WTooltipDisc slot = new WTooltipDisc().setStack(new ItemStack(disc)).setPosition(Position.of(scrollCont, 18 * c, 18 * y)).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-               PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-               buf.writeBlockPos(handler.recordMaker.getPos());
-               buf.writeItemStack(widget.getStack());
-               ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CREATE_RECORD, buf);
-           });
-            row.set(c, slot);
-            if (c == 9) {
-                y++;
+        for (MusicDiscItem disc : MusicExpansion.getCraftableRecords()) {
+            WTooltipDisc slot = new WTooltipDisc().setStack(new ItemStack(disc)).setPosition(Position.of(scrollCont, 18 * c, 18 * y)).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                buf.writeBlockPos(handler.recordMaker.getPos());
+                buf.writeItemStack(widget.getStack());
+                ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CREATE_RECORD, buf);
+            });
+            if (!row.isEmpty()) {
+                row.set(c, slot); // Set Disc to row
             }
-            c = c == 9 ? 0 : c + 1;
+            if (c == 8) {
+                y++;
+                row.removeIf(Objects::isNull);
+                if (!scrollCont.contains(row.toArray(new WTooltipDisc[]{}))) {
+                    scrollCont.addRow(row.toArray(new WTooltipDisc[]{}));
+                    row = new ArrayList<>(Collections.nCopies(9, null));
+                }
+            }
+            c = c == 8 ? 0 : c + 1;
         }
         row.removeIf(Objects::isNull);
         if (!scrollCont.contains(row.toArray(new WTooltipDisc[]{}))) {

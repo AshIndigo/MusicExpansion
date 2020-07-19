@@ -15,6 +15,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -35,6 +36,16 @@ public class MusicExpansion implements ModInitializer {
     public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
+
+    public static ArrayList<? extends MusicDiscItem> getCraftableRecords() {
+        ArrayList<MusicDiscItem> discs = new ArrayList<>(records);
+        if (RecordJsonParser.isAllRecords()) {
+            for (Item disc : ItemTags.getContainer().getOrCreate(ItemTags.MUSIC_DISCS.getId()).values()) {
+                discs.add((MusicDiscItem) disc);
+            }
+        }
+        return discs;
+    }
 
     @Override
     public void onInitialize() {

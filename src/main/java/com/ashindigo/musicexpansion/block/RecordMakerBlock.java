@@ -10,14 +10,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
@@ -25,10 +28,18 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class RecordMakerBlock extends BlockWithEntity {
 
     public RecordMakerBlock() {
         super(FabricBlockSettings.of(Material.METAL).breakByHand(false).strength(3, 5).requiresTool().breakByTool(FabricToolTags.PICKAXES, 2));
+    }
+
+    @Override
+    public void buildTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext options) {
+        tooltip.add(new TranslatableText("desc.musicexpansion.recordmaker").formatted(Formatting.GRAY));
+        super.buildTooltip(stack, world, tooltip, options);
     }
 
     @SuppressWarnings("deprecation") // onUse is deprecated for whatever reason.

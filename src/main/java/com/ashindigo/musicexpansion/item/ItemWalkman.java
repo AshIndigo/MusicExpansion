@@ -21,6 +21,7 @@ import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
@@ -36,6 +37,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+        tooltip.add(new TranslatableText("desc.musicexpansion.walkman").formatted(Formatting.GRAY));
         if (MinecraftClient.getInstance().player != null) {
             MusicDiscItem disc = MusicHelper.getDiscInSlot(stack, ItemWalkman.getSelectedSlot(stack));
             if (disc != null) {
@@ -49,8 +51,9 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        getSelectedSlot(player.getStackInHand(hand)); // Hack
-        player.inventory.markDirty();
+        if (getWalkmansInInv(player.inventory) == 1) { // TODO Note: Only one walkman
+            getSelectedSlot(player.getStackInHand(hand)); // Hack
+            player.inventory.markDirty();
             if (!world.isClient()) {
                 player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                     @Override
@@ -69,6 +72,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
                     }
                 });
             }
+        }
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
@@ -103,4 +107,14 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CHANGESLOT_PACKET, buf);
     }
 
+    public static int getWalkmansInInv(PlayerInventory inventory) {
+        int count = 0;
+        for (int i = 0; i < inventory.size(); i++) {
+            ItemStack stack = inventory.getStack(i);
+            if (stack.getItem() instanceof ItemWalkman) {
+                count++;
+            }
+        }
+        return count;
+    }
 }

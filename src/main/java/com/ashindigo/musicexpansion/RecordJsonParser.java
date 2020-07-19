@@ -1,9 +1,7 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.sound.SoundEvent;
@@ -15,6 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RecordJsonParser {
+
+    private static boolean allRecords = false;
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static ArrayList<ItemCustomRecord> parse() throws IOException {
         ArrayList<ItemCustomRecord> records = new ArrayList<>();
@@ -23,14 +24,23 @@ public class RecordJsonParser {
             recordsJson.getParentFile().mkdirs();
             recordsJson.createNewFile();
         }
-        Gson gson = new Gson();
         JsonReader reader = new JsonReader(new FileReader(new File(FabricLoader.getInstance().getConfigDirectory() + File.separator + MusicExpansion.MODID+ File.separator + "records.json")));
-        JsonArray element = gson.fromJson(reader, JsonArray.class);
+        JsonObject root = new JsonParser().parse(reader).getAsJsonObject();
+        setAllRecords(root.get("allrecords").getAsBoolean());
+        JsonArray element = root.getAsJsonArray("records");
         if (element != null) {
             for (JsonElement object : element) {
                 records.add(new ItemCustomRecord(new Identifier(MusicExpansion.MODID_EXTERNAL, object.getAsString()), new SoundEvent(new Identifier(MusicExpansion.MODID_EXTERNAL, object.getAsString()))));
             }
         }
         return records;
+    }
+
+    public static boolean isAllRecords() {
+        return allRecords;
+    }
+
+    public static void setAllRecords(boolean allRecords) {
+        RecordJsonParser.allRecords = allRecords;
     }
 }

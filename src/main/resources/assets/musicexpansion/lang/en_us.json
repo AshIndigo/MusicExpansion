@@ -6,6 +6,8 @@
   "text.musicexpansion.currenttrack": "Current Track: ",
   "text.musicexpansion.currenttrack.nothing": "No disc in slot",
   "category.musicexpansion.binds": "Music Expansion",
+  "desc.musicexpansion.recordmaker": "Makes custom records when supplied with blank records",
+  "desc.musicexpansion.walkman": "Plays records that are stored inside, check controls for keybinds",
   "key.musicexpansion.walkmanback": "Previous Track",
   "key.musicexpansion.walkmannext": "Next Track",
   "key.musicexpansion.walkmanplay": "Play Track",
