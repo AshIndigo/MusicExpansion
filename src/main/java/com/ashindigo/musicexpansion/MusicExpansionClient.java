@@ -7,6 +7,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -32,7 +33,10 @@ public class MusicExpansionClient implements ClientModInitializer {
         walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_V));
         walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_Y));
         ClientTickCallback.EVENT.register(MusicExpansionClient::tick);
-
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
+                (packetContext, attachedData) -> packetContext.getTaskQueue().execute(() -> {
+                    RecordJsonParser.setAllRecords(attachedData.readBoolean());
+                }));
     }
 
     @SuppressWarnings("ConstantConditions") // client.player should never be null

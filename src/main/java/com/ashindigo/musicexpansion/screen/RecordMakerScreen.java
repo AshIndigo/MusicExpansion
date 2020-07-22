@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.ashindigo.musicexpansion.widget.WTooltipDisc;
@@ -37,7 +38,7 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         int c = 0;
         int y = 1;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
-        for (MusicDiscItem disc : MusicExpansion.getCraftableRecords()) {
+        for (MusicDiscItem disc : MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords())) {
             WTooltipDisc slot = new WTooltipDisc().setStack(new ItemStack(disc)).setPosition(Position.of(scrollCont, 18 * c, 18 * y)).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(handler.recordMaker.getPos());

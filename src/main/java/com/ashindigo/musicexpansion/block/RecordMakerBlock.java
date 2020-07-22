@@ -1,7 +1,11 @@
 package com.ashindigo.musicexpansion.block;
 
+import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -46,6 +50,9 @@ public class RecordMakerBlock extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!world.isClient) {
+            PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+            passedData.writeBoolean(RecordJsonParser.isAllRecords());
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.ALL_RECORDS, passedData);
             player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {

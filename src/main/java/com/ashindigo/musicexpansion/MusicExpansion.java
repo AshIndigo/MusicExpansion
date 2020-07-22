@@ -29,6 +29,7 @@ public class MusicExpansion implements ModInitializer {
     public static final String MODID_EXTERNAL = MODID + "external";
     public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
+    public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
     public static Item blankRecord;
@@ -37,9 +38,9 @@ public class MusicExpansion implements ModInitializer {
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
 
-    public static ArrayList<? extends MusicDiscItem> getCraftableRecords() {
+    public static ArrayList<? extends MusicDiscItem> getCraftableRecords(boolean all) {
         ArrayList<MusicDiscItem> discs = new ArrayList<>(records);
-        if (RecordJsonParser.isAllRecords()) {
+        if (all) {
             for (Item disc : ItemTags.getContainer().getOrCreate(ItemTags.MUSIC_DISCS.getId()).values()) {
                 discs.add((MusicDiscItem) disc);
             }
