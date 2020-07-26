@@ -38,6 +38,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
     @Override
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(new TranslatableText("desc.musicexpansion.walkman").formatted(Formatting.GRAY));
+        tooltip.add(new TranslatableText("desc.musicexpansion.onlyonewalkman").formatted(Formatting.GRAY));
         if (MinecraftClient.getInstance().player != null) {
             MusicDiscItem disc = MusicHelper.getDiscInSlot(stack, ItemWalkman.getSelectedSlot(stack));
             if (disc != null) {
@@ -51,7 +52,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        if (getWalkmansInInv(player.inventory) == 1) { // TODO Note: Only one walkman
+        if (getWalkmansInInv(player.inventory) == 1) {
             getSelectedSlot(player.getStackInHand(hand)); // Hack
             player.inventory.markDirty();
             if (!world.isClient()) {
@@ -72,6 +73,9 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
                     }
                 });
             }
+        } else {
+            if (world.isClient)
+            player.sendMessage(new TranslatableText("text.musicexpansion.onlyonewalkman.try"), false);
         }
         return TypedActionResult.pass(player.getStackInHand(hand));
     }

@@ -27,16 +27,14 @@ public class MusicExpansionClient implements ClientModInitializer {
     public void onInitializeClient() {
         ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
         ScreenRegistry.register(MusicExpansion.RECORDMAKER_TYPE, RecordMakerScreen::new);
-        walkmanPlay = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanplay", GLFW.GLFW_KEY_Z));
-        walkmanStop = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanstop", GLFW.GLFW_KEY_X));
-        walkmanNext = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmannext", GLFW.GLFW_KEY_C));
-        walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_V));
-        walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_Y));
+        walkmanPlay = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanplay", GLFW.GLFW_KEY_UP));
+        walkmanStop = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanstop", GLFW.GLFW_KEY_DOWN));
+        walkmanNext = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmannext", GLFW.GLFW_KEY_RIGHT));
+        walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_LEFT));
+        walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_RIGHT_ALT));
         ClientTickCallback.EVENT.register(MusicExpansionClient::tick);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
-                (packetContext, attachedData) -> packetContext.getTaskQueue().execute(() -> {
-                    RecordJsonParser.setAllRecords(attachedData.readBoolean());
-                }));
+                (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
     }
 
     @SuppressWarnings("ConstantConditions") // client.player should never be null

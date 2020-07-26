@@ -1,19 +1,7 @@
 {
   "variants": {
-    "facing=north": {
+    "": {
       "model": "musicexpansion:block/recordmaker"
-    },
-    "facing=south": {
-      "model": "musicexpansion:block/recordmaker",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "musicexpansion:block/recordmaker",
-      "y": 270
-    },
-    "facing=east": {
-      "model": "musicexpansion:block/recordmaker",
-      "y": 90
     }
   }
 }

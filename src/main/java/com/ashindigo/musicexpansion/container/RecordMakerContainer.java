@@ -12,7 +12,7 @@ import spinnery.common.handler.BaseScreenHandler;
 import spinnery.widget.WInterface;
 import spinnery.widget.WSlot;
 
-public class RecordMakerContainer extends BaseScreenHandler {
+public class    RecordMakerContainer extends BaseScreenHandler {
 
     public final RecordMakerEntity recordMaker;
     public static final int INVENTORY = 1;
