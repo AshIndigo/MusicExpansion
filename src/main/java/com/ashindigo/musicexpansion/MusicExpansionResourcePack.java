@@ -56,7 +56,6 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
         JsonObject file = new JsonObject();
         for (ItemCustomRecord sound : MusicExpansion.records) {
             JsonObject soundInfo = new JsonObject();
-            soundInfo.addProperty("category", "records");
             JsonObject trackInfo = new JsonObject();
             trackInfo.addProperty("name", sound.getEvent().getId().getNamespace() + ":music/" + sound.getEvent().getId().getPath());
             trackInfo.addProperty("stream", true);

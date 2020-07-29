@@ -1,8 +1,12 @@
 package com.ashindigo.musicexpansion.widget;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.MusicDiscItem;
+import spinnery.client.render.BaseRenderer;
+import spinnery.widget.WAbstractWidget;
 import spinnery.widget.WItem;
 import spinnery.widget.WStaticText;
 import spinnery.widget.WTooltip;
@@ -66,8 +70,12 @@ public class WTooltipDisc extends WItem {
     }
 
     public void updateHidden(boolean hidden) {
-        tooltip.setHidden(hidden);
-        tooltipText.setHidden(hidden);
+        if (tooltip != null) {
+            tooltip.setHidden(hidden);
+        }
+        if (tooltipText != null) {
+            tooltipText.setHidden(hidden);
+        }
     }
 
     @Override
@@ -83,11 +91,18 @@ public class WTooltipDisc extends WItem {
         tooltip.draw(matrices, provider);
         tooltipText.draw(matrices, provider);
 
-        super.draw(matrices, provider);
+        BaseRenderer.getAdvancedItemRenderer().renderInGui(matrices, provider, stack, getX() + 1, getY() + 1, getZ() + 5);
     }
 
     @Override
     public boolean isFocusedMouseListener() {
         return true;
     }
+
+    @Override
+    @Environment(EnvType.CLIENT)
+    public <W extends WAbstractWidget> W setY(float y) {
+        return super.setY(y);
+    }
+
 }

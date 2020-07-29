@@ -51,6 +51,11 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
     }
 
     @Override
+    public boolean isNetworkSynced() { // TODO Use
+        return super.isNetworkSynced();
+    }
+
+    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (getWalkmansInInv(player.inventory) == 1) {
             getSelectedSlot(player.getStackInHand(hand)); // Hack

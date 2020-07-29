@@ -5,22 +5,31 @@ import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.ashindigo.musicexpansion.widget.WTooltipDisc;
+import com.ashindigo.musicexpansion.widget.WVerticalScrollableContainerDiscs;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import spinnery.client.render.BaseRenderer;
 import spinnery.client.screen.BaseHandledScreen;
-import spinnery.widget.WInterface;
-import spinnery.widget.WPanel;
-import spinnery.widget.WSlot;
-import spinnery.widget.WVerticalScrollableContainer;
+import spinnery.client.utility.ScissorArea;
+import spinnery.common.registry.ThemeRegistry;
+import spinnery.common.registry.WidgetRegistry;
+import spinnery.common.utility.MouseUtilities;
+import spinnery.widget.*;
+import spinnery.widget.api.Color;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
+import spinnery.widget.api.Style;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -31,15 +40,15 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         WInterface mainInterface = getInterface();
         WPanel panel = mainInterface.createChild(WPanel::new, Position.of(mainInterface), Size.of(208, 214));
         panel.center();
-        panel.setLabel(name);
-        WVerticalScrollableContainer scrollCont = mainInterface.createChild(WVerticalScrollableContainer::new, Position.of(panel).add(4, 14, 1), Size.of(198, 92));
+        panel.setLabel(name); // 110
+        WVerticalScrollableContainerDiscs scrollCont = mainInterface.createChild(WVerticalScrollableContainerDiscs::new, Position.of(panel).add(7, 14, 1), Size.of(198, 92));
         panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
-        panel.createChild(WSlot::new, Position.of(panel, 31, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist(); // Result slot
+        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1).accept(MusicExpansion.records.toArray(new ItemCustomRecord[]{})).setWhitelist(); // Result slot
         int c = 0;
-        int y = 1;
+        int y = 0;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
         for (MusicDiscItem disc : MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords())) {
-            WTooltipDisc slot = new WTooltipDisc().setStack(new ItemStack(disc)).setPosition(Position.of(scrollCont, 18 * c, 18 * y)).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
+            WTooltipDisc slot = new WTooltipDisc().setStack(new ItemStack(disc)).setPosition(Position.of(scrollCont).add((18 * c), 0, 2).setOffsetY((18 * y))).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(handler.recordMaker.getPos());
                 buf.writeItemStack(widget.getStack());
