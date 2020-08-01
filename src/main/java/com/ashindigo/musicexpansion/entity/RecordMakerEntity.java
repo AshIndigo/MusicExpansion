@@ -1,19 +1,27 @@
 package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import spinnery.common.inventory.BaseInventory;
 import spinnery.common.utility.InventoryUtilities;
 
-public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable {
+public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable, ExtendedScreenHandlerFactory {
 
     final DefaultedList<ItemStack> stacks;
 
@@ -106,5 +114,20 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
         } else {
             return stack.getItem() instanceof MusicDiscItem && slot == 1 && getStack(1).isEmpty();
         }
+    }
+
+    @Override
+    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+        buf.writeBlockPos(pos);
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return new TranslatableText(MusicExpansion.recordMakerBlock.getTranslationKey());
+    }
+
+    @Override
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        return new RecordMakerContainer(syncId, inv, pos);
     }
 }

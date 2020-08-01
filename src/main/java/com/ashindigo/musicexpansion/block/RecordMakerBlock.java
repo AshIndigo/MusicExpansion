@@ -19,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -53,22 +54,7 @@ public class RecordMakerBlock extends BlockWithEntity {
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBoolean(RecordJsonParser.isAllRecords());
             ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.ALL_RECORDS, passedData);
-            player.openHandledScreen(new ExtendedScreenHandlerFactory() {
-                @Override
-                public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                    buf.writeBlockPos(pos);
-                }
-
-                @Override
-                public Text getDisplayName() {
-                    return new TranslatableText("block.musicexpansion.recordmaker");
-                }
-
-                @Override
-                public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                    return new RecordMakerContainer(syncId, inv, pos);
-                }
-            });
+            player.openHandledScreen((ExtendedScreenHandlerFactory) world.getBlockEntity(pos));
         }
         return ActionResult.PASS;
     }

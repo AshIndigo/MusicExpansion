@@ -37,6 +37,7 @@ public class MusicExpansion implements ModInitializer {
     public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
+    public static RecordMakerBlock recordMakerBlock;
 
     public static ArrayList<? extends MusicDiscItem> getCraftableRecords(boolean all) {
         ArrayList<MusicDiscItem> discs = new ArrayList<>(records);
@@ -54,9 +55,9 @@ public class MusicExpansion implements ModInitializer {
         RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerContainer(syncId, inv, buf.readBlockPos()));
         walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman());
         blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().group(MUSIC_GROUP)));
-        RecordMakerBlock recordMaker = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
-        Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMaker, new Item.Settings().group(MUSIC_GROUP)));
-        recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMaker).build(null));
+        recordMakerBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
+        Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMakerBlock, new Item.Settings().group(MUSIC_GROUP)));
+        recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
         try {
             records = RecordJsonParser.parse();
         } catch (IOException e) {
