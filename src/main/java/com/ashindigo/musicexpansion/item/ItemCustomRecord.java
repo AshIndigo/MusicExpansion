@@ -3,17 +3,13 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
 
 public class ItemCustomRecord extends MusicDiscItem {
 

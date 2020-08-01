@@ -8,28 +8,17 @@ import com.ashindigo.musicexpansion.widget.WTooltipDisc;
 import com.ashindigo.musicexpansion.widget.WVerticalScrollableContainerDiscs;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import spinnery.client.render.BaseRenderer;
 import spinnery.client.screen.BaseHandledScreen;
-import spinnery.client.utility.ScissorArea;
-import spinnery.common.registry.ThemeRegistry;
-import spinnery.common.registry.WidgetRegistry;
-import spinnery.common.utility.MouseUtilities;
 import spinnery.widget.*;
-import spinnery.widget.api.Color;
 import spinnery.widget.api.Position;
 import spinnery.widget.api.Size;
-import spinnery.widget.api.Style;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 

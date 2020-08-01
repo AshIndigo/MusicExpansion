@@ -1,7 +1,6 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.item.ItemWalkman;
-import com.google.common.collect.Sets;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.MusicDiscItem;

@@ -20,7 +20,7 @@ public class RecordJsonParser {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static ArrayList<ItemCustomRecord> parse() throws IOException {
         ArrayList<ItemCustomRecord> records = new ArrayList<>();
-        File recordsJson = new File(FabricLoader.getInstance().getConfigDirectory() + File.separator + MusicExpansion.MODID + File.separator + "records.json");
+        File recordsJson = new File(FabricLoader.getInstance().getConfigDir() + File.separator + MusicExpansion.MODID + File.separator + "records.json");
 //        if (!recordsJson.getParentFile().exists()) {
 //            recordsJson.getParentFile().mkdirs();
 //            new File(recordsJson.getParentFile() + File.separator + "textures").createNewFile();
