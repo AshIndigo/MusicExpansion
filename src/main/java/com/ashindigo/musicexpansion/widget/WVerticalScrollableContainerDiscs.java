@@ -18,6 +18,9 @@ import spinnery.widget.api.Style;
 
 import java.util.Arrays;
 
+/**
+ * A rather dirty hack to allow for division spaces of 0, and so allows me to control positioning more. Also draws slots for each disc
+ */
 public class WVerticalScrollableContainerDiscs extends WVerticalScrollableContainer {
 
     public WVerticalScrollableContainerDiscs() {

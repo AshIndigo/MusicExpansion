@@ -1,5 +1,6 @@
-package com.ashindigo.musicexpansion;
+package com.ashindigo.musicexpansion.client;
 
+import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,13 +13,13 @@ import java.util.Collections;
 
 public class WalkmanMovingSound extends MovingSoundInstance {
 
+    private final SoundEvent soundEvent;
     private final PlayerEntity player;
-    private final MusicDiscItem currentDisc;
 
-    public WalkmanMovingSound(SoundEvent soundEvent, PlayerEntity player, MusicDiscItem currentDisc) {
+    public WalkmanMovingSound(SoundEvent soundEvent, PlayerEntity player) {
         super(soundEvent, SoundCategory.RECORDS);
+        this.soundEvent = soundEvent;
         this.player = player;
-        this.currentDisc = currentDisc;
         this.repeat = false;
         this.repeatDelay = 0;
     }
@@ -29,7 +30,8 @@ public class WalkmanMovingSound extends MovingSoundInstance {
             volume = 0.0F;
             return;
         }
-        if (!this.player.isAlive() || !ItemWalkman.getInventory(player.inventory.getStack(MusicExpansion.getWalkman(player.inventory)), player.inventory).containsAny(Collections.singleton(currentDisc))) {
+        //ItemWalkman.getInventory(player.inventory.getStack(DiscHelper.getWalkman(player.inventory)), player.inventory).containsAny(Collections.singleton(currentDisc))
+        if (!this.player.isAlive() || !DiscHelper.walkmanContainsSound(soundEvent, player.inventory)) {
             setDone();
         } else {
             this.x = (float) this.player.getX();

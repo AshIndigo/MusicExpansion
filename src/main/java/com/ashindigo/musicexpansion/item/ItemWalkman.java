@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.item;
 
+import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
@@ -64,7 +65,7 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
                 player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                     @Override
                     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                        buf.writeInt(MusicExpansion.getWalkman(player.inventory));
+                        buf.writeInt(DiscHelper.getWalkman(player.inventory));
                     }
 
                     @Override

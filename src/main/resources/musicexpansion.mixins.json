@@ -4,9 +4,10 @@
   "package": "com.ashindigo.musicexpansion.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MusicDiscItemMixin"
   ],
   "client": [
-  "ReloadableResourceManagerImplMixin"
+    "ReloadableResourceManagerImplMixin"
   ],
   "injectors": {
     "defaultRequire": 1

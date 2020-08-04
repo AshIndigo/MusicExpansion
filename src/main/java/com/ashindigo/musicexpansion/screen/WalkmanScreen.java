@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.screen;
 
+import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
@@ -29,28 +30,28 @@ public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
             panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), Size.of(18, 18)).setInventoryNumber(WalkmanContainer.INVENTORY).setSlotNumber(i);
         }
         // Play button
-        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), Size.of(18, 18)).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.playTrack(playerInv.getStack(MusicExpansion.getWalkman(playerInv))));
+        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), Size.of(18, 18)).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.playTrack(playerInv.getStack(DiscHelper.getWalkman(playerInv))));
         // Stop button
         panel.createChild(WButton::new, Position.of(panel).add(45, 40, 0), Size.of(18, 18)).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.stopTrack());
         // Previous track
         panel.createChild(WButton::new, Position.of(panel).add(81, 40, 0), Size.of(18, 18)).setLabel("⏮").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.max(0, ItemWalkman.getSelectedSlot(playerInv.getStack(MusicExpansion.getWalkman(playerInv))) - 1);
-            ItemWalkman.setSelectedSlot(slot, MusicExpansion.getWalkman(playerInv));
+            int slot = Math.max(0, ItemWalkman.getSelectedSlot(playerInv.getStack(DiscHelper.getWalkman(playerInv))) - 1);
+            ItemWalkman.setSelectedSlot(slot, DiscHelper.getWalkman(playerInv));
             setActiveTrack(panel, slot);
         });
         // Next track
         panel.createChild(WButton::new, Position.of(panel).add(117, 40, 0), Size.of(18, 18)).setLabel("⏭").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.min(8, ItemWalkman.getSelectedSlot(playerInv.getStack(MusicExpansion.getWalkman(playerInv))) + 1);
-            ItemWalkman.setSelectedSlot(slot, MusicExpansion.getWalkman(playerInv));
+            int slot = Math.min(8, ItemWalkman.getSelectedSlot(playerInv.getStack(DiscHelper.getWalkman(playerInv))) + 1);
+            ItemWalkman.setSelectedSlot(slot, DiscHelper.getWalkman(playerInv));
             setActiveTrack(panel, slot);
         });
         // Random track
         panel.createChild(WButton::new, Position.of(panel).add(153, 40, 0), Size.of(18, 18)).setLabel("?").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
             int slot = playerInv.player.getRandom().nextInt(9);
-            ItemWalkman.setSelectedSlot(slot, MusicExpansion.getWalkman(playerInv));
+            ItemWalkman.setSelectedSlot(slot, DiscHelper.getWalkman(playerInv));
             setActiveTrack(panel, slot);
         });
-        setActiveTrack(panel, ItemWalkman.getSelectedSlot(playerInv.getStack(MusicExpansion.getWalkman(playerInv))));
+        setActiveTrack(panel, ItemWalkman.getSelectedSlot(playerInv.getStack(DiscHelper.getWalkman(playerInv))));
     }
 
     private void setActiveTrack(WPanel panel, int selectedSlot) {

@@ -4,8 +4,10 @@ import com.ashindigo.musicexpansion.block.RecordMakerBlock;
 import com.ashindigo.musicexpansion.container.RecordMakerContainer;
 import com.ashindigo.musicexpansion.container.WalkmanContainer;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
+import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
+import com.ashindigo.musicexpansion.recipe.UpdateRecordRecipe;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -15,6 +17,8 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.recipe.SpecialRecipeSerializer;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -30,43 +34,65 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
+    public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
     public static Item blankRecord;
     public static ItemWalkman walkman;
-    public static ArrayList<ItemCustomRecord> records = new ArrayList<>();
+    public static CustomDiscItem customDisc;
+    public static RecordMakerBlock recordMakerBlock;
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
-    public static RecordMakerBlock recordMakerBlock;
-
-    public static ArrayList<? extends MusicDiscItem> getCraftableRecords(boolean all) {
-        ArrayList<MusicDiscItem> discs = new ArrayList<>(records);
-        if (all) {
-            for (Item disc : ItemTags.getContainer().getOrCreate(ItemTags.MUSIC_DISCS.getId()).values()) {
-                discs.add((MusicDiscItem) disc);
-            }
-        }
-        return discs;
-    }
+    public static ArrayList<Identifier> tracks = new ArrayList<>();
+    @Deprecated
+    public static ArrayList<ItemCustomRecord> recordsOld = new ArrayList<>();
 
     @Override
     public void onInitialize() {
+        registerItemsBlocks();
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
         RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerContainer(syncId, inv, buf.readBlockPos()));
+        recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
+        UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));
+        registerServerPackets();
+        registerTracks();
+        registerOldRecords();
+    }
+
+    private static void registerItemsBlocks() {
         walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman());
         blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().group(MUSIC_GROUP)));
+        customDisc = Registry.register(Registry.ITEM, new Identifier(MODID, "custom_disc"), new CustomDiscItem());
         recordMakerBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
         Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMakerBlock, new Item.Settings().group(MUSIC_GROUP)));
-        recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
+    }
+
+    private void registerTracks() {
         try {
-            records = RecordJsonParser.parse();
+            tracks = RecordJsonParser.parse();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (ItemCustomRecord record : records) {
-            Registry.register(Registry.ITEM, record.getId(), record);
-            Registry.register(Registry.SOUND_EVENT, record.getId(), record.getEvent());
+        for (Identifier id : tracks) {
+            Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
         }
+    }
+
+
+    @Deprecated
+    private static void registerOldRecords() {
+        try {
+            recordsOld = RecordJsonParser.parseOld();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (ItemCustomRecord record : recordsOld) {
+            Registry.register(Registry.ITEM, record.getId(), record);
+            //Registry.register(Registry.SOUND_EVENT, record.getId(), record.getEvent());
+        }
+    }
+
+    public static void registerServerPackets() {
         ServerSidePacketRegistry.INSTANCE.register(CHANGESLOT_PACKET, (packetContext, attachedData) -> {
             int slot = attachedData.readInt();
             int invSlot = attachedData.readInt();
@@ -93,15 +119,17 @@ public class MusicExpansion implements ModInitializer {
         });
     }
 
-    public static int getWalkman(PlayerInventory inventory) {
-        int slot = -1;
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
-            if (stack.getItem() instanceof ItemWalkman) {
-                slot = i;
+    public static ArrayList<ItemStack> getCraftableRecords(boolean all) {
+        ArrayList<ItemStack> discs = new ArrayList<>();
+        for (Identifier id : tracks) {
+            discs.add(DiscHelper.createCustomDisc(id));
+        }
+        if (all) {
+            for (Item disc : ItemTags.getContainer().getOrCreate(ItemTags.MUSIC_DISCS.getId()).values()) {
+                discs.add(new ItemStack(disc));
             }
         }
-        return slot;
+        return discs;
     }
 
 }

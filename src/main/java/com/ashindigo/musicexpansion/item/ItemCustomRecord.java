@@ -3,14 +3,21 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.world.World;
 
+import java.util.List;
+
+@Deprecated
 public class ItemCustomRecord extends MusicDiscItem {
 
     private final SoundEvent event;
@@ -28,6 +35,12 @@ public class ItemCustomRecord extends MusicDiscItem {
 
     public Identifier getId() {
         return id;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
+        super.appendTooltip(stack, world, tooltip, context);
+        tooltip.add(new TranslatableText("text.musicexpansion.olddisc"));
     }
 
     // Make sure description stays the same, based on the one in the file

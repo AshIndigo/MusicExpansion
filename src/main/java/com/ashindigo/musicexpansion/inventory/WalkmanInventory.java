@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.inventory;
 
+import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.InventoryChangedListener;
@@ -81,7 +82,7 @@ public class WalkmanInventory implements Inventory, InventoryChangedListener {
 
     @Override
     public boolean isValid(int slot, ItemStack stack) {
-        return stack.getItem() instanceof MusicDiscItem;
+        return stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem;
     }
 
     @Override

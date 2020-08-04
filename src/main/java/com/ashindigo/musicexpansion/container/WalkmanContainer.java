@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.container;
 
+import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
@@ -18,7 +19,7 @@ public class WalkmanContainer extends BaseScreenHandler {
     public WalkmanContainer(int syncId, PlayerInventory inv) {
         super(syncId, inv);
         WInterface mainInterface = getInterface();
-        int slot = MusicExpansion.getWalkman(inv);
+        int slot = DiscHelper.getWalkman(inv);
         WalkmanInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
         addInventory(INVENTORY, walkmanInv);
         walkmanInv.addListener(sender -> {

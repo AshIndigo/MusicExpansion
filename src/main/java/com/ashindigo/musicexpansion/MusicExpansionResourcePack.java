@@ -1,6 +1,5 @@
 package com.ashindigo.musicexpansion;
 
-import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.client.MinecraftClient;
@@ -11,7 +10,10 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,15 +56,25 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
 
     public static ByteArrayInputStream getSoundsJson() {
         JsonObject file = new JsonObject();
-        for (ItemCustomRecord sound : MusicExpansion.records) {
+//        for (ItemCustomRecord sound : MusicExpansion.recordsOld) {
+//            JsonObject soundInfo = new JsonObject();
+//            JsonObject trackInfo = new JsonObject();
+//            trackInfo.addProperty("name", sound.getEvent().getId().getNamespace() + ":music/" + sound.getEvent().getId().getPath());
+//            trackInfo.addProperty("stream", true);
+//            JsonArray array = new JsonArray();
+//            array.add(trackInfo);
+//            soundInfo.add("sounds", array);
+//            file.add(sound.getEvent().getId().getPath(), soundInfo);
+//        }
+        for (Identifier sound : MusicExpansion.tracks) {
             JsonObject soundInfo = new JsonObject();
             JsonObject trackInfo = new JsonObject();
-            trackInfo.addProperty("name", sound.getEvent().getId().getNamespace() + ":music/" + sound.getEvent().getId().getPath());
+            trackInfo.addProperty("name", sound.getNamespace() + ":music/" + sound.getPath());
             trackInfo.addProperty("stream", true);
             JsonArray array = new JsonArray();
             array.add(trackInfo);
             soundInfo.add("sounds", array);
-            file.add(sound.getEvent().getId().getPath(), soundInfo);
+            file.add(sound.getPath(), soundInfo);
         }
         return new ByteArrayInputStream(file.toString().getBytes());
     }
