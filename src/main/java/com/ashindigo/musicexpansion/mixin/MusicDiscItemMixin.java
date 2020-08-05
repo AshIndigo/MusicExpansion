@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.mixin;
 
+import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import net.minecraft.item.Item;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundEvent;

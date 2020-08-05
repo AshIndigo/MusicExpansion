@@ -1,10 +1,13 @@
 package com.ashindigo.musicexpansion.widget;
 
+import com.ashindigo.musicexpansion.DiscHelper;
+import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.MusicDiscItem;
+import net.minecraft.text.TranslatableText;
 import spinnery.client.render.BaseRenderer;
 import spinnery.widget.WAbstractWidget;
 import spinnery.widget.WItem;
@@ -22,7 +25,11 @@ public class WTooltipDisc extends WItem {
     WStaticText tooltipText;
 
     public void updateText() {
-        tooltipText.setText(((MusicDiscItem) stack.getItem()).getDescription());
+        if (stack.getItem() instanceof CustomDiscItem) {
+            tooltipText.setText(new TranslatableText("item." + DiscHelper.getTrackID(stack).toString().replace(":", ".") + ".desc"));
+        } else {
+            tooltipText.setText(((MusicDiscItem) stack.getItem()).getDescription());
+        }
     }
 
     @Override

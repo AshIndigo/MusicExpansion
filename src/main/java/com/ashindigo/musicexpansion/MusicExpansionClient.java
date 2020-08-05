@@ -1,6 +1,5 @@
 package com.ashindigo.musicexpansion;
 
-import com.ashindigo.musicexpansion.client.CustomDiscModelPredicateProvider;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
@@ -38,7 +37,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
-        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc_model"), new CustomDiscModelPredicateProvider());
+        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
     }
 
     // client.player should never be null

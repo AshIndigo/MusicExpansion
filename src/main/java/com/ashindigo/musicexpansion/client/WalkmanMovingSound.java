@@ -4,12 +4,9 @@ import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.MusicDiscItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-
-import java.util.Collections;
 
 public class WalkmanMovingSound extends MovingSoundInstance {
 

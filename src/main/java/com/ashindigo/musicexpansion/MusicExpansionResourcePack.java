@@ -10,10 +10,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,23 +46,31 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
             return new FileInputStream(new File(fileDir, "/" + names[names.length - 1]));
         } else if (names[2].equals("models")) {
             Identifier id = new Identifier(names[1], FilenameUtils.removeExtension(names[names.length - 1]));
-            return getItemJson(id);
+            if (id.getPath().contains("custom_disc")) {
+                if (id.getPath().matches("custom_disc_([0-9]|[1-9][0-9]|[1-9][0-9][0-9])$")) {
+                    return getCustomDiscJson(Integer.parseInt(id.getPath().split("_")[2]));
+                } else {
+                    return getItemPredicateJson(id);
+                }
+            } else {
+                return getItemJson(id);
+            }
         }
         return new ByteArrayInputStream("".getBytes());
     }
 
+    private InputStream getCustomDiscJson(int i) {
+        Identifier identifier = new Identifier(MusicExpansion.MODID_EXTERNAL, "item/" + MusicExpansion.tracks.get(i).getPath());
+        JsonObject file = new JsonObject();
+        file.addProperty("parent", "item/generated");
+        JsonObject texture = new JsonObject();
+        texture.addProperty("layer0", identifier.getNamespace() + ":" + identifier.getPath());
+        file.add("textures", texture);
+        return new ByteArrayInputStream(file.toString().getBytes());
+    }
+
     public static ByteArrayInputStream getSoundsJson() {
         JsonObject file = new JsonObject();
-//        for (ItemCustomRecord sound : MusicExpansion.recordsOld) {
-//            JsonObject soundInfo = new JsonObject();
-//            JsonObject trackInfo = new JsonObject();
-//            trackInfo.addProperty("name", sound.getEvent().getId().getNamespace() + ":music/" + sound.getEvent().getId().getPath());
-//            trackInfo.addProperty("stream", true);
-//            JsonArray array = new JsonArray();
-//            array.add(trackInfo);
-//            soundInfo.add("sounds", array);
-//            file.add(sound.getEvent().getId().getPath(), soundInfo);
-//        }
         for (Identifier sound : MusicExpansion.tracks) {
             JsonObject soundInfo = new JsonObject();
             JsonObject trackInfo = new JsonObject();
@@ -79,9 +84,36 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
         return new ByteArrayInputStream(file.toString().getBytes());
     }
 
+    public static ByteArrayInputStream getItemPredicateJson(Identifier identifier) {
+        JsonObject file = new JsonObject();
+        file.addProperty("parent", "item/generated");
+        JsonObject texture = new JsonObject();
+        texture.addProperty("layer0", identifier.getNamespace() + ":item/" + identifier.getPath());
+        file.add("textures", texture);
+        JsonArray overrides = new JsonArray();
+        ArrayList<Identifier> tracks = MusicExpansion.tracks;
+        for (int i = 0, tracksSize = tracks.size(); i < tracksSize; i++) {
+            //Identifier id = tracks.get(i);
+            JsonObject root = new JsonObject();
+            JsonObject value = new JsonObject();
+            value.addProperty(MusicExpansion.MODID + ":" + "custom_disc", i);
+            root.add("predicate", value);
+            root.addProperty("model", identifier.getNamespace() + ":item/" + identifier.getPath() + "_" + i);
+            overrides.add(root);
+        }
+        // -1 Index
+        JsonObject root = new JsonObject();
+        JsonObject value = new JsonObject();
+        value.addProperty(MusicExpansion.MODID + ":" + "custom_disc", -1);
+        root.add("predicate", value);
+        root.addProperty("model", MusicExpansion.MODID + ":item/" + "blank_record");
+        overrides.add(root);
+        file.add("overrides", overrides);
+        return new ByteArrayInputStream(file.toString().getBytes());
+    }
+
     public static ByteArrayInputStream getItemJson(Identifier identifier) {
         JsonObject file = new JsonObject();
-        file.addProperty("forge_marker", 1);
         file.addProperty("parent", "item/generated");
         JsonObject texture = new JsonObject();
         texture.addProperty("layer0", identifier.getNamespace() + ":items/" + identifier.getPath());
@@ -102,7 +134,9 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
         if (var2.getPath().equals("pack.mcmeta")) {
             return true;
         }
-        return var2.getNamespace().equals(MusicExpansion.MODID_EXTERNAL) && !var2.getPath().endsWith(".mcmeta");
+        if (var2.getNamespace().equals(MusicExpansion.MODID_EXTERNAL)) {
+            return !var2.getPath().endsWith(".mcmeta");
+        } else return var2.getPath().contains("custom_disc") && var2.getPath().endsWith(".json");
     }
 
     @Override
@@ -115,6 +149,7 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
     public Set<String> getNamespaces(ResourceType var1) {
         HashSet<String> set = new HashSet<>();
         set.add(MusicExpansion.MODID_EXTERNAL);
+        set.add(MusicExpansion.MODID);
         return set;
     }
 

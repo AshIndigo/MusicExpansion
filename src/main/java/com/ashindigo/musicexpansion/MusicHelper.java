@@ -25,7 +25,7 @@ public class MusicHelper {
                 if (!disc.isEmpty() && disc.getItem() instanceof MusicDiscItem) {
                     MusicDiscItem currentDisc = (MusicDiscItem) disc.getItem();
                     mc.inGameHud.setRecordPlayingOverlay(currentDisc.getDescription());
-                    sound = new WalkmanMovingSound(currentDisc.getSound(), mc.player, currentDisc);
+                    sound = new WalkmanMovingSound(currentDisc.getSound(), mc.player);
                     mc.getSoundManager().play(sound);
                     isPlaying = true;
                 }

@@ -3,7 +3,7 @@ package com.ashindigo.musicexpansion;
 import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
-import com.ashindigo.musicexpansion.mixin.MusicDiscItemAccessor;
+import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;

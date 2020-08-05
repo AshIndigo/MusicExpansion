@@ -3,6 +3,7 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.DyeableItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -35,4 +36,5 @@ public class CustomDiscItem extends Item {
     public String getTranslationKey() {
         return "item.minecraft.music_disc_far";
     }
+
 }
