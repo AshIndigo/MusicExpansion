@@ -30,6 +30,8 @@ public class MusicHelper {
         }
     }
 
+
+
     public static void stopTrack() {
         mc.getSoundManager().stop(sound);
         isPlaying = false;

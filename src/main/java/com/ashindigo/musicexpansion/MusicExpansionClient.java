@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
@@ -11,11 +12,15 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
 public class MusicExpansionClient implements ClientModInitializer {
@@ -38,6 +43,21 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK, (packetContext, attachedData) -> {
+            ItemStack disc = attachedData.readItemStack();
+            BlockPos songPosition = attachedData.readBlockPos();
+            MinecraftClient mc = MinecraftClient.getInstance();
+            packetContext.getTaskQueue().execute(() -> {
+                if (mc.player != null) {
+                        if (!disc.isEmpty()) {
+                            mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
+                            SoundInstance soundInstance = PositionedSoundInstance.record(DiscHelper.getEvent(disc), songPosition.getX(), songPosition.getY(), songPosition.getZ());
+                            ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
+                            mc.getSoundManager().play(soundInstance);
+                        }
+                    }
+                });
+            });
         FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
     }
 

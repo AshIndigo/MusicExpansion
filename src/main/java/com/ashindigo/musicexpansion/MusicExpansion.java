@@ -16,6 +16,7 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.sound.SoundEvent;
@@ -34,6 +35,7 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
+    public static final Identifier PLAY_TRACK = new Identifier(MODID, "play_track");
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
