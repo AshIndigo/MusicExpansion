@@ -26,7 +26,7 @@ public class CustomDiscItem extends Item {
         if (Registry.SOUND_EVENT.containsId(DiscHelper.getTrackID(stack))) {
             tooltip.add(new TranslatableText("item." + DiscHelper.getTrackID(stack).toString().replace(":", ".") + ".desc").formatted(Formatting.GRAY));
         } else {
-            tooltip.add(new TranslatableText("text.musicexpansion.missingevent").append(": " + DiscHelper.getTrackID(stack).getPath()));
+            tooltip.add(new TranslatableText("text.musicexpansion.missingevent"));
         }
         super.appendTooltip(stack, world, tooltip, context);
     }

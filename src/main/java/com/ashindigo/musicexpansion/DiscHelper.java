@@ -9,6 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -19,7 +22,7 @@ import net.minecraft.util.registry.Registry;
 public class DiscHelper {
 
     /**
-     * Get the {@link SoundEvent} this disc is set to
+     * Get the {@link SoundEvent} this custom disc is set to
      *
      * @param stack The disc in question, needs tag data
      * @return The {@link SoundEvent} this disc is linked to, otherwise null if it doesn't exist
@@ -39,7 +42,7 @@ public class DiscHelper {
         if (tag.contains("track")) {
             return Identifier.tryParse(tag.getString("track"));
         } else {
-            return new Identifier(MusicExpansion.MODID, "missing"); // TODO Should I just make it null instead?
+            return new Identifier(MusicExpansion.MODID, "missing");
         }
     }
 
@@ -83,7 +86,6 @@ public class DiscHelper {
         return slot;
     }
 
-
     public static boolean walkmanContainsSound(SoundEvent event, PlayerInventory inv) {
         ItemStack stack = inv.getStack(getWalkman(inv));
         WalkmanInventory walkmanInv = ItemWalkman.getInventory(stack, inv);
@@ -100,5 +102,24 @@ public class DiscHelper {
             }
         }
         return false;
+    }
+
+    public static SoundEvent getEvent(ItemStack stack) {
+        if (stack.getItem() instanceof MusicDiscItem) {
+            return ((MusicDiscItemAccessor) stack.getItem()).musicexpansion_getSound();
+        } else if (stack.getItem() instanceof CustomDiscItem) {
+            return getSetTrack(stack);
+        }
+        return null;
+    }
+
+    // Client only because of getDescription()
+    public static Text getDesc(ItemStack stack) {
+        if (stack.getItem() instanceof MusicDiscItem) {
+            return ((MusicDiscItem) stack.getItem()).getDescription();
+        } else if (stack.getItem() instanceof CustomDiscItem) {
+            return new TranslatableText("item." + getTrackID(stack).toString().replace(":", ".") + ".desc");
+        }
+        return new LiteralText("");
     }
 }

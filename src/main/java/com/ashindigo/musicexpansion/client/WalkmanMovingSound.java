@@ -27,7 +27,6 @@ public class WalkmanMovingSound extends MovingSoundInstance {
             volume = 0.0F;
             return;
         }
-        //ItemWalkman.getInventory(player.inventory.getStack(DiscHelper.getWalkman(player.inventory)), player.inventory).containsAny(Collections.singleton(currentDisc))
         if (!this.player.isAlive() || !DiscHelper.walkmanContainsSound(soundEvent, player.inventory)) {
             setDone();
         } else {

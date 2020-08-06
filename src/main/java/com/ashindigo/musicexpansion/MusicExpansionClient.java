@@ -12,7 +12,8 @@ import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredica
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.MusicDiscItem;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -37,9 +38,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
-        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> {
-            return 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track")));
-        });
+        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
     }
 
     // client.player should never be null
@@ -62,48 +61,52 @@ public class MusicExpansionClient implements ClientModInitializer {
     }
 
     private static void walkmanPlayDisc(MinecraftClient client) {
-        int iSlot = DiscHelper.getWalkman(client.player.inventory);
-        if (iSlot > -1) {
-            MusicHelper.playTrack(client.player.inventory.getStack(iSlot));
+        if (client.player != null) {
+            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            if (iSlot > -1) {
+                MusicHelper.playTrack(client.player.inventory.getStack(iSlot));
+            }
         }
     }
 
     private static void randomDisc(MinecraftClient client) {
-        int iSlot = DiscHelper.getWalkman(client.player.inventory);
-        if (iSlot > -1) {
-            int slot = client.player.getRandom().nextInt(9);
-            ItemWalkman.setSelectedSlot(slot, iSlot);
-            MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
-            if (disc != null) {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
-            } else {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+        if (client.player != null) {
+            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            if (iSlot > -1) {
+                int slot = client.player.getRandom().nextInt(9);
+                ItemWalkman.setSelectedSlot(slot, iSlot);
+                sendCurrentDiscMessage(client, iSlot, slot);
             }
         }
     }
 
     private static void walkmanPrevDisc(MinecraftClient client) {
-        int iSlot = DiscHelper.getWalkman(client.player.inventory);
-        if (iSlot > -1) {
-            int slot = Math.max(0, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
-            ItemWalkman.setSelectedSlot(slot, iSlot);
-            MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
-            if (disc != null) {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
-            } else {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+        if (client.player != null) {
+            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            if (iSlot > -1) {
+                int slot = Math.max(0, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
+                ItemWalkman.setSelectedSlot(slot, iSlot);
+                sendCurrentDiscMessage(client, iSlot, slot);
             }
         }
     }
 
     private static void walkmanNextDisc(MinecraftClient client) {
-        int iSlot = DiscHelper.getWalkman(client.player.inventory);
-        if (iSlot > -1) {
-            int slot = Math.min(8, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
-            ItemWalkman.setSelectedSlot(slot, iSlot);
-            MusicDiscItem disc = MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot);
-            if (disc != null) {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()), false);
+        if (client.player != null) {
+            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            if (iSlot > -1) {
+                int slot = Math.min(8, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
+                ItemWalkman.setSelectedSlot(slot, iSlot);
+                sendCurrentDiscMessage(client, iSlot, slot);
+            }
+        }
+    }
+
+    private static void sendCurrentDiscMessage(MinecraftClient client, int iSlot, int slot) {
+        if (client.player != null) {
+            Text desc = DiscHelper.getDesc(MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot));
+            if (!desc.equals(new LiteralText(""))) {
+                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(desc), false);
             } else {
                 client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
             }

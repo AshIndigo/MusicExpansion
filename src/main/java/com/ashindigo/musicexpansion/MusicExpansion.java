@@ -88,7 +88,6 @@ public class MusicExpansion implements ModInitializer {
         }
         for (ItemCustomRecord record : recordsOld) {
             Registry.register(Registry.ITEM, record.getId(), record);
-            //Registry.register(Registry.SOUND_EVENT, record.getId(), record.getEvent());
         }
     }
 
@@ -98,7 +97,7 @@ public class MusicExpansion implements ModInitializer {
             int invSlot = attachedData.readInt();
             packetContext.getTaskQueue().execute(() -> {
                 if (packetContext.getPlayer().inventory.getStack(invSlot).hasTag()) {
-                    packetContext.getPlayer().inventory.getStack(invSlot).getTag().putInt("selected", slot);
+                    packetContext.getPlayer().inventory.getStack(invSlot).getOrCreateTag().putInt("selected", slot); // Wait? What?
                     packetContext.getPlayer().inventory.markDirty();
                 }
             });

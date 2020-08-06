@@ -1,7 +1,6 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
-import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
@@ -17,15 +16,13 @@ public class MusicHelper {
     static WalkmanMovingSound sound;
     static boolean isPlaying;
 
-    public static void playTrack(ItemStack stack) {
+    public static void playTrack(ItemStack walkman) {
         if (mc.player != null) {
-            WalkmanInventory inv = ItemWalkman.getInventory(stack, mc.player.inventory);
             if (!isPlaying || !mc.getSoundManager().isPlaying(sound)) {
-                ItemStack disc = inv.getStack(ItemWalkman.getSelectedSlot(stack)); // TODO Make this use getDiscInSlot(stack, slot)?
-                if (!disc.isEmpty() && disc.getItem() instanceof MusicDiscItem) {
-                    MusicDiscItem currentDisc = (MusicDiscItem) disc.getItem();
-                    mc.inGameHud.setRecordPlayingOverlay(currentDisc.getDescription());
-                    sound = new WalkmanMovingSound(currentDisc.getSound(), mc.player);
+                ItemStack disc = getDiscInSlot(walkman, ItemWalkman.getSelectedSlot(walkman));
+                if (!disc.isEmpty()) {
+                    mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
+                    sound = new WalkmanMovingSound(DiscHelper.getEvent(disc), mc.player);
                     mc.getSoundManager().play(sound);
                     isPlaying = true;
                 }
@@ -39,14 +36,11 @@ public class MusicHelper {
     }
 
 
-    public static MusicDiscItem getDiscInSlot(ItemStack stack, int slot) {
+    public static ItemStack getDiscInSlot(ItemStack stack, int slot) {
         ItemStack discStack = ItemStack.EMPTY;
         if (mc.player != null && stack.getTag() != null && stack.getTag().contains("Items")) {
             discStack = ItemWalkman.getInventory(stack, mc.player.inventory).getStack(slot);
         }
-        if (!discStack.isEmpty()) {
-            return (MusicDiscItem) discStack.getItem();
-        }
-        return null;
+        return discStack;
     }
 }

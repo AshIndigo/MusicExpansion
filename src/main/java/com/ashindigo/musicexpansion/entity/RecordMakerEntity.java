@@ -2,6 +2,7 @@ package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.container.RecordMakerContainer;
+import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
@@ -112,7 +113,7 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
         if (stack.getItem() == MusicExpansion.blankRecord && slot == 0) {
             return true;
         } else {
-            return stack.getItem() instanceof MusicDiscItem && slot == 1 && getStack(1).isEmpty();
+            return (stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem) && slot == 1 && getStack(1).isEmpty();
         }
     }
 

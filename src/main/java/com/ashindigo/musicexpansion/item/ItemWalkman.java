@@ -15,10 +15,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MusicDiscItem;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerFactory;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -30,7 +29,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemWalkman extends Item implements ScreenHandlerFactory {
+public class ItemWalkman extends Item implements ExtendedScreenHandlerFactory {
 
     public ItemWalkman() {
         super(new Item.Settings().maxCount(1).group(MusicExpansion.MUSIC_GROUP));
@@ -41,9 +40,9 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
         tooltip.add(new TranslatableText("desc.musicexpansion.walkman").formatted(Formatting.GRAY));
         tooltip.add(new TranslatableText("desc.musicexpansion.onlyonewalkman").formatted(Formatting.GRAY));
         if (MinecraftClient.getInstance().player != null) {
-            MusicDiscItem disc = MusicHelper.getDiscInSlot(stack, ItemWalkman.getSelectedSlot(stack));
-            if (disc != null) {
-                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack").append(disc.getDescription()));
+            ItemStack disc = MusicHelper.getDiscInSlot(stack, ItemWalkman.getSelectedSlot(stack));
+            if (!disc.isEmpty()) {
+                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack").append(DiscHelper.getDesc(disc)));
             } else {
                 tooltip.add(new TranslatableText("text.musicexpansion.currenttrack.nothing"));
             }
@@ -52,62 +51,57 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
     }
 
     @Override
-    public boolean isNetworkSynced() { // TODO Use
-        return super.isNetworkSynced();
-    }
-
-    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         if (getWalkmansInInv(player.inventory) == 1) {
             getSelectedSlot(player.getStackInHand(hand)); // Hack
             player.inventory.markDirty();
             if (!world.isClient()) {
-                player.openHandledScreen(new ExtendedScreenHandlerFactory() {
-                    @Override
-                    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
-                        buf.writeInt(DiscHelper.getWalkman(player.inventory));
-                    }
-
-                    @Override
-                    public Text getDisplayName() {
-                        return new TranslatableText(getTranslationKey());
-                    }
-
-                    @Override
-                    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-                        return new WalkmanContainer(syncId, inv);
-                    }
-                });
+                player.openHandledScreen(this);
             }
         } else {
             if (world.isClient)
-            player.sendMessage(new TranslatableText("text.musicexpansion.onlyonewalkman.try"), false);
+                player.sendMessage(new TranslatableText("text.musicexpansion.onlyonewalkman.try"), false);
         }
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
-    @Override
-    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new WalkmanContainer(syncId, inv); // Useless?
-    }
+//    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Maybe clean up?
+//        if (!inv.player.world.isClient || !stack.getTag().contains("Items")) {
+//            if (!stack.hasTag() || !stack.getTag().contains("Items")) {
+//                stack.setTag(Inventories.toTag(stack.getTag(), new WalkmanInventory().getStacks()));
+//                inv.markDirty();
+//            }
+//        }
+//        DefaultedList<ItemStack> stacks = DefaultedList.ofSize(9, ItemStack.EMPTY);
+//        Inventories.fromTag(stack.getTag(), stacks);
+//        return new WalkmanInventory(stacks);
+//    }
 
-    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Maybe clean up?
-        if (!inv.player.world.isClient || !stack.getTag().contains("Items")) {
-            if (!stack.hasTag() || !stack.getTag().contains("Items")) {
+    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) {
+        if (!stack.getOrCreateTag().contains("Items")) {
+            if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
+                int slot = getSelectedSlot(stack);
                 stack.setTag(Inventories.toTag(stack.getTag(), new WalkmanInventory().getStacks()));
+                CompoundTag tag = stack.getOrCreateTag();
+                tag.putInt("selected", slot);
+                stack.setTag(tag);
                 inv.markDirty();
             }
         }
         DefaultedList<ItemStack> stacks = DefaultedList.ofSize(9, ItemStack.EMPTY);
-        Inventories.fromTag(stack.getTag(), stacks);
+        Inventories.fromTag(stack.getOrCreateTag(), stacks);
         return new WalkmanInventory(stacks);
     }
 
-    public static int getSelectedSlot(ItemStack stack) { // TODO Maybe make better?
-        if (!stack.hasTag() || !stack.getTag().contains("selected")) {
-            stack.getOrCreateTag().putInt("selected", 0);
+    public static int getSelectedSlot(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains("selected")) {
+            return tag.getInt("selected");
+        } else {
+            tag.putInt("selected", 0);
+            stack.setTag(tag);
+            return 0;
         }
-        return stack.getTag().getInt("selected");
     }
 
     public static void setSelectedSlot(int slot, int invSlot) {
@@ -126,5 +120,20 @@ public class ItemWalkman extends Item implements ScreenHandlerFactory {
             }
         }
         return count;
+    }
+
+    @Override
+    public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
+        buf.writeInt(DiscHelper.getWalkman(player.inventory));
+    }
+
+    @Override
+    public Text getDisplayName() {
+        return new TranslatableText(getTranslationKey());
+    }
+
+    @Override
+    public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
+        return new WalkmanContainer(syncId, inv);
     }
 }
