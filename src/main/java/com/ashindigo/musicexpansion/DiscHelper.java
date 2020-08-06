@@ -86,6 +86,12 @@ public class DiscHelper {
         return slot;
     }
 
+    /**
+     * Check to see if the Walkman in the given inv has the specified event
+     * @param event The event to check
+     * @param inv The player inventory to check
+     * @return true if the walkman has a disc that can play the sound event, false if not
+     */
     public static boolean walkmanContainsSound(SoundEvent event, PlayerInventory inv) {
         ItemStack stack = inv.getStack(getWalkman(inv));
         WalkmanInventory walkmanInv = ItemWalkman.getInventory(stack, inv);
@@ -104,6 +110,11 @@ public class DiscHelper {
         return false;
     }
 
+    /**
+     * Gets the {@link SoundEvent} for a {@link CustomDiscItem} or a  {@link MusicDiscItem}
+     * @param stack The disc stack to get the event of
+     * @return The {@link SoundEvent} of the disc, or null if one doesn't exist
+     */
     public static SoundEvent getEvent(ItemStack stack) {
         if (stack.getItem() instanceof MusicDiscItem) {
             return ((MusicDiscItemAccessor) stack.getItem()).musicexpansion_getSound();
@@ -113,6 +124,11 @@ public class DiscHelper {
         return null;
     }
 
+    /**
+     * Get's the description for a {@link CustomDiscItem} or a  {@link MusicDiscItem}
+     * @param stack The disc stack to get the description of
+     * @return The {@link Text} description of the disc, typically the song name and author
+     */
     // Client only because of getDescription()
     public static Text getDesc(ItemStack stack) {
         if (stack.getItem() instanceof MusicDiscItem) {

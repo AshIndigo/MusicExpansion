@@ -16,6 +16,7 @@ import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -50,10 +51,13 @@ public class MusicExpansionClient implements ClientModInitializer {
             packetContext.getTaskQueue().execute(() -> {
                 if (mc.player != null) {
                         if (!disc.isEmpty()) {
-                            mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
-                            SoundInstance soundInstance = PositionedSoundInstance.record(DiscHelper.getEvent(disc), songPosition.getX(), songPosition.getY(), songPosition.getZ());
-                            ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
-                            mc.getSoundManager().play(soundInstance);
+                            SoundEvent event = DiscHelper.getEvent(disc);
+                            if (event != null) {
+                                mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
+                                SoundInstance soundInstance = PositionedSoundInstance.record(event, songPosition.getX(), songPosition.getY(), songPosition.getZ());
+                                ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
+                                mc.getSoundManager().play(soundInstance);
+                            }
                         }
                     }
                 });

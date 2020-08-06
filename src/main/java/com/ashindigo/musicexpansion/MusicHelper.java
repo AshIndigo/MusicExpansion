@@ -4,7 +4,6 @@ import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MusicDiscItem;
 
 /**
  * Helper methods for music or walkman related functions

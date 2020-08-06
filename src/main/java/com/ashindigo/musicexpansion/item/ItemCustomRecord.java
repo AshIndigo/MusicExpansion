@@ -20,21 +20,11 @@ import java.util.List;
 @Deprecated
 public class ItemCustomRecord extends MusicDiscItem {
 
-    private final SoundEvent event;
     private final Identifier id;
 
     public ItemCustomRecord(Identifier id, SoundEvent event) {
         super(15, event, new Settings().group(MusicExpansion.MUSIC_GROUP).maxCount(1).rarity(Rarity.RARE)); // Sorry redstoners
-        this.event = event;
         this.id = id;
-    }
-
-    public SoundEvent getEvent() {
-        return event;
-    }
-
-    public Identifier getId() {
-        return id;
     }
 
     @Override
@@ -47,7 +37,7 @@ public class ItemCustomRecord extends MusicDiscItem {
     @Override
     @Environment(EnvType.CLIENT)
     public MutableText getDescription() {
-        return new TranslatableText("item." + getId().toString().replace(":", ".") + ".desc").formatted(Formatting.GRAY);
+        return new TranslatableText("item." + id.toString().replace(":", ".") + ".desc").formatted(Formatting.GRAY);
     }
 
     // Sets the item name to Minecraft's "Music Disc"

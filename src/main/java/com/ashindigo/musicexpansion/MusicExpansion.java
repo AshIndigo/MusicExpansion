@@ -16,7 +16,6 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.sound.SoundEvent;
@@ -46,8 +45,6 @@ public class MusicExpansion implements ModInitializer {
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static ArrayList<Identifier> tracks = new ArrayList<>();
-    @Deprecated
-    public static ArrayList<ItemCustomRecord> recordsOld = new ArrayList<>();
 
     @Override
     public void onInitialize() {
@@ -69,6 +66,35 @@ public class MusicExpansion implements ModInitializer {
         Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMakerBlock, new Item.Settings().group(MUSIC_GROUP)));
     }
 
+    public static void registerServerPackets() {
+        ServerSidePacketRegistry.INSTANCE.register(CHANGESLOT_PACKET, (packetContext, attachedData) -> {
+            int slot = attachedData.readInt();
+            int invSlot = attachedData.readInt();
+            packetContext.getTaskQueue().execute(() -> {
+                if (packetContext.getPlayer().inventory.getStack(invSlot).hasTag()) {
+                    packetContext.getPlayer().inventory.getStack(invSlot).getOrCreateTag().putInt("selected", slot);
+                    packetContext.getPlayer().inventory.markDirty();
+                }
+            });
+        });
+        ServerSidePacketRegistry.INSTANCE.register(CREATE_RECORD, (packetContext, attachedData) -> {
+            BlockPos pos = attachedData.readBlockPos();
+            ItemStack disc = attachedData.readItemStack();
+            packetContext.getTaskQueue().execute(() -> {
+                if (packetContext.getPlayer().world.getBlockEntity(pos) != null && packetContext.getPlayer().world.getBlockEntity(pos) instanceof RecordMakerEntity) {
+                    RecordMakerEntity maker = (RecordMakerEntity) packetContext.getPlayer().world.getBlockEntity(pos);
+                    if (maker != null) {
+                        if (maker.getStack(1).isEmpty() && !maker.getStack(0).isEmpty() && maker.getStack(0).getItem() == blankRecord) {
+                            maker.setStack(1, disc.copy());
+                            maker.removeStack(0, 1);
+                            maker.markDirty();
+                        }
+                    }
+                }
+            });
+        });
+    }
+
     private void registerTracks() {
         try {
             tracks = RecordJsonParser.parse();
@@ -83,42 +109,11 @@ public class MusicExpansion implements ModInitializer {
 
     @Deprecated
     private static void registerOldRecords() {
-        try {
-            recordsOld = RecordJsonParser.parseOld();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (ItemCustomRecord record : recordsOld) {
-            Registry.register(Registry.ITEM, record.getId(), record);
+        for (Identifier track : tracks) {
+            Registry.register(Registry.ITEM, track, new ItemCustomRecord(track, new SoundEvent(track)));
         }
     }
 
-    public static void registerServerPackets() {
-        ServerSidePacketRegistry.INSTANCE.register(CHANGESLOT_PACKET, (packetContext, attachedData) -> {
-            int slot = attachedData.readInt();
-            int invSlot = attachedData.readInt();
-            packetContext.getTaskQueue().execute(() -> {
-                if (packetContext.getPlayer().inventory.getStack(invSlot).hasTag()) {
-                    packetContext.getPlayer().inventory.getStack(invSlot).getOrCreateTag().putInt("selected", slot); // Wait? What?
-                    packetContext.getPlayer().inventory.markDirty();
-                }
-            });
-        });
-        ServerSidePacketRegistry.INSTANCE.register(CREATE_RECORD, (packetContext, attachedData) -> {
-            BlockPos pos = attachedData.readBlockPos();
-            ItemStack disc = attachedData.readItemStack();
-            packetContext.getTaskQueue().execute(() -> {
-                if (packetContext.getPlayer().world.getBlockEntity(pos) != null && packetContext.getPlayer().world.getBlockEntity(pos) instanceof RecordMakerEntity) {
-                    RecordMakerEntity maker = (RecordMakerEntity) packetContext.getPlayer().world.getBlockEntity(pos);
-                    if (maker.getStack(1).isEmpty() && !maker.getStack(0).isEmpty() && maker.getStack(0).getItem() == blankRecord) {
-                        maker.setStack(1, disc.copy());
-                        maker.removeStack(0, 1);
-                        maker.markDirty();
-                    }
-                }
-            });
-        });
-    }
 
     public static ArrayList<ItemStack> getCraftableRecords(boolean all) {
         ArrayList<ItemStack> discs = new ArrayList<>();

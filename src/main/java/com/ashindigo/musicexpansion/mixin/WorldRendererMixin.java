@@ -1,12 +1,8 @@
 package com.ashindigo.musicexpansion.mixin;
 
-import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.item.Item;
-import net.minecraft.item.MusicDiscItem;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

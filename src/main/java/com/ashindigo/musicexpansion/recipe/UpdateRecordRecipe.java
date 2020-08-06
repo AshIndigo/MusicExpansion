@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.recipe;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -45,7 +46,7 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
             if (inv.getStack(i).getItem() instanceof ItemCustomRecord) {
                 ItemCustomRecord record = (ItemCustomRecord) inv.getStack(i).getItem();
                 CompoundTag tag = newRecord.getOrCreateTag();
-                tag.putString("track", record.getEvent().getId().toString());
+                tag.putString("track", ((MusicDiscItemAccessor)record).musicexpansion_getSound().getId().toString());
                 newRecord.setTag(tag);
             }
         }
