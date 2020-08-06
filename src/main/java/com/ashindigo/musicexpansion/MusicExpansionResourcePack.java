@@ -93,21 +93,13 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
         JsonArray overrides = new JsonArray();
         ArrayList<Identifier> tracks = MusicExpansion.tracks;
         for (int i = 0, tracksSize = tracks.size(); i < tracksSize; i++) {
-            //Identifier id = tracks.get(i);
             JsonObject root = new JsonObject();
             JsonObject value = new JsonObject();
-            value.addProperty(MusicExpansion.MODID + ":" + "custom_disc", i);
+            value.addProperty(MusicExpansion.MODID + ":" + "custom_disc", i * 1F);
             root.add("predicate", value);
             root.addProperty("model", identifier.getNamespace() + ":item/" + identifier.getPath() + "_" + i);
             overrides.add(root);
         }
-        // -1 Index
-        JsonObject root = new JsonObject();
-        JsonObject value = new JsonObject();
-        value.addProperty(MusicExpansion.MODID + ":" + "custom_disc", -1);
-        root.add("predicate", value);
-        root.addProperty("model", MusicExpansion.MODID + ":item/" + "blank_record");
-        overrides.add(root);
         file.add("overrides", overrides);
         return new ByteArrayInputStream(file.toString().getBytes());
     }

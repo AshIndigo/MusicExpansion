@@ -37,7 +37,9 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
-        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
+        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> {
+            return 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track")));
+        });
     }
 
     // client.player should never be null
