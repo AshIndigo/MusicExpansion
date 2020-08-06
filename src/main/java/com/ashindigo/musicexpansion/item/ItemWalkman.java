@@ -65,18 +65,6 @@ public class ItemWalkman extends Item implements ExtendedScreenHandlerFactory {
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
-//    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) { // TODO Maybe clean up?
-//        if (!inv.player.world.isClient || !stack.getTag().contains("Items")) {
-//            if (!stack.hasTag() || !stack.getTag().contains("Items")) {
-//                stack.setTag(Inventories.toTag(stack.getTag(), new WalkmanInventory().getStacks()));
-//                inv.markDirty();
-//            }
-//        }
-//        DefaultedList<ItemStack> stacks = DefaultedList.ofSize(9, ItemStack.EMPTY);
-//        Inventories.fromTag(stack.getTag(), stacks);
-//        return new WalkmanInventory(stacks);
-//    }
-
     public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
             if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
