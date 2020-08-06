@@ -2,7 +2,7 @@ package com.ashindigo.musicexpansion.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.RecordJsonParser;
-import com.ashindigo.musicexpansion.container.RecordMakerContainer;
+import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.widget.WTooltipDisc;
 import com.ashindigo.musicexpansion.widget.WVerticalScrollableContainerDiscs;
 import io.netty.buffer.Unpooled;
@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.Objects;
 
 // TODO Fix result slot whitelist
-public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
-    public RecordMakerScreen(RecordMakerContainer handler, PlayerInventory playerInventory, Text name) {
+public class RecordMakerScreen extends BaseHandledScreen<RecordMakerHandler> {
+    public RecordMakerScreen(RecordMakerHandler handler, PlayerInventory playerInventory, Text name) {
         super(handler, playerInventory, name);
         Size slotSize = Size.of(18, 18);
         WInterface mainInterface = getInterface();
@@ -32,8 +32,8 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerContainer> {
         panel.center();
         panel.setLabel(name); // 110
         WVerticalScrollableContainerDiscs scrollCont = mainInterface.createChild(WVerticalScrollableContainerDiscs::new, Position.of(panel).add(7, 14, 1), Size.of(198, 92));
-        panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
-        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), slotSize).setInventoryNumber(RecordMakerContainer.INVENTORY).setSlotNumber(1);//.accept(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()).toArray(new ItemStack[0])).setWhitelist(); // Result slot
+        panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
+        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), slotSize).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(1);//.accept(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()).toArray(new ItemStack[0])).setWhitelist(); // Result slot
         int c = 0;
         int y = 0;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));

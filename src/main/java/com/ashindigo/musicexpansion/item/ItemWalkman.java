@@ -3,7 +3,7 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
-import com.ashindigo.musicexpansion.container.WalkmanContainer;
+import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -134,6 +134,6 @@ public class ItemWalkman extends Item implements ExtendedScreenHandlerFactory {
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new WalkmanContainer(syncId, inv);
+        return new WalkmanHandler(syncId, inv);
     }
 }

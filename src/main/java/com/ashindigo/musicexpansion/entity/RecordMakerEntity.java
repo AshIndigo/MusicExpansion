@@ -1,7 +1,7 @@
 package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.container.RecordMakerContainer;
+import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -129,6 +129,6 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new RecordMakerContainer(syncId, inv, pos);
+        return new RecordMakerHandler(syncId, inv, pos);
     }
 }

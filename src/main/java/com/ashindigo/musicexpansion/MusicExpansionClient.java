@@ -8,6 +8,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -22,6 +24,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
 public class MusicExpansionClient implements ClientModInitializer {
@@ -42,6 +45,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_LEFT));
         walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_RIGHT_ALT));
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
+        RegistryEntryAddedCallback.event(Registry.SOUND_EVENT).register(MusicExpansionClient::remap);
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK, (packetContext, attachedData) -> {
@@ -63,6 +67,10 @@ public class MusicExpansionClient implements ClientModInitializer {
                 });
             });
         FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
+    }
+
+    private static void remap(int i, Identifier identifier, SoundEvent event) {
+        System.out.println(event);
     }
 
     // client.player should never be null

@@ -1,4 +1,4 @@
-package com.ashindigo.musicexpansion.container;
+package com.ashindigo.musicexpansion.handler;
 
 import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
@@ -13,11 +13,11 @@ import spinnery.common.handler.BaseScreenHandler;
 import spinnery.widget.WInterface;
 import spinnery.widget.WSlot;
 
-public class WalkmanContainer extends BaseScreenHandler {
+public class WalkmanHandler extends BaseScreenHandler {
 
     public static final int INVENTORY = 1;
 
-    public WalkmanContainer(int syncId, PlayerInventory inv) {
+    public WalkmanHandler(int syncId, PlayerInventory inv) {
         super(syncId, inv);
         WInterface mainInterface = getInterface();
         int slot = DiscHelper.getWalkman(inv);

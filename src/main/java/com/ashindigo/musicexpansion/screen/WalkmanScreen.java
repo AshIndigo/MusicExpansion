@@ -3,7 +3,7 @@ package com.ashindigo.musicexpansion.screen;
 import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
-import com.ashindigo.musicexpansion.container.WalkmanContainer;
+import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -15,9 +15,9 @@ import spinnery.widget.api.Size;
 
 import java.util.Optional;
 
-public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
+public class WalkmanScreen extends BaseHandledScreen<WalkmanHandler> {
 
-    public WalkmanScreen(WalkmanContainer container, PlayerInventory playerInv, Text title) {
+    public WalkmanScreen(WalkmanHandler container, PlayerInventory playerInv, Text title) {
         super(container, playerInv, title);
         WInterface mainInterface = getInterface();
         WPanel panel = mainInterface.createChild(WPanel::new).setSize(Size.of(180, 160));
@@ -27,7 +27,7 @@ public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
         // Selected song indicator
         panel.createChild(WStaticImage::new, Position.of(27, 16, 0), Size.of(18, 22)).setTexture(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png"));
         for (int i = 0; i < 9; i++) {
-            panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), Size.of(18, 18)).setInventoryNumber(WalkmanContainer.INVENTORY).setSlotNumber(i);
+            panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), Size.of(18, 18)).setInventoryNumber(WalkmanHandler.INVENTORY).setSlotNumber(i);
         }
         // Play button
         panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), Size.of(18, 18)).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> MusicHelper.playTrack(playerInv.getStack(DiscHelper.getWalkman(playerInv))));
@@ -58,7 +58,7 @@ public class WalkmanScreen extends BaseHandledScreen<WalkmanContainer> {
         Optional<WAbstractWidget> slot = panel.getWidgets().stream().filter(wAbstractWidget -> {
             if (wAbstractWidget instanceof WSlot) {
                 if (((WSlot) wAbstractWidget).getSlotNumber() == selectedSlot) {
-                    return ((WSlot) wAbstractWidget).getInventoryNumber() == WalkmanContainer.INVENTORY;
+                    return ((WSlot) wAbstractWidget).getInventoryNumber() == WalkmanHandler.INVENTORY;
                 }
             }
             return false;

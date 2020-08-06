@@ -1,8 +1,8 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
-import com.ashindigo.musicexpansion.container.RecordMakerContainer;
-import com.ashindigo.musicexpansion.container.WalkmanContainer;
+import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
+import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
@@ -36,8 +36,8 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static final Identifier PLAY_TRACK = new Identifier(MODID, "play_track");
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
-    public static ExtendedScreenHandlerType<WalkmanContainer> WALKMAN_TYPE;
-    public static ExtendedScreenHandlerType<RecordMakerContainer> RECORDMAKER_TYPE;
+    public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_TYPE;
+    public static ExtendedScreenHandlerType<RecordMakerHandler> RECORDMAKER_TYPE;
     public static Item blankRecord;
     public static ItemWalkman walkman;
     public static CustomDiscItem customDisc;
@@ -49,13 +49,13 @@ public class MusicExpansion implements ModInitializer {
     @Override
     public void onInitialize() {
         registerItemsBlocks();
-        WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanContainer(syncId, inv));
-        RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerContainer>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerContainer(syncId, inv, buf.readBlockPos()));
+        WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanHandler(syncId, inv));
+        RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerHandler(syncId, inv, buf.readBlockPos()));
         recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
         UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));
         registerServerPackets();
         registerTracks();
-        registerOldRecords();
+        //registerOldRecords();
     }
 
     private static void registerItemsBlocks() {

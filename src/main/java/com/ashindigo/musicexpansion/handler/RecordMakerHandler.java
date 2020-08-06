@@ -1,4 +1,4 @@
-package com.ashindigo.musicexpansion.container;
+package com.ashindigo.musicexpansion.handler;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.RecordJsonParser;
@@ -12,12 +12,12 @@ import spinnery.common.handler.BaseScreenHandler;
 import spinnery.widget.WInterface;
 import spinnery.widget.WSlot;
 
-public class    RecordMakerContainer extends BaseScreenHandler {
+public class RecordMakerHandler extends BaseScreenHandler {
 
     public final RecordMakerEntity recordMaker;
     public static final int INVENTORY = 1;
 
-    public RecordMakerContainer(int synchronizationID, PlayerInventory playerInventory, BlockPos pos) {
+    public RecordMakerHandler(int synchronizationID, PlayerInventory playerInventory, BlockPos pos) {
         super(synchronizationID, playerInventory);
         recordMaker = ((RecordMakerEntity) getWorld().getBlockEntity(pos));
         addInventory(INVENTORY, recordMaker);
