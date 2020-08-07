@@ -2,7 +2,7 @@ package com.ashindigo.musicexpansion.handler;
 
 import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
+import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -21,7 +21,7 @@ public class WalkmanHandler extends BaseScreenHandler {
         super(syncId, inv);
         WInterface mainInterface = getInterface();
         int slot = DiscHelper.getWalkman(inv);
-        WalkmanInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
+        Generic9DiscInventory walkmanInv = ItemWalkman.getInventory(inv.getStack(slot), inv);
         addInventory(INVENTORY, walkmanInv);
         walkmanInv.addListener(sender -> {
             if (!inv.player.world.isClient) {

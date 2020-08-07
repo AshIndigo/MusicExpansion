@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion;
 
-import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
+import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
 import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
@@ -94,7 +94,7 @@ public class DiscHelper {
      */
     public static boolean walkmanContainsSound(SoundEvent event, PlayerInventory inv) {
         ItemStack stack = inv.getStack(getWalkman(inv));
-        WalkmanInventory walkmanInv = ItemWalkman.getInventory(stack, inv);
+        Generic9DiscInventory walkmanInv = ItemWalkman.getInventory(stack, inv);
         for (int i = 0; i < walkmanInv.size(); i++) {
             ItemStack disc = walkmanInv.getStack(i);
             if (disc.getItem() instanceof CustomDiscItem) {

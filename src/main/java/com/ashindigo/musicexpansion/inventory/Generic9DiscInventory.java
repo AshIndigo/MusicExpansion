@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class WalkmanInventory implements Inventory, InventoryChangedListener {
+public class Generic9DiscInventory implements Inventory, InventoryChangedListener {
 
     final DefaultedList<ItemStack> stacks;
     final List<InventoryChangedListener> listeners = new ArrayList<>();
 
-    public WalkmanInventory() {
+    public Generic9DiscInventory() {
         this.stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
-    public WalkmanInventory(DefaultedList<ItemStack> stacks) {
+    public Generic9DiscInventory(DefaultedList<ItemStack> stacks) {
         this.stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
         for (int i = 0; i < stacks.size(); i++) {
             ItemStack stack = stacks.get(i);

@@ -8,8 +8,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -45,33 +43,46 @@ public class MusicExpansionClient implements ClientModInitializer {
         walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_LEFT));
         walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_RIGHT_ALT));
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
-        RegistryEntryAddedCallback.event(Registry.SOUND_EVENT).register(MusicExpansionClient::remap);
+        registerPackets();
+        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
+    }
+
+    private void registerPackets() {
+        // Get whether or not to allow all configs
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
+        // Play track
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK, (packetContext, attachedData) -> {
             ItemStack disc = attachedData.readItemStack();
             BlockPos songPosition = attachedData.readBlockPos();
             MinecraftClient mc = MinecraftClient.getInstance();
             packetContext.getTaskQueue().execute(() -> {
                 if (mc.player != null) {
-                        if (!disc.isEmpty()) {
-                            SoundEvent event = DiscHelper.getEvent(disc);
-                            if (event != null) {
-                                mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
-                                SoundInstance soundInstance = PositionedSoundInstance.record(event, songPosition.getX(), songPosition.getY(), songPosition.getZ());
-                                ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
-                                mc.getSoundManager().play(soundInstance);
-                            }
+                    if (!disc.isEmpty()) {
+                        SoundEvent event = DiscHelper.getEvent(disc);
+                        if (event != null) {
+                            mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
+                            SoundInstance soundInstance = PositionedSoundInstance.record(event, songPosition.getX(), songPosition.getY(), songPosition.getZ());
+                            ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
+                            mc.getSoundManager().play(soundInstance);
                         }
                     }
-                });
+                }
             });
-        FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
+        });
+        // Sync sound events
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.SYNC_EVENTS, (ctx, buf) -> {
+            int size = buf.readInt();
+            for (int i = 0; i < size; i++) {
+                Identifier id = buf.readIdentifier();
+                if (!Registry.SOUND_EVENT.containsId(id)) {
+                    Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
+                    MusicExpansion.tracks.add(id);
+                }
+            }
+        });
     }
 
-    private static void remap(int i, Identifier identifier, SoundEvent event) {
-        System.out.println(event);
-    }
 
     // client.player should never be null
     private static void tick(MinecraftClient client) {

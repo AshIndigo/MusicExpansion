@@ -1,9 +1,9 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
+import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
-import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.ItemCustomRecord;
 import com.ashindigo.musicexpansion.item.ItemWalkman;
@@ -15,7 +15,10 @@ import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.sound.SoundEvent;
@@ -35,6 +38,7 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static final Identifier PLAY_TRACK = new Identifier(MODID, "play_track");
+    public static final Identifier SYNC_EVENTS = new Identifier(MODID, "sync_events");
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerHandler> RECORDMAKER_TYPE;
@@ -45,6 +49,7 @@ public class MusicExpansion implements ModInitializer {
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static ArrayList<Identifier> tracks = new ArrayList<>();
+    //LogManager.getLogger(MODID);
 
     @Override
     public void onInitialize() {

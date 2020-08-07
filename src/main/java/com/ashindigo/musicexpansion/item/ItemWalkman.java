@@ -4,7 +4,7 @@ import com.ashindigo.musicexpansion.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.MusicHelper;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
-import com.ashindigo.musicexpansion.inventory.WalkmanInventory;
+import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -65,11 +65,11 @@ public class ItemWalkman extends Item implements ExtendedScreenHandlerFactory {
         return TypedActionResult.pass(player.getStackInHand(hand));
     }
 
-    public static WalkmanInventory getInventory(ItemStack stack, PlayerInventory inv) {
+    public static Generic9DiscInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
             if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
                 int slot = getSelectedSlot(stack);
-                stack.setTag(Inventories.toTag(stack.getTag(), new WalkmanInventory().getStacks()));
+                stack.setTag(Inventories.toTag(stack.getTag(), new Generic9DiscInventory().getStacks()));
                 CompoundTag tag = stack.getOrCreateTag();
                 tag.putInt("selected", slot);
                 stack.setTag(tag);
@@ -78,7 +78,7 @@ public class ItemWalkman extends Item implements ExtendedScreenHandlerFactory {
         }
         DefaultedList<ItemStack> stacks = DefaultedList.ofSize(9, ItemStack.EMPTY);
         Inventories.fromTag(stack.getOrCreateTag(), stacks);
-        return new WalkmanInventory(stacks);
+        return new Generic9DiscInventory(stacks);
     }
 
     public static int getSelectedSlot(ItemStack stack) {
