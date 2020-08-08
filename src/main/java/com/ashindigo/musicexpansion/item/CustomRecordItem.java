@@ -18,11 +18,11 @@ import net.minecraft.world.World;
 import java.util.List;
 
 @Deprecated
-public class ItemCustomRecord extends MusicDiscItem {
+public class CustomRecordItem extends MusicDiscItem {
 
     private final Identifier id;
 
-    public ItemCustomRecord(Identifier id, SoundEvent event) {
+    public CustomRecordItem(Identifier id, SoundEvent event) {
         super(15, event, new Settings().group(MusicExpansion.MUSIC_GROUP).maxCount(1).rarity(Rarity.RARE)); // Sorry redstoners
         this.id = id;
     }

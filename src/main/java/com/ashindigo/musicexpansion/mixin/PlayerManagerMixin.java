@@ -3,7 +3,6 @@ package com.ashindigo.musicexpansion.mixin;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -24,7 +23,7 @@ public class PlayerManagerMixin {
         for (Identifier id : MusicExpansion.tracks) {
             buf.writeIdentifier(id); // All entries
         }
-        Packet<?> packet = ServerSidePacketRegistry.INSTANCE.toPacket(MusicExpansion.SYNC_EVENTS, buf);;
+        Packet<?> packet = ServerSidePacketRegistry.INSTANCE.toPacket(MusicExpansion.SYNC_EVENTS, buf);
         if (packet != null) {
             lvt2.networkHandler.sendPacket(packet);
         }

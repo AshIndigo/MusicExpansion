@@ -1,7 +1,7 @@
 package com.ashindigo.musicexpansion.client;
 
-import com.ashindigo.musicexpansion.DiscHelper;
-import com.ashindigo.musicexpansion.item.ItemWalkman;
+import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
+import com.ashindigo.musicexpansion.item.WalkmanItem;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -23,11 +23,11 @@ public class WalkmanMovingSound extends MovingSoundInstance {
 
     @Override
     public void tick() { // https://stackoverflow.com/questions/57277755/music-discs-have-do-not-get-quieter-by-distance-in-my-minecraft-1-14-4-mod
-        if (ItemWalkman.getWalkmansInInv(player.inventory) == 0) {
+        if (DiscHolderHelper.getDiscHoldersInInv(WalkmanItem.class, player.inventory) == 0) {
             volume = 0.0F;
             return;
         }
-        if (!this.player.isAlive() || !DiscHelper.walkmanContainsSound(soundEvent, player.inventory)) {
+        if (!this.player.isAlive() || !DiscHolderHelper.discHolderContainsSound(WalkmanItem.class, soundEvent, player.inventory)) {
             setDone();
         } else {
             this.x = (float) this.player.getX();

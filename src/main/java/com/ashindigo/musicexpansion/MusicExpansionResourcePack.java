@@ -7,13 +7,12 @@ import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.logging.log4j.Level;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MusicExpansionResourcePack extends AbstractFileResourcePack {
 
@@ -28,9 +27,9 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
     protected InputStream openFile(String name) throws FileNotFoundException {
         String[] names = name.split("/");
         if (!fileDir.exists()) {
-           boolean success = fileDir.mkdirs();
-           if (!success) {
-               Logger.getLogger(MusicExpansion.MODID).log(Level.WARNING, "Unable to create necessary directory(s)! Please check file permissions");
+            boolean success = fileDir.mkdirs();
+            if (!success) {
+                MusicExpansion.logger.log(Level.WARN, "Unable to create necessary directory(s)! Please check file permissions");
             }
         }
         if (name.equals("pack.mcmeta")) {
@@ -41,7 +40,7 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
             return getSoundsJson();
         } else if (names[1].equals(MusicExpansion.MODID_EXTERNAL) && (names[2].equals("textures") || names[2].equals("lang") || name.endsWith(".ogg"))) {
             if (!new File(fileDir, "/" + names[names.length - 1]).exists()) {
-                Logger.getLogger(MusicExpansion.MODID).log(Level.WARNING, "File not found! Missing File: " + new File(fileDir, "/" + names[names.length - 1]).toString());
+                MusicExpansion.logger.log(Level.WARN, "File not found! Missing File: " + new File(fileDir, "/" + names[names.length - 1]).toString());
             }
             return new FileInputStream(new File(fileDir, "/" + names[names.length - 1]));
         } else if (names[2].equals("models")) {

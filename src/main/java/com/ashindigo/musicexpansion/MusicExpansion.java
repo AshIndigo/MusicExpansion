@@ -4,9 +4,11 @@ import com.ashindigo.musicexpansion.block.RecordMakerBlock;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
+import com.ashindigo.musicexpansion.handler.BoomboxHandler;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
-import com.ashindigo.musicexpansion.item.ItemCustomRecord;
-import com.ashindigo.musicexpansion.item.ItemWalkman;
+import com.ashindigo.musicexpansion.item.CustomRecordItem;
+import com.ashindigo.musicexpansion.item.WalkmanItem;
 import com.ashindigo.musicexpansion.recipe.UpdateRecordRecipe;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -26,6 +28,8 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,23 +43,25 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static final Identifier PLAY_TRACK = new Identifier(MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MODID, "sync_events");
+    public static final Logger logger = LogManager.getLogger(MODID);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_TYPE;
-    public static ExtendedScreenHandlerType<RecordMakerHandler> RECORDMAKER_TYPE;
+    public static ExtendedScreenHandlerType<BoomboxHandler> BOOMBOX_TYPE;
+    public static ExtendedScreenHandlerType<RecordMakerHandler> RECORD_MAKER_TYPE;
     public static Item blankRecord;
-    public static ItemWalkman walkman;
+    public static WalkmanItem walkman;
     public static CustomDiscItem customDisc;
     public static RecordMakerBlock recordMakerBlock;
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static ArrayList<Identifier> tracks = new ArrayList<>();
-    //LogManager.getLogger(MODID);
 
     @Override
     public void onInitialize() {
         registerItemsBlocks();
         WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanHandler(syncId, inv));
-        RECORDMAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerHandler(syncId, inv, buf.readBlockPos()));
+        BOOMBOX_TYPE = (ExtendedScreenHandlerType<BoomboxHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "boombox"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new BoomboxHandler(syncId, inv));
+        RECORD_MAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerHandler(syncId, inv, buf.readBlockPos()));
         recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
         UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));
         registerServerPackets();
@@ -64,7 +70,7 @@ public class MusicExpansion implements ModInitializer {
     }
 
     private static void registerItemsBlocks() {
-        walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new ItemWalkman());
+        walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new WalkmanItem());
         blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().group(MUSIC_GROUP)));
         customDisc = Registry.register(Registry.ITEM, new Identifier(MODID, "custom_disc"), new CustomDiscItem());
         recordMakerBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());
@@ -115,7 +121,7 @@ public class MusicExpansion implements ModInitializer {
     @Deprecated
     private static void registerOldRecords() {
         for (Identifier track : tracks) {
-            Registry.register(Registry.ITEM, track, new ItemCustomRecord(track, new SoundEvent(track)));
+            Registry.register(Registry.ITEM, track, new CustomRecordItem(track, new SoundEvent(track)));
         }
     }
 

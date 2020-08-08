@@ -1,10 +1,8 @@
-package com.ashindigo.musicexpansion;
+package com.ashindigo.musicexpansion.helpers;
 
-import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
+import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
-import com.ashindigo.musicexpansion.item.ItemWalkman;
 import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
@@ -17,7 +15,6 @@ import net.minecraft.util.registry.Registry;
 
 /**
  * Various helpers related to the new NBT discs, that I would rather not copy and paste repeatedly/retype constantly
- * Also has minor Walkman related helpers
  */
 public class DiscHelper {
 
@@ -71,46 +68,6 @@ public class DiscHelper {
     }
 
     /**
-     * Finds the last walkman in a players inventory
-     * @param inventory The {@link PlayerInventory} to search
-     * @return The slot number of the walkman if found, otherwise -1
-     */
-    public static int getWalkman(PlayerInventory inventory) {
-        int slot = -1;
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
-            if (stack.getItem() instanceof ItemWalkman) {
-                slot = i;
-            }
-        }
-        return slot;
-    }
-
-    /**
-     * Check to see if the Walkman in the given inv has the specified event
-     * @param event The event to check
-     * @param inv The player inventory to check
-     * @return true if the walkman has a disc that can play the sound event, false if not
-     */
-    public static boolean walkmanContainsSound(SoundEvent event, PlayerInventory inv) {
-        ItemStack stack = inv.getStack(getWalkman(inv));
-        Generic9DiscInventory walkmanInv = ItemWalkman.getInventory(stack, inv);
-        for (int i = 0; i < walkmanInv.size(); i++) {
-            ItemStack disc = walkmanInv.getStack(i);
-            if (disc.getItem() instanceof CustomDiscItem) {
-                if (getSetTrack(disc).getId().equals(event.getId())) {
-                    return true;
-                }
-            } else if (disc.getItem() instanceof MusicDiscItem) {
-                if (((MusicDiscItemAccessor) disc.getItem()).musicexpansion_getSound().getId().equals(event.getId())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
      * Gets the {@link SoundEvent} for a {@link CustomDiscItem} or a  {@link MusicDiscItem}
      * @param stack The disc stack to get the event of
      * @return The {@link SoundEvent} of the disc, or null if one doesn't exist
@@ -138,4 +95,5 @@ public class DiscHelper {
         }
         return new LiteralText("");
     }
+
 }

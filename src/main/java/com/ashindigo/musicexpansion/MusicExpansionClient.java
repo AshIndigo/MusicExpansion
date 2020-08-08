@@ -1,7 +1,13 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
-import com.ashindigo.musicexpansion.item.ItemWalkman;
+import com.ashindigo.musicexpansion.handler.BoomboxHandler;
+import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
+import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
+import com.ashindigo.musicexpansion.helpers.MusicHelper;
+import com.ashindigo.musicexpansion.item.WalkmanItem;
+import com.ashindigo.musicexpansion.screen.BoomboxScreen;
 import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
 import net.fabricmc.api.ClientModInitializer;
@@ -11,10 +17,12 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.LiteralText;
@@ -35,8 +43,9 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
-        ScreenRegistry.register(MusicExpansion.RECORDMAKER_TYPE, RecordMakerScreen::new);
+        ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, (WalkmanHandler handler, PlayerInventory playerInv, Text title) -> new WalkmanScreen(handler, playerInv, title, MusicHelper::playWalkmanTrack));
+        ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, (BoomboxHandler handler, PlayerInventory playerInv, Text title) -> new BoomboxScreen(handler, playerInv, title, MusicHelper::playBoomboxTrack));
+        ScreenRegistry.register(MusicExpansion.RECORD_MAKER_TYPE, RecordMakerScreen::new);
         walkmanPlay = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanplay", GLFW.GLFW_KEY_UP));
         walkmanStop = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanstop", GLFW.GLFW_KEY_DOWN));
         walkmanNext = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmannext", GLFW.GLFW_KEY_RIGHT));
@@ -105,19 +114,19 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanPlayDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
             if (iSlot > -1) {
-                MusicHelper.playTrack(client.player.inventory.getStack(iSlot));
+                MusicHelper.playWalkmanTrack(client.player.inventory.getStack(iSlot));
             }
         }
     }
 
     private static void randomDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
             if (iSlot > -1) {
                 int slot = client.player.getRandom().nextInt(9);
-                ItemWalkman.setSelectedSlot(slot, iSlot);
+                DiscHolderHelper.setSelectedSlot(slot, iSlot);
                 sendCurrentDiscMessage(client, iSlot, slot);
             }
         }
@@ -125,10 +134,10 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanPrevDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
             if (iSlot > -1) {
-                int slot = Math.max(0, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
-                ItemWalkman.setSelectedSlot(slot, iSlot);
+                int slot = Math.max(0, DiscHolderHelper.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
+                DiscHolderHelper.setSelectedSlot(slot, iSlot);
                 sendCurrentDiscMessage(client, iSlot, slot);
             }
         }
@@ -136,10 +145,10 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanNextDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHelper.getWalkman(client.player.inventory);
+            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
             if (iSlot > -1) {
-                int slot = Math.min(8, ItemWalkman.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
-                ItemWalkman.setSelectedSlot(slot, iSlot);
+                int slot = Math.min(8, DiscHolderHelper.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
+                DiscHolderHelper.setSelectedSlot(slot, iSlot);
                 sendCurrentDiscMessage(client, iSlot, slot);
             }
         }
@@ -147,7 +156,7 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void sendCurrentDiscMessage(MinecraftClient client, int iSlot, int slot) {
         if (client.player != null) {
-            Text desc = DiscHelper.getDesc(MusicHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot));
+            Text desc = DiscHelper.getDesc(DiscHolderHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot));
             if (!desc.equals(new LiteralText(""))) {
                 client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(desc), false);
             } else {

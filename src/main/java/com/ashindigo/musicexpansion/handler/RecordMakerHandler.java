@@ -32,6 +32,6 @@ public class RecordMakerHandler extends BaseScreenHandler {
 
     @Override
     public ScreenHandlerType<?> getType() {
-        return MusicExpansion.RECORDMAKER_TYPE;
+        return MusicExpansion.RECORD_MAKER_TYPE;
     }
 }

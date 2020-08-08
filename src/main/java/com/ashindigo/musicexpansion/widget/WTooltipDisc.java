@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion.widget;
 
-import com.ashindigo.musicexpansion.DiscHelper;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;

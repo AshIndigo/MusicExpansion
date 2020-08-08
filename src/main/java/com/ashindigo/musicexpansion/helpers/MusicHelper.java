@@ -1,24 +1,25 @@
-package com.ashindigo.musicexpansion;
+package com.ashindigo.musicexpansion.helpers;
 
 import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
-import com.ashindigo.musicexpansion.item.ItemWalkman;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.item.ItemStack;
 
 /**
  * Helper methods for music or walkman related functions
  * Client only.
  */
+// TODO Stop code reuse!
 public class MusicHelper {
 
     static final MinecraftClient mc = MinecraftClient.getInstance();
     static WalkmanMovingSound sound;
     static boolean isPlaying;
 
-    public static void playTrack(ItemStack walkman) {
+    public static void playWalkmanTrack(ItemStack walkman) {
         if (mc.player != null) {
             if (!isPlaying || !mc.getSoundManager().isPlaying(sound)) {
-                ItemStack disc = getDiscInSlot(walkman, ItemWalkman.getSelectedSlot(walkman));
+                ItemStack disc = DiscHolderHelper.getDiscInSlot(walkman, DiscHolderHelper.getSelectedSlot(walkman));
                 if (!disc.isEmpty()) {
                     mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
                     sound = new WalkmanMovingSound(DiscHelper.getEvent(disc), mc.player);
@@ -29,19 +30,17 @@ public class MusicHelper {
         }
     }
 
-
-
+    // TODO Rewrite
     public static void stopTrack() {
         mc.getSoundManager().stop(sound);
         isPlaying = false;
     }
 
+    public static void playBoomboxTrack(ItemStack stack) {
 
-    public static ItemStack getDiscInSlot(ItemStack stack, int slot) {
-        ItemStack discStack = ItemStack.EMPTY;
-        if (mc.player != null && stack.getTag() != null && stack.getTag().contains("Items")) {
-            discStack = ItemWalkman.getInventory(stack, mc.player.inventory).getStack(slot);
-        }
-        return discStack;
+    }
+
+    public static void playTrack(ItemStack stack, SoundInstance instance) {
+
     }
 }

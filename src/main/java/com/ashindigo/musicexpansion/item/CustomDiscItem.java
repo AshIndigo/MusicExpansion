@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion.item;
 
-import com.ashindigo.musicexpansion.DiscHelper;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -49,6 +49,7 @@ public class CustomDiscItem extends Item {
         return "item.minecraft.music_disc_far";
     }
 
+    // Jukebox compat
     public ActionResult useOnBlock(ItemUsageContext context) {
         World world = context.getWorld();
         BlockPos blockPos = context.getBlockPos();

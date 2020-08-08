@@ -2,7 +2,7 @@ package com.ashindigo.musicexpansion.recipe;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
-import com.ashindigo.musicexpansion.item.ItemCustomRecord;
+import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +26,7 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
         for (int i = 0; i < inv.size(); ++i) {
             ItemStack itemStack2 = inv.getStack(i);
             if (!itemStack2.isEmpty()) {
-                if (itemStack2.getItem() instanceof ItemCustomRecord) {
+                if (itemStack2.getItem() instanceof CustomRecordItem) {
                     if (!itemStack.isEmpty()) {
                         return false;
                     }
@@ -43,8 +43,8 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
     public ItemStack craft(CraftingInventory inv) {
         ItemStack newRecord = new ItemStack(MusicExpansion.customDisc);
         for (int i = 0; i < inv.size(); i++) {
-            if (inv.getStack(i).getItem() instanceof ItemCustomRecord) {
-                ItemCustomRecord record = (ItemCustomRecord) inv.getStack(i).getItem();
+            if (inv.getStack(i).getItem() instanceof CustomRecordItem) {
+                CustomRecordItem record = (CustomRecordItem) inv.getStack(i).getItem();
                 CompoundTag tag = newRecord.getOrCreateTag();
                 tag.putString("track", ((MusicDiscItemAccessor)record).musicexpansion_getSound().getId().toString());
                 newRecord.setTag(tag);
