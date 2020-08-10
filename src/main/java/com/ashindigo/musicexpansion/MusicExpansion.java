@@ -41,7 +41,7 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
     public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
-    public static final Identifier PLAY_TRACK = new Identifier(MODID, "play_track");
+    public static final Identifier PLAY_JUKEBOX_TRACK = new Identifier(MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MODID, "sync_events");
     public static final Logger logger = LogManager.getLogger(MODID);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
@@ -59,8 +59,8 @@ public class MusicExpansion implements ModInitializer {
     @Override
     public void onInitialize() {
         registerItemsBlocks();
-        WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new WalkmanHandler(syncId, inv));
-        BOOMBOX_TYPE = (ExtendedScreenHandlerType<BoomboxHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "boombox"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new BoomboxHandler(syncId, inv));
+        WALKMAN_TYPE = (ExtendedScreenHandlerType<WalkmanHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "walkman"), (syncId1, inv1, buf) -> new WalkmanHandler(syncId1, inv1, buf.readInt()));
+        BOOMBOX_TYPE = (ExtendedScreenHandlerType<BoomboxHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "boombox"), (syncId1, inv1, buf) -> new BoomboxHandler(syncId1, inv1, buf.readInt()));
         RECORD_MAKER_TYPE = (ExtendedScreenHandlerType<RecordMakerHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "recordmaker"), (int syncId, PlayerInventory inv, PacketByteBuf buf) -> new RecordMakerHandler(syncId, inv, buf.readBlockPos()));
         recordMakerEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "recordmaker"), BlockEntityType.Builder.create(RecordMakerEntity::new, recordMakerBlock).build(null));
         UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));

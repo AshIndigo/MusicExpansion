@@ -10,13 +10,13 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.UUID;
 
-public class WalkmanMovingSound extends MovingSoundInstance {
+public class BoomboxMovingSound extends MovingSoundInstance {
 
     private final SoundEvent soundEvent;
     private final PlayerEntity player;
     private final UUID uuid;
 
-    public WalkmanMovingSound(SoundEvent soundEvent, PlayerEntity player, UUID uuid) {
+    public BoomboxMovingSound(SoundEvent soundEvent, PlayerEntity player, UUID uuid) {
         super(soundEvent, SoundCategory.RECORDS);
         this.soundEvent = soundEvent;
         this.player = player;
@@ -25,6 +25,7 @@ public class WalkmanMovingSound extends MovingSoundInstance {
         this.repeatDelay = 0;
     }
 
+    // TODO Write
     @Override
     public void tick() { // https://stackoverflow.com/questions/57277755/music-discs-have-do-not-get-quieter-by-distance-in-my-minecraft-1-14-4-mod
         if (!DiscHolderHelper.containsUUID(uuid, player.inventory)) {

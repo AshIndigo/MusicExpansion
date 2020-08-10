@@ -7,8 +7,8 @@ import net.minecraft.screen.ScreenHandlerType;
 
 public class WalkmanHandler extends Abstract9DiscHolderHandler {
 
-    public WalkmanHandler(int syncId, PlayerInventory inv) {
-        super(syncId, inv, WalkmanItem.class);
+    public WalkmanHandler(int syncId, PlayerInventory inv, int hand) {
+        super(syncId, inv, hand, WalkmanItem.class);
     }
 
     @Override

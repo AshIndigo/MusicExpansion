@@ -16,6 +16,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.collection.DefaultedList;
 
+import java.util.UUID;
+
 public class DiscHolderHelper {
     public static Generic9DiscInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
@@ -56,25 +58,26 @@ public class DiscHolderHelper {
      * @param inventory The {@link PlayerInventory} to search
      * @return The slot number of the walkman if found, otherwise -1
      */
-    public static int getDiscHolderSlot(Class<? extends Abstract9DiscItem> clazz, PlayerInventory inventory) {
+    public static int getActiveDiscHolderSlot(PlayerInventory inventory) {
         int slot = -1;
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack stack = inventory.getStack(i);
-            if (stack.getItem().getClass().isAssignableFrom(clazz)) {
+            if (isActive(stack)) {
                 slot = i;
             }
         }
         return slot;
     }
 
+
     /**
-     * Check to see if the Walkman in the given inv has the specified event
+     * Check to see if the disc holder in the given inv has the specified event
      * @param event The event to check
      * @param inv The player inventory to check
      * @return true if the walkman has a disc that can play the sound event, false if not
      */
     public static boolean discHolderContainsSound(Class<? extends Abstract9DiscItem> clazz, SoundEvent event, PlayerInventory inv) {
-        ItemStack stack = inv.getStack(getDiscHolderSlot(clazz, inv));
+        ItemStack stack = inv.getStack(getActiveDiscHolderSlot(inv));
         Generic9DiscInventory walkmanInv = getInventory(stack, inv);
         for (int i = 0; i < walkmanInv.size(); i++) {
             ItemStack disc = walkmanInv.getStack(i);
@@ -91,22 +94,63 @@ public class DiscHolderHelper {
         return false;
     }
 
-    public static int getDiscHoldersInInv(Class<? extends Abstract9DiscItem> clazz, PlayerInventory inventory) {
-        int count = 0;
-        for (int i = 0; i < inventory.size(); i++) {
-            ItemStack stack = inventory.getStack(i);
-            if (stack.getItem().getClass().isAssignableFrom(clazz)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
     public static ItemStack getDiscInSlot(ItemStack stack, int slot) {
         ItemStack discStack = ItemStack.EMPTY;
         if (MusicHelper.mc.player != null && stack.getTag() != null && stack.getTag().contains("Items")) {
             discStack = getInventory(stack, MusicHelper.mc.player.inventory).getStack(slot);
         }
         return discStack;
+    }
+
+    public static UUID getUUID(ItemStack stack) {
+        UUID uuid = null;
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains("uuid")) {
+            uuid = UUID.fromString(tag.getString("uuid"));
+        }
+        return uuid;
+    }
+
+    public static void setupInitialTags(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!tag.contains("uuid")) {
+            tag.putString("uuid", UUID.randomUUID().toString());
+        }
+        if (!tag.contains("selected")) {
+            tag.putInt("selected", 0);
+        }
+        if (!tag.contains("active")) {
+            tag.putBoolean("active", false);
+        }
+        if (!tag.contains("Items")) {
+            CompoundTag invTag = Inventories.toTag(tag, new Generic9DiscInventory().getStacks());
+            tag.put("Items", invTag.getList("Items", 10));
+        }
+        stack.setTag(tag);
+    }
+
+    // TODO Will offhand be an issue?
+    public static boolean containsUUID(UUID uuid, PlayerInventory inventory) {
+        for (ItemStack stack : inventory.main) {
+            if (getUUID(stack).equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void toggleActive(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putBoolean("active", !tag.getBoolean("active"));
+        stack.setTag(tag);
+    }
+
+    public static boolean isActive(ItemStack stack) {
+        boolean active = false;
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains("active")) {
+            active = tag.getBoolean("active");
+        }
+        return active;
     }
 }

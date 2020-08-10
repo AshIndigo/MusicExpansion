@@ -62,7 +62,7 @@ public class CustomDiscItem extends Item {
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeItemStack(itemStack);
                 passedData.writeBlockPos(blockPos);
-                watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.PLAY_TRACK, passedData));
+                watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.PLAY_JUKEBOX_TRACK, passedData));
                 itemStack.decrement(1);
                 PlayerEntity playerEntity = context.getPlayer();
                 if (playerEntity != null) {

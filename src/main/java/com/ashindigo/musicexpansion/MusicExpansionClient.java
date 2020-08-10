@@ -6,7 +6,6 @@ import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
-import com.ashindigo.musicexpansion.item.WalkmanItem;
 import com.ashindigo.musicexpansion.screen.BoomboxScreen;
 import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
@@ -17,7 +16,6 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
@@ -61,7 +59,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
         // Play track
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK, (packetContext, attachedData) -> {
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_JUKEBOX_TRACK, (packetContext, attachedData) -> {
             ItemStack disc = attachedData.readItemStack();
             BlockPos songPosition = attachedData.readBlockPos();
             MinecraftClient mc = MinecraftClient.getInstance();
@@ -99,7 +97,7 @@ public class MusicExpansionClient implements ClientModInitializer {
             walkmanPlayDisc(client);
         }
         if (walkmanStop.wasPressed()) {
-            MusicHelper.stopTrack();
+            walkmanStopDisc(client);
         }
         if (walkmanNext.wasPressed()) {
             walkmanNextDisc(client);
@@ -114,16 +112,26 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanPlayDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
+            int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 MusicHelper.playWalkmanTrack(client.player.inventory.getStack(iSlot));
             }
         }
     }
 
+    private static void walkmanStopDisc(MinecraftClient client) {
+        if (client.player != null) {
+            int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
+            if (iSlot > -1) {
+                MusicHelper.stopTrack(client.player.inventory.getStack(iSlot));
+            }
+        }
+    }
+
+
     private static void randomDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
+            int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 int slot = client.player.getRandom().nextInt(9);
                 DiscHolderHelper.setSelectedSlot(slot, iSlot);
@@ -134,7 +142,7 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanPrevDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
+            int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 int slot = Math.max(0, DiscHolderHelper.getSelectedSlot(client.player.inventory.getStack(iSlot)) - 1);
                 DiscHolderHelper.setSelectedSlot(slot, iSlot);
@@ -145,7 +153,7 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     private static void walkmanNextDisc(MinecraftClient client) {
         if (client.player != null) {
-            int iSlot = DiscHolderHelper.getDiscHolderSlot(WalkmanItem.class, client.player.inventory);
+            int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 int slot = Math.min(8, DiscHolderHelper.getSelectedSlot(client.player.inventory.getStack(iSlot)) + 1);
                 DiscHolderHelper.setSelectedSlot(slot, iSlot);
