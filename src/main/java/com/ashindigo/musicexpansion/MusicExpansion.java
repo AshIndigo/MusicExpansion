@@ -6,6 +6,7 @@ import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.handler.BoomboxHandler;
+import com.ashindigo.musicexpansion.item.BoomboxItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import com.ashindigo.musicexpansion.item.WalkmanItem;
@@ -50,6 +51,7 @@ public class MusicExpansion implements ModInitializer {
     public static ExtendedScreenHandlerType<RecordMakerHandler> RECORD_MAKER_TYPE;
     public static Item blankRecord;
     public static WalkmanItem walkman;
+    public static BoomboxItem boombox;
     public static CustomDiscItem customDisc;
     public static RecordMakerBlock recordMakerBlock;
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
@@ -71,6 +73,7 @@ public class MusicExpansion implements ModInitializer {
 
     private static void registerItemsBlocks() {
         walkman = Registry.register(Registry.ITEM, new Identifier(MODID, "walkman"), new WalkmanItem());
+        boombox = Registry.register(Registry.ITEM, new Identifier(MODID, "boombox"), new BoomboxItem());
         blankRecord = Registry.register(Registry.ITEM, new Identifier(MODID, "blank_record"), new Item(new Item.Settings().group(MUSIC_GROUP)));
         customDisc = Registry.register(Registry.ITEM, new Identifier(MODID, "custom_disc"), new CustomDiscItem());
         recordMakerBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "recordmaker"), new RecordMakerBlock());

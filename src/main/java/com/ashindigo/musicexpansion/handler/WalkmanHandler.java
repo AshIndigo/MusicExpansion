@@ -1,14 +1,13 @@
 package com.ashindigo.musicexpansion.handler;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.item.WalkmanItem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandlerType;
 
 public class WalkmanHandler extends Abstract9DiscHolderHandler {
 
     public WalkmanHandler(int syncId, PlayerInventory inv, int hand) {
-        super(syncId, inv, hand, WalkmanItem.class);
+        super(syncId, inv, hand);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class DiscHelper {
         } else if (stack.getItem() instanceof CustomDiscItem) {
             return getSetTrack(stack).orElse(DiscHolderHelper.MISSING_EVENT);
         }
-        return null;
+        return DiscHolderHelper.MISSING_EVENT;
     }
 
     /**
