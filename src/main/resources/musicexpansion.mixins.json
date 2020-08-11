@@ -5,11 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MusicDiscItemMixin",
-    "PlayerManagerMixin",
-    "WorldRendererMixin"
+    "PlayerManagerMixin"
   ],
   "client": [
-    "ReloadableResourceManagerImplMixin"
+    "ReloadableResourceManagerImplMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
