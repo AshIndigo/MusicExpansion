@@ -13,6 +13,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.Optional;
+
 /**
  * Various helpers related to the new NBT discs, that I would rather not copy and paste repeatedly/retype constantly
  */
@@ -24,8 +26,8 @@ public class DiscHelper {
      * @param stack The disc in question, needs tag data
      * @return The {@link SoundEvent} this disc is linked to, otherwise null if it doesn't exist
      */
-    public static SoundEvent getSetTrack(ItemStack stack) {
-        return Registry.SOUND_EVENT.get(getTrackID(stack));
+    public static Optional<SoundEvent> getSetTrack(ItemStack stack) {
+        return Registry.SOUND_EVENT.getOrEmpty(getTrackID(stack));
     }
 
     /**
@@ -39,7 +41,7 @@ public class DiscHelper {
         if (tag.contains("track")) {
             return Identifier.tryParse(tag.getString("track"));
         } else {
-            return new Identifier(MusicExpansion.MODID, "missing");
+            return DiscHolderHelper.MISSING_EVENT.getId();
         }
     }
 
@@ -76,7 +78,7 @@ public class DiscHelper {
         if (stack.getItem() instanceof MusicDiscItem) {
             return ((MusicDiscItemAccessor) stack.getItem()).musicexpansion_getSound();
         } else if (stack.getItem() instanceof CustomDiscItem) {
-            return getSetTrack(stack);
+            return getSetTrack(stack).orElse(DiscHolderHelper.MISSING_EVENT);
         }
         return null;
     }

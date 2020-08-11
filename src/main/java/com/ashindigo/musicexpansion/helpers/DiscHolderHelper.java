@@ -3,7 +3,6 @@ package com.ashindigo.musicexpansion.helpers;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
-import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -14,11 +13,17 @@ import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class DiscHolderHelper {
+
+    public static final SoundEvent MISSING_EVENT = new SoundEvent(new Identifier(MusicExpansion.MODID, "missing"));
+    private static final UUID EMPTY_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
     public static Generic9DiscInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
             if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
@@ -76,13 +81,14 @@ public class DiscHolderHelper {
      * @param inv The player inventory to check
      * @return true if the walkman has a disc that can play the sound event, false if not
      */
-    public static boolean discHolderContainsSound(Class<? extends Abstract9DiscItem> clazz, SoundEvent event, PlayerInventory inv) {
-        ItemStack stack = inv.getStack(getActiveDiscHolderSlot(inv));
+    public static boolean discHolderContainsSound(SoundEvent event, PlayerInventory inv, UUID uuid) {
+        ItemStack stack = inv.getStack(getSlotFromUUID(inv, uuid));
         Generic9DiscInventory walkmanInv = getInventory(stack, inv);
         for (int i = 0; i < walkmanInv.size(); i++) {
             ItemStack disc = walkmanInv.getStack(i);
             if (disc.getItem() instanceof CustomDiscItem) {
-                if (DiscHelper.getSetTrack(disc).getId().equals(event.getId())) {
+                Optional<SoundEvent> opt = DiscHelper.getSetTrack(disc);
+                if (opt.orElse(MISSING_EVENT).getId().equals(event.getId())) {
                     return true;
                 }
             } else if (disc.getItem() instanceof MusicDiscItem) {
@@ -94,6 +100,16 @@ public class DiscHolderHelper {
         return false;
     }
 
+    public static int getSlotFromUUID(PlayerInventory inv, UUID uuid) {
+        int slot = -1;
+        for (int i = 0; i < inv.size(); i++) {
+            if (getUUID(inv.getStack(i)).equals(uuid)) {
+                slot = i;
+            }
+        }
+        return slot;
+    }
+
     public static ItemStack getDiscInSlot(ItemStack stack, int slot) {
         ItemStack discStack = ItemStack.EMPTY;
         if (MusicHelper.mc.player != null && stack.getTag() != null && stack.getTag().contains("Items")) {
@@ -103,7 +119,7 @@ public class DiscHolderHelper {
     }
 
     public static UUID getUUID(ItemStack stack) {
-        UUID uuid = null;
+        UUID uuid = EMPTY_UUID;
         CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains("uuid")) {
             uuid = UUID.fromString(tag.getString("uuid"));

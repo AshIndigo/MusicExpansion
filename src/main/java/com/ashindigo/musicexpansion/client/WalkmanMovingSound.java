@@ -1,7 +1,6 @@
 package com.ashindigo.musicexpansion.client;
 
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
-import com.ashindigo.musicexpansion.item.WalkmanItem;
 import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -31,7 +30,7 @@ public class WalkmanMovingSound extends MovingSoundInstance {
             volume = 0.0F;
             return;
         }
-        if (!this.player.isAlive() || !DiscHolderHelper.discHolderContainsSound(WalkmanItem.class, soundEvent, player.inventory)) {
+        if (!this.player.isAlive() || !DiscHolderHelper.discHolderContainsSound(soundEvent, player.inventory, uuid)) {
             setDone();
         } else {
             this.x = (float) this.player.getX();
