@@ -27,7 +27,6 @@ public class BoomboxMovingSound extends MovingSoundInstance {
         this.repeatDelay = 0;
     }
 
-    // TODO Write
     @Override
     public void tick() { // https://stackoverflow.com/questions/57277755/music-discs-have-do-not-get-quieter-by-distance-in-my-minecraft-1-14-4-mod
         if (MinecraftClient.getInstance().world != null) {

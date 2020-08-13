@@ -1,14 +1,15 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
+import com.ashindigo.musicexpansion.client.screen.BoomboxScreen;
+import com.ashindigo.musicexpansion.client.screen.DiscRackScreen;
+import com.ashindigo.musicexpansion.client.screen.RecordMakerScreen;
+import com.ashindigo.musicexpansion.client.screen.WalkmanScreen;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
-import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
-import com.ashindigo.musicexpansion.screen.BoomboxScreen;
-import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
-import com.ashindigo.musicexpansion.screen.WalkmanScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -44,6 +45,7 @@ public class MusicExpansionClient implements ClientModInitializer {
     public void onInitializeClient() {
         ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
         ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, BoomboxScreen::new);
+        ScreenRegistry.register(MusicExpansion.DISC_RACK_TYPE, DiscRackScreen::new);
         ScreenRegistry.register(MusicExpansion.RECORD_MAKER_TYPE, RecordMakerScreen::new);
         playDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("play", GLFW.GLFW_KEY_UP));
         stopDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("stop", GLFW.GLFW_KEY_DOWN));

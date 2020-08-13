@@ -1,4 +1,4 @@
-package com.ashindigo.musicexpansion.screen;
+package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.RecordJsonParser;

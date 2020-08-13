@@ -1,7 +1,7 @@
 package com.ashindigo.musicexpansion.item;
 
-import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;

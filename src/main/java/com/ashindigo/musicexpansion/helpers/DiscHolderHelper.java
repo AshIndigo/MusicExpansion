@@ -26,6 +26,7 @@ public class DiscHolderHelper {
 
     public static Generic9DiscInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
+            // TODO, delete the check?
             if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
                 int slot = getSelectedSlot(stack);
                 stack.setTag(Inventories.toTag(stack.getTag(), new Generic9DiscInventory().getStacks()));

@@ -1,4 +1,4 @@
-package com.ashindigo.musicexpansion.screen;
+package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.handler.BoomboxHandler;
 import net.minecraft.entity.player.PlayerInventory;

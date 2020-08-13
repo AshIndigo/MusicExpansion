@@ -1,7 +1,8 @@
 package com.ashindigo.musicexpansion.item;
 
-import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
+import com.ashindigo.musicexpansion.handler.WalkmanHandler;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import net.fabricmc.api.EnvType;
@@ -30,7 +31,7 @@ public class WalkmanItem extends Abstract9DiscItem {
     @Override
     @Environment(EnvType.CLIENT)
     public void playSelectedDisc(ItemStack walkman) {
-        MusicHelper.playTrack(walkman, new com.ashindigo.musicexpansion.client.WalkmanMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(walkman, DiscHolderHelper.getSelectedSlot(walkman))), DiscHolderHelper.getUUID(walkman)));
+        MusicHelper.playTrack(walkman, new WalkmanMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(walkman, DiscHolderHelper.getSelectedSlot(walkman))), DiscHolderHelper.getUUID(walkman)));
     }
 
     @Override

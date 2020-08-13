@@ -1,23 +1,31 @@
 package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
+import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -72,6 +80,39 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
             }
         }
         return TypedActionResult.pass(player.getStackInHand(hand));
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context) {
+        if (!context.getWorld().isClient) {
+            BlockEntity be = context.getWorld().getBlockEntity(context.getBlockPos());
+            if (be instanceof DiscRackEntity) {
+                DiscRackEntity discRack = (DiscRackEntity) be;
+                ItemStack stack = context.getStack();
+                PlayerEntity player = context.getPlayer();
+                if (player != null) {
+                    Generic9DiscInventory discInv = DiscHolderHelper.getInventory(stack, context.getPlayer().inventory);
+                    DefaultedList<ItemStack> oldDiscs = DefaultedList.ofSize(9, ItemStack.EMPTY);
+                    for (int i = 0; i < discInv.size(); i++) { // Get discs in disc holder to backup
+                        oldDiscs.set(i, discInv.getStack(i));
+                    }
+                    for (int i = 0; i < discInv.size(); i++) { // Change discs in disc holder
+                        discInv.setStack(i, discRack.getStack(i));
+                    }
+                    CompoundTag invTag = Inventories.toTag(stack.getTag(), discInv.getStacks()); // Set the new inventory
+                    if (invTag != null) {
+                        stack.getOrCreateTag().put("Items", invTag.getList("Items", 10));
+                        player.inventory.markDirty();
+                    }
+                    for (int i = 0; i < discInv.size(); i++) { // Set discs in rack
+                        discRack.setStack(i, oldDiscs.get(i));
+                    }
+                    discRack.markDirty();
+                    return ActionResult.SUCCESS;
+                }
+            }
+        }
+        return ActionResult.PASS;
     }
 
     @Override
