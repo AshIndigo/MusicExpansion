@@ -86,20 +86,22 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
+        ItemStack split = stacks.get(slot).split(amount);
         markDirty();
-        return stacks.get(slot).split(amount);
+        return split;
     }
 
     @Override
     public ItemStack removeStack(int slot) {
+        ItemStack remove = stacks.remove(slot);
         markDirty();
-        return stacks.remove(slot);
+        return remove;
     }
 
     @Override
     public void setStack(int slot, ItemStack stack) {
-        markDirty();
         stacks.set(slot, stack);
+        markDirty();
     }
 
     @Override

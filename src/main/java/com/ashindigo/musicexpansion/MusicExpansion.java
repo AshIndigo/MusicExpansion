@@ -1,17 +1,17 @@
 package com.ashindigo.musicexpansion;
 
-import com.ashindigo.musicexpansion.handler.DiscRackHandler;
-import com.ashindigo.musicexpansion.helpers.DiscHelper;
-import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import com.ashindigo.musicexpansion.block.DiscRackBlock;
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.handler.BoomboxHandler;
+import com.ashindigo.musicexpansion.handler.DiscRackHandler;
 import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.item.BoomboxItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
+import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import com.ashindigo.musicexpansion.item.WalkmanItem;
 import com.ashindigo.musicexpansion.recipe.UpdateRecordRecipe;
 import io.netty.buffer.Unpooled;

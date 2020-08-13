@@ -3,10 +3,7 @@ package com.ashindigo.musicexpansion.block;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +16,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -26,8 +25,10 @@ import java.util.List;
 
 public class DiscRackBlock extends BlockWithEntity {
 
+    private static final VoxelShape SHAPE = VoxelShapes.union(Block.createCuboidShape(0, 0, 5, 16, 6, 11));
+
     public DiscRackBlock() {
-        super(FabricBlockSettings.of(Material.WOOD).breakByHand(true));
+        super(FabricBlockSettings.of(Material.WOOD).breakByHand(true).nonOpaque());
     }
 
     @Override
@@ -57,6 +58,18 @@ public class DiscRackBlock extends BlockWithEntity {
 
             super.onStateReplaced(state, world, pos, newState, moved);
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+        return SHAPE;
     }
 
     @Override

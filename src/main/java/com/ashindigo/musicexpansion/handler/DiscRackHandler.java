@@ -1,7 +1,9 @@
 package com.ashindigo.musicexpansion.handler;
 
+import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.math.BlockPos;
 import spinnery.common.handler.BaseScreenHandler;
 import spinnery.widget.WInterface;
@@ -19,5 +21,10 @@ public class DiscRackHandler extends BaseScreenHandler {
         WInterface mainInterface = getInterface();
         WSlot.addHeadlessPlayerInventory(mainInterface);
         WSlot.addHeadlessArray(mainInterface, 0, INVENTORY, 9, 1);
+    }
+
+    @Override
+    public ScreenHandlerType<?> getType() {
+        return MusicExpansion.DISC_RACK_TYPE;
     }
 }

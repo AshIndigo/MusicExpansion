@@ -23,6 +23,9 @@
     ],
     "client": [
       "com.ashindigo.musicexpansion.MusicExpansionClient"
+    ],
+    "rei_plugins": [
+      "com.ashindigo.musicexpansion.compat.MusicExpansionPlugin"
     ]
   },
   "mixins": [

@@ -12,11 +12,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -38,6 +38,7 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(getDescription());
         tooltip.add(new TranslatableText("desc.musicexpansion.activekeybinds").formatted(Formatting.GRAY));
@@ -84,6 +85,7 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
 
     @Override
     public ActionResult useOnBlock(ItemUsageContext context) {
+        final int size = 9;
         if (!context.getWorld().isClient) {
             BlockEntity be = context.getWorld().getBlockEntity(context.getBlockPos());
             if (be instanceof DiscRackEntity) {
@@ -93,19 +95,15 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
                 if (player != null) {
                     Generic9DiscInventory discInv = DiscHolderHelper.getInventory(stack, context.getPlayer().inventory);
                     DefaultedList<ItemStack> oldDiscs = DefaultedList.ofSize(9, ItemStack.EMPTY);
-                    for (int i = 0; i < discInv.size(); i++) { // Get discs in disc holder to backup
-                        oldDiscs.set(i, discInv.getStack(i));
+                    for (int i = 0; i < size; i++) { // Get discs in disc holder to backup
+                        oldDiscs.set(i, discInv.getStack(i).copy()); // Make backup
+                        discInv.setStack(i, discRack.getStack(i).copy()); // And change to discs from rack
+                        discRack.setStack(i, oldDiscs.get(i).copy());
                     }
-                    for (int i = 0; i < discInv.size(); i++) { // Change discs in disc holder
-                        discInv.setStack(i, discRack.getStack(i));
-                    }
-                    CompoundTag invTag = Inventories.toTag(stack.getTag(), discInv.getStacks()); // Set the new inventory
+                    CompoundTag invTag = toTag(stack.getTag(), discInv.getStacks()); // Set the new inventory
                     if (invTag != null) {
                         stack.getOrCreateTag().put("Items", invTag.getList("Items", 10));
                         player.inventory.markDirty();
-                    }
-                    for (int i = 0; i < discInv.size(); i++) { // Set discs in rack
-                        discRack.setStack(i, oldDiscs.get(i));
                     }
                     discRack.markDirty();
                     return ActionResult.SUCCESS;
@@ -124,6 +122,24 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     public void onCraft(ItemStack stack, World world, PlayerEntity player) {
         super.onCraft(stack, world, player);
         DiscHolderHelper.setupInitialTags(stack);
+    }
+
+    public CompoundTag toTag(CompoundTag tag, DefaultedList<ItemStack> stacks) {
+        ListTag listTag = new ListTag();
+
+        for (int i = 0; i < stacks.size(); ++i) {
+            ItemStack itemStack = stacks.get(i);
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.putByte("Slot", (byte) i);
+            itemStack.toTag(compoundTag);
+            listTag.add(compoundTag);
+        }
+
+        if (!listTag.isEmpty()) {
+            tag.put("Items", listTag);
+        }
+
+        return tag;
     }
 
 }
