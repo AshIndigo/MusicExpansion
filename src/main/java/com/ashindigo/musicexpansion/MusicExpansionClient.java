@@ -1,11 +1,11 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
-import com.ashindigo.musicexpansion.handler.BoomboxHandler;
-import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
+import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import com.ashindigo.musicexpansion.screen.BoomboxScreen;
 import com.ashindigo.musicexpansion.screen.RecordMakerScreen;
 import com.ashindigo.musicexpansion.screen.WalkmanScreen;
@@ -20,7 +20,6 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.LiteralText;
@@ -31,24 +30,26 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.UUID;
+
 public class MusicExpansionClient implements ClientModInitializer {
 
-    private static KeyBinding walkmanPlay;
-    private static KeyBinding walkmanStop;
-    private static KeyBinding walkmanNext;
-    private static KeyBinding walkmanBack;
-    private static KeyBinding walkmanRand;
+    private static KeyBinding playDisc;
+    private static KeyBinding stopDisc;
+    private static KeyBinding nextDisc;
+    private static KeyBinding prevDisc;
+    private static KeyBinding randDisc;
 
     @Override
     public void onInitializeClient() {
-        ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, (WalkmanHandler handler, PlayerInventory playerInv, Text title) -> new WalkmanScreen(handler, playerInv, title, MusicHelper::playWalkmanTrack));
-        ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, (BoomboxHandler handler, PlayerInventory playerInv, Text title) -> new BoomboxScreen(handler, playerInv, title, MusicHelper::playBoomboxTrack));
+        ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
+        ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, BoomboxScreen::new);
         ScreenRegistry.register(MusicExpansion.RECORD_MAKER_TYPE, RecordMakerScreen::new);
-        walkmanPlay = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanplay", GLFW.GLFW_KEY_UP));
-        walkmanStop = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanstop", GLFW.GLFW_KEY_DOWN));
-        walkmanNext = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmannext", GLFW.GLFW_KEY_RIGHT));
-        walkmanBack = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanback", GLFW.GLFW_KEY_LEFT));
-        walkmanRand = KeyBindingHelper.registerKeyBinding(registerKeybind("walkmanrand", GLFW.GLFW_KEY_RIGHT_ALT));
+        playDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("play", GLFW.GLFW_KEY_UP));
+        stopDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("stop", GLFW.GLFW_KEY_DOWN));
+        nextDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("next", GLFW.GLFW_KEY_RIGHT));
+        prevDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("back", GLFW.GLFW_KEY_LEFT));
+        randDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("random", GLFW.GLFW_KEY_RIGHT_ALT));
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         registerPackets();
         FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
@@ -88,42 +89,57 @@ public class MusicExpansionClient implements ClientModInitializer {
                 }
             }
         });
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
+            ItemStack boombox = buf.readItemStack();
+            UUID uuid = buf.readUuid();
+            if (MinecraftClient.getInstance().world != null) {
+                ctx.getTaskQueue().execute(() ->  MusicHelper.playTrack(boombox, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(boombox, DiscHolderHelper.getSelectedSlot(boombox))), DiscHolderHelper.getUUID(boombox), uuid)));
+            }
+        });
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.STOP_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
+            ItemStack boombox = buf.readItemStack();
+            if (MinecraftClient.getInstance().world != null) {
+                ctx.getTaskQueue().execute(() ->  MusicHelper.stopTrack(boombox));
+            }
+        });
     }
 
 
     // client.player should never be null
     private static void tick(MinecraftClient client) {
-        if (walkmanPlay.wasPressed()) {
-            walkmanPlayDisc(client);
+        if (playDisc.wasPressed()) {
+            playDisc(client);
         }
-        if (walkmanStop.wasPressed()) {
-            walkmanStopDisc(client);
+        if (stopDisc.wasPressed()) {
+            stopDisc(client);
         }
-        if (walkmanNext.wasPressed()) {
-            walkmanNextDisc(client);
+        if (nextDisc.wasPressed()) {
+            nextDisc(client);
         }
-        if (walkmanBack.wasPressed()) {
-            walkmanPrevDisc(client);
+        if (prevDisc.wasPressed()) {
+            prevDisc(client);
         }
-        if (walkmanRand.wasPressed()) {
+        if (randDisc.wasPressed()) {
             randomDisc(client);
         }
     }
 
-    private static void walkmanPlayDisc(MinecraftClient client) {
+    private static void playDisc(MinecraftClient client) {
         if (client.player != null) {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
-                MusicHelper.playWalkmanTrack(client.player.inventory.getStack(iSlot));
+                ItemStack stack = client.player.inventory.getStack(iSlot);
+                ((Abstract9DiscItem)stack.getItem()).playSelectedDisc(stack);
             }
         }
     }
 
-    private static void walkmanStopDisc(MinecraftClient client) {
+    private static void stopDisc(MinecraftClient client) {
         if (client.player != null) {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
-                MusicHelper.stopTrack(client.player.inventory.getStack(iSlot));
+                ItemStack stack = client.player.inventory.getStack(iSlot);
+                ((Abstract9DiscItem)stack.getItem()).stopSelectedDisc(stack);
             }
         }
     }
@@ -140,7 +156,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         }
     }
 
-    private static void walkmanPrevDisc(MinecraftClient client) {
+    private static void prevDisc(MinecraftClient client) {
         if (client.player != null) {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
@@ -151,7 +167,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         }
     }
 
-    private static void walkmanNextDisc(MinecraftClient client) {
+    private static void nextDisc(MinecraftClient client) {
         if (client.player != null) {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {

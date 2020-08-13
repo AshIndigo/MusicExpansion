@@ -83,9 +83,9 @@ public class DiscHolderHelper {
      */
     public static boolean discHolderContainsSound(SoundEvent event, PlayerInventory inv, UUID uuid) {
         ItemStack stack = inv.getStack(getSlotFromUUID(inv, uuid));
-        Generic9DiscInventory walkmanInv = getInventory(stack, inv);
-        for (int i = 0; i < walkmanInv.size(); i++) {
-            ItemStack disc = walkmanInv.getStack(i);
+        Generic9DiscInventory discInv = getInventory(stack, inv);
+        for (int i = 0; i < discInv.size(); i++) {
+            ItemStack disc = discInv.getStack(i);
             if (disc.getItem() instanceof CustomDiscItem) {
                 Optional<SoundEvent> opt = DiscHelper.getSetTrack(disc);
                 if (opt.orElse(MISSING_EVENT).getId().equals(event.getId())) {

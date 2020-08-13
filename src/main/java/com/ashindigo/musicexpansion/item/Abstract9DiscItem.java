@@ -3,6 +3,8 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -44,6 +46,12 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     }
 
     public abstract Text getDescription();
+
+    @Environment(EnvType.CLIENT)
+    public abstract void playSelectedDisc(ItemStack stack);
+
+    @Environment(EnvType.CLIENT)
+    public abstract void stopSelectedDisc(ItemStack stack);
 
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {

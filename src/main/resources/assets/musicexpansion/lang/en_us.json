@@ -14,9 +14,9 @@
   "desc.musicexpansion.walkman": "Plays records that are stored inside for you to hear",
   "desc.musicexpansion.boombox": "Acts like a portable jukebox that can hold up to 9 discs",
   "desc.musicexpansion.activekeybinds": "Shift right click to set as active so it will respond to keybinds (Check controls)",
-  "key.musicexpansion.walkmanback": "Previous Track",
-  "key.musicexpansion.walkmannext": "Next Track",
-  "key.musicexpansion.walkmanplay": "Play Track",
-  "key.musicexpansion.walkmanstop": "Stop Track",
-  "key.musicexpansion.walkmanrand": "Random Track"
+  "key.musicexpansion.back": "Previous Track",
+  "key.musicexpansion.next": "Next Track",
+  "key.musicexpansion.play": "Play Track",
+  "key.musicexpansion.stop": "Stop Track",
+  "key.musicexpansion.rand": "Random Track"
 }

@@ -11,10 +11,12 @@ import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import com.ashindigo.musicexpansion.item.WalkmanItem;
 import com.ashindigo.musicexpansion.recipe.UpdateRecordRecipe;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -24,6 +26,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.SpecialRecipeSerializer;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
@@ -44,6 +47,10 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static final Identifier PLAY_JUKEBOX_TRACK = new Identifier(MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MODID, "sync_events");
+    public static final Identifier PLAY_TRACK_FOR_ALL_SERVER = new Identifier(MODID, "play_track_for_all_server");
+    public static final Identifier PLAY_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "play_track_for_all_client");
+    public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MODID, "stop_track_for_all_server");
+    public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "stop_track_for_all_client");
     public static final Logger logger = LogManager.getLogger(MODID);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_TYPE;
@@ -104,6 +111,27 @@ public class MusicExpansion implements ModInitializer {
                             maker.markDirty();
                         }
                     }
+                }
+            });
+        });
+        ServerSidePacketRegistry.INSTANCE.register(PLAY_TRACK_FOR_ALL_SERVER, (packetContext, attachedData) -> {
+            MinecraftServer server = packetContext.getPlayer().getServer();
+            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+            data.writeItemStack(attachedData.readItemStack());
+            data.writeUuid(packetContext.getPlayer().getUuid());
+            packetContext.getTaskQueue().execute(() -> {
+                if (server != null) {
+                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PLAY_TRACK_FOR_ALL_CLIENT, data));
+                }
+            });
+        });
+        ServerSidePacketRegistry.INSTANCE.register(STOP_TRACK_FOR_ALL_SERVER, (packetContext, attachedData) -> {
+            MinecraftServer server = packetContext.getPlayer().getServer();
+            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+            data.writeItemStack(attachedData.readItemStack());
+            packetContext.getTaskQueue().execute(() -> {
+                if (server != null) {
+                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, STOP_TRACK_FOR_ALL_CLIENT, data));
                 }
             });
         });

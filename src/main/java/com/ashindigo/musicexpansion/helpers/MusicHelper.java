@@ -1,7 +1,5 @@
 package com.ashindigo.musicexpansion.helpers;
 
-import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
-import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
 import com.google.common.collect.Maps;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -19,16 +17,9 @@ public class MusicHelper {
     static final MinecraftClient mc = MinecraftClient.getInstance();
     public static final Map<UUID, SoundInstance> playingTracks = Maps.newHashMap();
 
-    public static void playWalkmanTrack(ItemStack walkman) {
-        playTrack(walkman, new WalkmanMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(walkman, DiscHolderHelper.getSelectedSlot(walkman))), mc.player, DiscHolderHelper.getUUID(walkman)));
-    }
-
-    public static void playBoomboxTrack(ItemStack boombox) {
-        playTrack(boombox, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(boombox, DiscHolderHelper.getSelectedSlot(boombox))), mc.player, DiscHolderHelper.getUUID(boombox)));
-    }
-
     public static void stopTrack(UUID uuid) {
         mc.getSoundManager().stop(playingTracks.get(uuid));
+        playingTracks.remove(uuid);
     }
 
     public static void stopTrack(ItemStack stack) {

@@ -22,7 +22,6 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
     @Override
     public boolean matches(CraftingInventory inv, World world) {
         ItemStack itemStack = ItemStack.EMPTY;
-
         for (int i = 0; i < inv.size(); ++i) {
             ItemStack itemStack2 = inv.getStack(i);
             if (!itemStack2.isEmpty()) {
@@ -30,12 +29,10 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
                     if (!itemStack.isEmpty()) {
                         return false;
                     }
-
                     itemStack = itemStack2;
                 }
             }
         }
-
         return !itemStack.isEmpty();
     }
 
@@ -46,7 +43,7 @@ public class UpdateRecordRecipe extends SpecialCraftingRecipe {
             if (inv.getStack(i).getItem() instanceof CustomRecordItem) {
                 CustomRecordItem record = (CustomRecordItem) inv.getStack(i).getItem();
                 CompoundTag tag = newRecord.getOrCreateTag();
-                tag.putString("track", ((MusicDiscItemAccessor)record).musicexpansion_getSound().getId().toString());
+                tag.putString("track", ((MusicDiscItemAccessor) record).musicexpansion_getSound().getId().toString());
                 newRecord.setTag(tag);
             }
         }
