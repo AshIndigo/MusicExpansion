@@ -92,9 +92,9 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
                 DiscRackEntity discRack = (DiscRackEntity) be;
                 ItemStack stack = context.getStack();
                 PlayerEntity player = context.getPlayer();
-                if (player != null) {
+                if (player != null && player.isSneaking()) {
                     Generic9DiscInventory discInv = DiscHolderHelper.getInventory(stack, context.getPlayer().inventory);
-                    DefaultedList<ItemStack> oldDiscs = DefaultedList.ofSize(9, ItemStack.EMPTY);
+                    DefaultedList<ItemStack> oldDiscs = DefaultedList.ofSize(size, ItemStack.EMPTY);
                     for (int i = 0; i < size; i++) { // Get discs in disc holder to backup
                         oldDiscs.set(i, discInv.getStack(i).copy()); // Make backup
                         discInv.setStack(i, discRack.getStack(i).copy()); // And change to discs from rack
@@ -106,6 +106,7 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
                         player.inventory.markDirty();
                     }
                     discRack.markDirty();
+                    discRack.sync();
                     return ActionResult.SUCCESS;
                 }
             }

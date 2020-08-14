@@ -31,25 +31,27 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
             panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), SLOT_SIZE).setInventoryNumber(Abstract9DiscHolderHandler.INVENTORY).setSlotNumber(i);
         }
         // Play button
-        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), SLOT_SIZE).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).playSelectedDisc(handler.holder));
+        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), SLOT_SIZE).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).playSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))));
         // Stop button
-        panel.createChild(WButton::new, Position.of(panel).add(45, 40, 0), SLOT_SIZE).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).stopSelectedDisc(handler.holder));
+        panel.createChild(WButton::new, Position.of(panel).add(45, 40, 0), SLOT_SIZE).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).stopSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))));
         // Previous track
         panel.createChild(WButton::new, Position.of(panel).add(81, 40, 0), SLOT_SIZE).setLabel("⏮").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.max(0, DiscHolderHelper.getSelectedSlot(handler.holder) - 1);
-            DiscHolderHelper.setSelectedSlot(slot, playerInv.getSlotWithStack(handler.holder));
+            int slot = Math.max(0, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))) - 1);
+            int iSlot = DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid);
+            DiscHolderHelper.setSelectedSlot(slot, iSlot);
             setActiveTrack(panel, slot);
         });
         // Next track
         panel.createChild(WButton::new, Position.of(panel).add(117, 40, 0), SLOT_SIZE).setLabel("⏭").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.max(8, DiscHolderHelper.getSelectedSlot(handler.holder) + 1);
-            DiscHolderHelper.setSelectedSlot(slot, playerInv.getSlotWithStack(handler.holder));
+            int slot = Math.min(8, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))) + 1);
+            int iSlot = DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid);
+            DiscHolderHelper.setSelectedSlot(slot, iSlot);
             setActiveTrack(panel, slot);
         });
         // Random track
         panel.createChild(WButton::new, Position.of(panel).add(153, 40, 0), SLOT_SIZE).setLabel("?").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
             int slot = playerInv.player.getRandom().nextInt(9);
-            DiscHolderHelper.setSelectedSlot(slot, playerInv.getSlotWithStack(handler.holder));
+            DiscHolderHelper.setSelectedSlot(slot, DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));
             setActiveTrack(panel, slot);
         });
         setActiveTrack(panel, DiscHolderHelper.getSelectedSlot(handler.holder));

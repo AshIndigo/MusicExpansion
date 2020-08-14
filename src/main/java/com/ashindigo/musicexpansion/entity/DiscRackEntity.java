@@ -108,8 +108,7 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
     public boolean canPlayerUse(PlayerEntity player) {
         return true;
     }
-
-
+    
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         return stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem;

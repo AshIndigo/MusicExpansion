@@ -2,7 +2,6 @@ package com.ashindigo.musicexpansion.handler;
 
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
@@ -13,15 +12,19 @@ import spinnery.common.handler.BaseScreenHandler;
 import spinnery.widget.WInterface;
 import spinnery.widget.WSlot;
 
+import java.util.UUID;
+
 public abstract class Abstract9DiscHolderHandler extends BaseScreenHandler {
 
     public static final int INVENTORY = 1;
     public final ItemStack holder;
+    public final UUID uuid;
 
     public Abstract9DiscHolderHandler(int syncId, PlayerInventory inv, int hand) {
         super(syncId, inv);
         WInterface mainInterface = getInterface();
         holder = inv.player.getStackInHand(Hand.values()[hand]);
+        uuid = DiscHolderHelper.getUUID(holder);
         Generic9DiscInventory discHolderInv = DiscHolderHelper.getInventory(holder, inv);
         addInventory(INVENTORY, discHolderInv);
         discHolderInv.addListener(sender -> {
@@ -38,11 +41,6 @@ public abstract class Abstract9DiscHolderHandler extends BaseScreenHandler {
             mainInterface.createChild(WSlot::new).setSlotNumber(i).setInventoryNumber(INVENTORY);
         }
         WSlot.addHeadlessPlayerInventory(mainInterface);
-    }
-
-    @Override
-    public boolean canUse(PlayerEntity player) {
-        return true;
     }
 
     @Override
