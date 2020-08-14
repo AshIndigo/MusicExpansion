@@ -1,7 +1,7 @@
 package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.handler.DiscRackHandler;
+import com.ashindigo.musicexpansion.handler.HASControllerHandler;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -22,12 +22,14 @@ import net.minecraft.util.collection.DefaultedList;
 import spinnery.common.inventory.BaseInventory;
 import spinnery.common.utility.InventoryUtilities;
 
-public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable, ExtendedScreenHandlerFactory {
+public class HASControllerEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable, ExtendedScreenHandlerFactory {
 
     final DefaultedList<ItemStack> stacks;
+    private int selectedSlot;
 
-    public DiscRackEntity() {
-        super(MusicExpansion.discRackEntity);
+    public HASControllerEntity() {
+        super(MusicExpansion.hasControllerType);
+        setSelectedSlot(0);
         stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 
@@ -108,10 +110,18 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
     public boolean canPlayerUse(PlayerEntity player) {
         return true;
     }
-    
+
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         return stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem;
+    }
+
+    public int getSelectedSlot() {
+        return selectedSlot;
+    }
+
+    public void setSelectedSlot(int selectedSlot) {
+        this.selectedSlot = selectedSlot;
     }
 
     @Override
@@ -121,12 +131,11 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText("block.musicexpansion.discrack");
+        return new TranslatableText("block.musicexpansion.hascontroller");
     }
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new DiscRackHandler(syncId, inv, getPos());
+        return new HASControllerHandler(syncId, inv, getPos());
     }
-
 }

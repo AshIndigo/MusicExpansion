@@ -2,8 +2,7 @@ package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.handler.Abstract9DiscHolderHandler;
-import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
-import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
+import com.ashindigo.musicexpansion.handler.HASControllerHandler;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -14,9 +13,10 @@ import spinnery.widget.api.Size;
 
 import java.util.Optional;
 
-public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends BaseHandledScreen<B> {
+// Add box to set ID, and show how many speakers there are
+public class HASControllerScreen extends BaseHandledScreen<HASControllerHandler> {
 
-    public Abstract9DiscScreen(B handler, PlayerInventory playerInv, Text name) {
+    public HASControllerScreen(HASControllerHandler handler, PlayerInventory playerInv, Text name) {
         super(handler, playerInv, name);
         WInterface mainInterface = getInterface();
         WPanel panel = mainInterface.createChild(WPanel::new).setSize(Size.of(180, 160));
@@ -29,30 +29,35 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
             panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), MusicExpansion.SLOT_SIZE).setInventoryNumber(Abstract9DiscHolderHandler.INVENTORY).setSlotNumber(i);
         }
         // Play button
-        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("▶").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).playSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))));
+        panel.createChild(WButton::new, Position.of(panel).add(9, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("▶").setOnMouseClicked(this::playTrack);
         // Stop button
-        panel.createChild(WButton::new, Position.of(panel).add(45, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("⏹").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> ((Abstract9DiscItem) handler.holder.getItem()).stopSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))));
+        panel.createChild(WButton::new, Position.of(panel).add(45, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("⏹").setOnMouseClicked(this::stopTrack);
         // Previous track
         panel.createChild(WButton::new, Position.of(panel).add(81, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("⏮").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.max(0, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))) - 1);
-            int iSlot = DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid);
-            DiscHolderHelper.setSelectedSlot(slot, iSlot);
+            int slot = Math.max(0, handler.controller.getSelectedSlot() - 1);
+            handler.controller.setSelectedSlot(slot);
             setActiveTrack(panel, slot);
         });
         // Next track
         panel.createChild(WButton::new, Position.of(panel).add(117, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("⏭").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
-            int slot = Math.min(8, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid))) + 1);
-            int iSlot = DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid);
-            DiscHolderHelper.setSelectedSlot(slot, iSlot);
+            int slot = Math.min(8, handler.controller.getSelectedSlot() + 1);
+            handler.controller.setSelectedSlot(slot);
             setActiveTrack(panel, slot);
         });
         // Random track
         panel.createChild(WButton::new, Position.of(panel).add(153, 40, 0), MusicExpansion.SLOT_SIZE).setLabel("?").setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
             int slot = playerInv.player.getRandom().nextInt(9);
-            DiscHolderHelper.setSelectedSlot(slot, DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));
+            handler.controller.setSelectedSlot(slot);
             setActiveTrack(panel, slot);
         });
-        setActiveTrack(panel, DiscHolderHelper.getSelectedSlot(handler.holder));
+        setActiveTrack(panel, handler.controller.getSelectedSlot());
+    }
+
+    private void playTrack(WAbstractWidget widget, float mouseX, float mouseY, int mouseButton) {
+
+    }
+
+    private void stopTrack(WAbstractWidget widget, float mouseX, float mouseY, int mouseButton) {
     }
 
     public void setActiveTrack(WPanel panel, int selectedSlot) {

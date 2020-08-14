@@ -1,13 +1,12 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.block.DiscRackBlock;
+import com.ashindigo.musicexpansion.block.HASControllerBlock;
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
+import com.ashindigo.musicexpansion.entity.HASControllerEntity;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
-import com.ashindigo.musicexpansion.handler.BoomboxHandler;
-import com.ashindigo.musicexpansion.handler.DiscRackHandler;
-import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
-import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.handler.*;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.item.BoomboxItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
@@ -36,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import spinnery.widget.api.Size;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,11 +55,13 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MODID, "stop_track_for_all_server");
     public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "stop_track_for_all_client");
     public static final Logger logger = LogManager.getLogger(MODID);
+    public static final Size SLOT_SIZE = Size.of(18, 18);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
     public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_TYPE;
     public static ExtendedScreenHandlerType<BoomboxHandler> BOOMBOX_TYPE;
     public static ExtendedScreenHandlerType<RecordMakerHandler> RECORD_MAKER_TYPE;
     public static ExtendedScreenHandlerType<DiscRackHandler> DISC_RACK_TYPE;
+    public static ExtendedScreenHandlerType<HASControllerHandler> HAS_CONTROLLER_TYPE;
     // Items/Blocks
     public static Item blankRecord;
     public static WalkmanItem walkman;
@@ -67,8 +69,10 @@ public class MusicExpansion implements ModInitializer {
     public static CustomDiscItem customDisc;
     public static RecordMakerBlock recordMakerBlock;
     public static DiscRackBlock discRackBlock;
+    public static HASControllerBlock hasControllerBlock;
     public static BlockEntityType<RecordMakerEntity> recordMakerEntity;
     public static BlockEntityType<DiscRackEntity> discRackEntity;
+    public static BlockEntityType<HASControllerEntity> hasControllerType;
     public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static ArrayList<Identifier> tracks = new ArrayList<>();
 
@@ -83,6 +87,9 @@ public class MusicExpansion implements ModInitializer {
         // Disc Rack
         DISC_RACK_TYPE = (ExtendedScreenHandlerType<DiscRackHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "discrack"), (syncId, inv, buf) -> new DiscRackHandler(syncId, inv, buf.readBlockPos()));
         discRackEntity = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "discrack"), BlockEntityType.Builder.create(DiscRackEntity::new, discRackBlock).build(null));
+        // HAS Controller
+        HAS_CONTROLLER_TYPE = (ExtendedScreenHandlerType<HASControllerHandler>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, "hascontroller"), (syncId, inv, buf) -> new HASControllerHandler(syncId, inv, buf.readBlockPos()));
+        hasControllerType = Registry.register(Registry.BLOCK_ENTITY_TYPE, new Identifier(MODID, "hascontroller"), BlockEntityType.Builder.create(HASControllerEntity::new, hasControllerBlock).build(null));
         UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));
         registerServerPackets();
         registerTracks();
@@ -98,6 +105,8 @@ public class MusicExpansion implements ModInitializer {
         Registry.register(Registry.ITEM, new Identifier(MODID, "recordmaker"), new BlockItem(recordMakerBlock, new Item.Settings().group(MUSIC_GROUP)));
         discRackBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "discrack"), new DiscRackBlock());
         Registry.register(Registry.ITEM, new Identifier(MODID, "discrack"), new BlockItem(discRackBlock, new Item.Settings().group(MUSIC_GROUP)));
+        hasControllerBlock = Registry.register(Registry.BLOCK, new Identifier(MODID, "hascontroller"), new HASControllerBlock());
+        Registry.register(Registry.ITEM, new Identifier(MODID, "hascontroller"), new BlockItem(hasControllerBlock, new Item.Settings().group(MUSIC_GROUP)));
     }
 
     public static void registerServerPackets() {

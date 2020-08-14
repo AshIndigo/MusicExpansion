@@ -1,10 +1,7 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.client.screen.*;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
-import com.ashindigo.musicexpansion.client.screen.BoomboxScreen;
-import com.ashindigo.musicexpansion.client.screen.DiscRackScreen;
-import com.ashindigo.musicexpansion.client.screen.RecordMakerScreen;
-import com.ashindigo.musicexpansion.client.screen.WalkmanScreen;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
@@ -47,6 +44,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, BoomboxScreen::new);
         ScreenRegistry.register(MusicExpansion.DISC_RACK_TYPE, DiscRackScreen::new);
         ScreenRegistry.register(MusicExpansion.RECORD_MAKER_TYPE, RecordMakerScreen::new);
+        ScreenRegistry.register(MusicExpansion.HAS_CONTROLLER_TYPE, HASControllerScreen::new);
         playDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("play", GLFW.GLFW_KEY_UP));
         stopDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("stop", GLFW.GLFW_KEY_DOWN));
         nextDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("next", GLFW.GLFW_KEY_RIGHT));

@@ -26,19 +26,18 @@ import java.util.Objects;
 public class RecordMakerScreen extends BaseHandledScreen<RecordMakerHandler> {
     public RecordMakerScreen(RecordMakerHandler handler, PlayerInventory playerInventory, Text name) {
         super(handler, playerInventory, name);
-        Size slotSize = Size.of(18, 18);
         WInterface mainInterface = getInterface();
         WPanel panel = mainInterface.createChild(WPanel::new, Position.of(mainInterface), Size.of(208, 214));
         panel.center();
         panel.setLabel(name); // 110
         WVerticalScrollableContainerDiscs scrollCont = mainInterface.createChild(WVerticalScrollableContainerDiscs::new, Position.of(panel).add(7, 14, 1), Size.of(198, 92));
-        panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), slotSize).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
-        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), slotSize).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(1);//.accept(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()).toArray(new ItemStack[0])).setWhitelist(); // Result slot
+        panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), MusicExpansion.SLOT_SIZE).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
+        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), MusicExpansion.SLOT_SIZE).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(1);//.accept(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()).toArray(new ItemStack[0])).setWhitelist(); // Result slot
         int c = 0;
         int y = 0;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
         for (ItemStack disc : MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords())) {
-            WTooltipDisc slot = new WTooltipDisc().setStack(disc).setPosition(Position.of(scrollCont).add((18 * c), 0, 2).setOffsetY((18 * y))).setSize(slotSize).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
+            WTooltipDisc slot = new WTooltipDisc().setStack(disc).setPosition(Position.of(scrollCont).add((18 * c), 0, 2).setOffsetY((18 * y))).setSize(MusicExpansion.SLOT_SIZE).setOnMouseClicked((widget, mouseX, mouseY, mouseButton) -> {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(handler.recordMaker.getPos());
                 buf.writeItemStack(widget.getStack());
