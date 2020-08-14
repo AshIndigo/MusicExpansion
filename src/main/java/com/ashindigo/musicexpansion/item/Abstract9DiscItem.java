@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.block.DiscRackBlock;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
@@ -26,6 +27,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -72,15 +75,27 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
         DiscHolderHelper.setupInitialTags(player.getStackInHand(hand));
         player.inventory.markDirty();
         if (!world.isClient()) {
-            if (player.isSneaking()) {
-                DiscHolderHelper.toggleActive(player.getStackInHand(hand));
-                player.inventory.markDirty();
-                return TypedActionResult.success(player.getStackInHand(hand));
-            } else {
-                player.openHandledScreen(this);
+            if (!isRightClickingOnRack(world, player)) {
+                if (player.isSneaking()) {
+                    DiscHolderHelper.toggleActive(player.getStackInHand(hand));
+                    player.inventory.markDirty();
+                    return TypedActionResult.success(player.getStackInHand(hand));
+                } else {
+                    player.openHandledScreen(this);
+                }
             }
         }
         return TypedActionResult.pass(player.getStackInHand(hand));
+    }
+
+    // Hard coded reach distance that was copied from ClientPlayerInteractionManager#getReachDistance()
+    // Could pose an issue later?
+    private boolean isRightClickingOnRack(World world, PlayerEntity player) {
+        HitResult result = player.rayTrace(player.isCreative() ? 5 : 4.5, 1, false);
+        if (result.getType() == HitResult.Type.BLOCK) {
+            return world.getBlockState(new BlockPos(result.getPos())).getBlock() instanceof DiscRackBlock;
+        }
+        return false;
     }
 
     @Override
