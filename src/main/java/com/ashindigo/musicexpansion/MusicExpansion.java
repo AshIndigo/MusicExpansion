@@ -51,8 +51,8 @@ public class MusicExpansion implements ModInitializer {
     public static final String MODID = "musicexpansion";
     public static final String MODID_EXTERNAL = MODID + "external";
     // Packet Identifiers
-    public static final Identifier CHANGESLOT_PACKET = new Identifier(MODID, "changeslot");
-    public static final Identifier CREATE_RECORD = new Identifier(MODID, "createrecord");
+    public static final Identifier CHANGE_SLOT_PACKET = new Identifier(MODID, "change_slot");
+    public static final Identifier CREATE_RECORD = new Identifier(MODID, "create_record");
     public static final Identifier ALL_RECORDS = new Identifier(MODID, "all_records");
     public static final Identifier PLAY_JUKEBOX_TRACK = new Identifier(MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MODID, "sync_events");
@@ -61,6 +61,8 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MODID, "stop_track_for_all_server");
     public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "stop_track_for_all_client");
     public static final Identifier SET_VOLUME = new Identifier(MODID, "set_volume");
+    public static final Identifier SET_VOLUME_ALL_SERVER = new Identifier(MODID, "set_volume_all_server");
+    public static final Identifier SET_VOLUME_ALL_CLIENT = new Identifier(MODID, "set_volume_all_client");
     public static final Logger logger = LogManager.getLogger(MODID);
     public static final Size SLOT_SIZE = Size.of(18, 18);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
@@ -118,7 +120,7 @@ public class MusicExpansion implements ModInitializer {
 
     public static void registerServerPackets() {
         // Change slot on disc holder
-        ServerSidePacketRegistry.INSTANCE.register(CHANGESLOT_PACKET, (packetContext, attachedData) -> {
+        ServerSidePacketRegistry.INSTANCE.register(CHANGE_SLOT_PACKET, (packetContext, attachedData) -> {
             int slot = attachedData.readInt();
             int invSlot = attachedData.readInt();
             packetContext.getTaskQueue().execute(() -> {
@@ -165,6 +167,16 @@ public class MusicExpansion implements ModInitializer {
             packetContext.getTaskQueue().execute(() -> {
                 if (server != null) {
                     PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, STOP_TRACK_FOR_ALL_CLIENT, data));
+                }
+            });
+        });
+        ServerSidePacketRegistry.INSTANCE.register(SET_VOLUME_ALL_SERVER, (packetContext, attachedData) -> {
+            MinecraftServer server = packetContext.getPlayer().getServer();
+            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
+            data.writeItemStack(attachedData.readItemStack());
+            packetContext.getTaskQueue().execute(() -> {
+                if (server != null) {
+                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SET_VOLUME_ALL_CLIENT, data));
                 }
             });
         });

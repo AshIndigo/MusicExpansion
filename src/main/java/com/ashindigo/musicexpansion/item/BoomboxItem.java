@@ -43,4 +43,11 @@ public class BoomboxItem extends Abstract9DiscItem {
         buf.writeItemStack(stack);
         ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.STOP_TRACK_FOR_ALL_SERVER, buf);
     }
+
+    @Override
+    public void setVolume(ItemStack stack, float volume) {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeItemStack(stack);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.SET_VOLUME_ALL_SERVER, buf);
+    }
 }

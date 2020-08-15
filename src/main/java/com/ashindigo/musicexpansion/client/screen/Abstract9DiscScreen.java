@@ -63,9 +63,8 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
                 return Math.round(getProgress()) + "%";
             }
         }, Position.of(panel).add(9, 60, 0), Size.of(162, 8)).setMin(0).setMax(100).setProgress(DiscHolderHelper.getVolume(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid)))).setOnProgressChange((slider) -> {
-            if (MusicHelper.playingTracks.containsKey(handler.uuid)) {
-                ((ControllableVolume) MusicHelper.playingTracks.get(handler.uuid)).setVolume(slider.getProgress() / 100);
-            }
+
+            // ItemStack tag change
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeFloat(slider.getProgress());
             buf.writeInt(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));

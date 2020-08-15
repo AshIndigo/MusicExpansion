@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion.item;
 
+import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.handler.WalkmanHandler;
@@ -38,5 +39,12 @@ public class WalkmanItem extends Abstract9DiscItem {
     @Environment(EnvType.CLIENT)
     public void stopSelectedDisc(ItemStack stack) {
         MusicHelper.stopTrack(stack);
+    }
+
+    @Override
+    public void setVolume(ItemStack stack, float volume) {
+        if (MusicHelper.playingTracks.containsKey(DiscHolderHelper.getUUID(stack))) {
+            ((ControllableVolume) MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(stack))).setVolume(volume / 100);
+        }
     }
 }

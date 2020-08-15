@@ -57,7 +57,7 @@ public class DiscHolderHelper {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(slot);
         buf.writeInt(invSlot);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CHANGESLOT_PACKET, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CHANGE_SLOT_PACKET, buf);
     }
 
     /**

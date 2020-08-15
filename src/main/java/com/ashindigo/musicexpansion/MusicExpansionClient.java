@@ -1,5 +1,6 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.client.screen.*;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
@@ -100,6 +101,12 @@ public class MusicExpansionClient implements ClientModInitializer {
             ItemStack boombox = buf.readItemStack();
             if (MinecraftClient.getInstance().world != null) {
                 ctx.getTaskQueue().execute(() ->  MusicHelper.stopTrack(boombox));
+            }
+        });
+        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.SET_VOLUME_ALL_CLIENT, (ctx, buf) -> {
+            ItemStack boombox = buf.readItemStack();
+            if (MinecraftClient.getInstance().world != null) {
+                ctx.getTaskQueue().execute(() ->  ((ControllableVolume)MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(boombox))).setVolume(DiscHolderHelper.getVolume(boombox)));
             }
         });
     }

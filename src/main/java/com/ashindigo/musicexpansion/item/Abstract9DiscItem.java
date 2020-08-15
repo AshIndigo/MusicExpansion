@@ -65,6 +65,8 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     @Environment(EnvType.CLIENT)
     public abstract void stopSelectedDisc(ItemStack stack);
 
+    public abstract void setVolume(ItemStack stack, float volume);
+
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
         buf.writeInt(player.getMainHandStack().getItem().getClass().isAssignableFrom(getClass()) ? Hand.MAIN_HAND.ordinal() : Hand.OFF_HAND.ordinal());
