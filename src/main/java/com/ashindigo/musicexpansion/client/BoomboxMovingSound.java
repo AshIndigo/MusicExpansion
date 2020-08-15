@@ -6,16 +6,16 @@ import net.minecraft.client.sound.MovingSoundInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.UUID;
 
-public class BoomboxMovingSound extends MovingSoundInstance {
+public class BoomboxMovingSound extends MovingSoundInstance implements ControllableVolume {
 
     private final SoundEvent soundEvent;
     private final PlayerEntity player;
     private final UUID uuid;
     private final UUID hostUUID;
+    private float backupVolume;
 
     public BoomboxMovingSound(SoundEvent soundEvent, UUID uuidDisc, UUID hostUUID) {
         super(soundEvent, SoundCategory.RECORDS);
@@ -33,6 +33,9 @@ public class BoomboxMovingSound extends MovingSoundInstance {
             PlayerEntity host = MinecraftClient.getInstance().world.getPlayerByUuid(hostUUID);
             if (host != null) {
                 if (!DiscHolderHelper.containsUUID(uuid, host.inventory)) { // If the host does not have the boombox in their inventory then shut off volume
+                    if (volume > 0.0F) {
+                        backupVolume = volume;
+                    }
                     volume = 0.0F;
                     return;
                 }
@@ -42,11 +45,17 @@ public class BoomboxMovingSound extends MovingSoundInstance {
                     this.x = (float) host.getX();
                     this.y = (float) host.getY();
                     this.z = (float) host.getZ();
-                    this.volume = 0.0F + MathHelper.clamp(1, 0.0F, 0.5F) * 0.7F;
+                    this.volume = backupVolume;
                 }
             } else {
                 setDone();
             }
         }
+    }
+
+    @Override
+    public void setVolume(float vol) {
+        volume = vol;
+        backupVolume = vol;
     }
 }

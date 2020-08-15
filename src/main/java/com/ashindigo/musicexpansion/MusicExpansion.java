@@ -40,6 +40,12 @@ import spinnery.widget.api.Size;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// TODO Future Ash notes
+// HAS Stuff:
+// HASControllerEntity needs its selected slot and (to be added) set id to be saved in its NBT
+// GUI needs a field to input the number
+// Need to add speakers too to actually act as a source of sound.
+// Is chunkloading gonna be an issue?
 public class MusicExpansion implements ModInitializer {
 
     public static final String MODID = "musicexpansion";
@@ -54,6 +60,7 @@ public class MusicExpansion implements ModInitializer {
     public static final Identifier PLAY_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "play_track_for_all_client");
     public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MODID, "stop_track_for_all_server");
     public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MODID, "stop_track_for_all_client");
+    public static final Identifier SET_VOLUME = new Identifier(MODID, "set_volume");
     public static final Logger logger = LogManager.getLogger(MODID);
     public static final Size SLOT_SIZE = Size.of(18, 18);
     public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
@@ -161,6 +168,16 @@ public class MusicExpansion implements ModInitializer {
                 }
             });
         });
+        ServerSidePacketRegistry.INSTANCE.register(SET_VOLUME, (packetContext, attachedData) -> {
+            float volume = attachedData.readFloat();
+            int invSlot = attachedData.readInt();
+            packetContext.getTaskQueue().execute(() -> {
+                if (packetContext.getPlayer().inventory.getStack(invSlot).hasTag()) {
+                    packetContext.getPlayer().inventory.getStack(invSlot).getOrCreateTag().putFloat("volume", volume);
+                    packetContext.getPlayer().inventory.markDirty();
+                }
+            });
+        });
     }
 
     private void registerTracks() {
@@ -173,7 +190,6 @@ public class MusicExpansion implements ModInitializer {
             Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
         }
     }
-
 
     @Deprecated
     private static void registerOldRecords() {
@@ -195,5 +211,4 @@ public class MusicExpansion implements ModInitializer {
         }
         return discs;
     }
-
 }

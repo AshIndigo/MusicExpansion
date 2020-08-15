@@ -15,6 +15,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -44,7 +45,7 @@ public class DiscHolderHelper {
     public static int getSelectedSlot(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
         if (tag.contains("selected")) {
-            return tag.getInt("selected");
+            return MathHelper.clamp(tag.getInt("selected"), 0, 8);
         } else {
             tag.putInt("selected", 0);
             stack.setTag(tag);
@@ -102,13 +103,12 @@ public class DiscHolderHelper {
     }
 
     public static int getSlotFromUUID(PlayerInventory inv, UUID uuid) {
-        int slot = -1;
         for (int i = 0; i < inv.size(); i++) {
             if (getUUID(inv.getStack(i)).equals(uuid)) {
-                slot = i;
+               return i;
             }
         }
-        return slot;
+        return -1;
     }
 
     public static ItemStack getDiscInSlot(ItemStack stack, int slot) {
@@ -143,6 +143,9 @@ public class DiscHolderHelper {
             CompoundTag invTag = Inventories.toTag(tag, new Generic9DiscInventory().getStacks());
             tag.put("Items", invTag.getList("Items", 10));
         }
+        if (!tag.contains("volume")) {
+            tag.putFloat("volume", 1.0F);
+        }
         stack.setTag(tag);
     }
 
@@ -169,5 +172,9 @@ public class DiscHolderHelper {
             active = tag.getBoolean("active");
         }
         return active;
+    }
+
+    public static float getVolume(ItemStack stack) {
+        return stack.getOrCreateTag().getFloat("volume");
     }
 }

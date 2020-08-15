@@ -1,10 +1,15 @@
 package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.handler.Abstract9DiscHolderHandler;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
+import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import spinnery.client.screen.BaseHandledScreen;
@@ -19,12 +24,12 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
     public Abstract9DiscScreen(B handler, PlayerInventory playerInv, Text name) {
         super(handler, playerInv, name);
         WInterface mainInterface = getInterface();
-        WPanel panel = mainInterface.createChild(WPanel::new).setSize(Size.of(180, 160));
+        WPanel panel = mainInterface.createChild(WPanel::new).setSize(Size.of(180, 160+8));
         panel.center();
         panel.setLabel(title);
-        WSlot.addPlayerInventory(Position.of(panel).add(9, 76, 0), MusicExpansion.SLOT_SIZE, panel);
+        WSlot.addPlayerInventory(Position.of(panel).add(9, 76+8, 0), MusicExpansion.SLOT_SIZE, panel);
         // Selected song indicator
-        panel.createChild(WStaticImage::new, Position.of(27, 16, 0), Size.of(18, 22)).setTexture(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png"));
+        panel.createChild(WStaticImage::new, Position.of(panel).add(27, 16, 0), Size.of(18, 22)).setTexture(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png"));
         for (int i = 0; i < 9; i++) {
             panel.createChild(WSlot::new, Position.of(panel).add(9 + (18 * i), 16, 0), MusicExpansion.SLOT_SIZE).setInventoryNumber(Abstract9DiscHolderHandler.INVENTORY).setSlotNumber(i);
         }
@@ -52,6 +57,21 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
             DiscHolderHelper.setSelectedSlot(slot, DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));
             setActiveTrack(panel, slot);
         });
+        panel.createChild(() -> new WHorizontalSlider() {
+            @Override
+            public String getFormattedProgress() {
+                return Math.round(getProgress()) + "%";
+            }
+        }, Position.of(panel).add(9, 60, 0), Size.of(162, 8)).setMin(0).setMax(100).setProgress(DiscHolderHelper.getVolume(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid)))).setOnProgressChange((slider) -> {
+            if (MusicHelper.playingTracks.containsKey(handler.uuid)) {
+                ((ControllableVolume) MusicHelper.playingTracks.get(handler.uuid)).setVolume(slider.getProgress() / 100);
+            }
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+            buf.writeFloat(slider.getProgress());
+            buf.writeInt(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));
+            ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.SET_VOLUME, buf);
+        });
+
         setActiveTrack(panel, DiscHolderHelper.getSelectedSlot(handler.holder));
     }
 
