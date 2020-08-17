@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.helpers;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
@@ -57,7 +58,7 @@ public class DiscHolderHelper {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(slot);
         buf.writeInt(invSlot);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CHANGE_SLOT_PACKET, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CHANGE_SLOT_PACKET, buf);
     }
 
     /**

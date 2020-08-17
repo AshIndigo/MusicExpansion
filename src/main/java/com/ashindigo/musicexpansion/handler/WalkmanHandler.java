@@ -12,6 +12,6 @@ public class WalkmanHandler extends Abstract9DiscHolderHandler {
 
     @Override
     public ScreenHandlerType<?> getType() {
-        return MusicExpansion.WALKMAN_TYPE;
+        return MusicExpansion.WALKMAN_HANDLER_TYPE;
     }
 }

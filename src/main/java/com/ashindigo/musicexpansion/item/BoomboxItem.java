@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion.item;
 
-import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.handler.BoomboxHandler;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
@@ -33,7 +33,7 @@ public class BoomboxItem extends Abstract9DiscItem {
     public void playSelectedDisc(ItemStack stack) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.PLAY_TRACK_FOR_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.PLAY_TRACK_FOR_ALL_SERVER, buf);
     }
 
     @Override
@@ -41,13 +41,13 @@ public class BoomboxItem extends Abstract9DiscItem {
     public void stopSelectedDisc(ItemStack stack) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.STOP_TRACK_FOR_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.STOP_TRACK_FOR_ALL_SERVER, buf);
     }
 
     @Override
     public void setVolume(ItemStack stack, float volume) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.SET_VOLUME_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.SET_VOLUME_ALL_SERVER, buf);
     }
 }

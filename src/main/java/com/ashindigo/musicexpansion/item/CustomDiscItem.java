@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -62,7 +63,7 @@ public class CustomDiscItem extends Item {
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeItemStack(itemStack);
                 passedData.writeBlockPos(blockPos);
-                watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.PLAY_JUKEBOX_TRACK, passedData));
+                watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PacketRegistry.PLAY_JUKEBOX_TRACK, passedData));
                 itemStack.decrement(1);
                 PlayerEntity playerEntity = context.getPlayer();
                 if (playerEntity != null) {

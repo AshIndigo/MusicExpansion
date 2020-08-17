@@ -1,10 +1,9 @@
 package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.client.ControllableVolume;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.handler.Abstract9DiscHolderHandler;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
-import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
@@ -68,7 +67,7 @@ public class Abstract9DiscScreen<B extends Abstract9DiscHolderHandler> extends B
             PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
             buf.writeFloat(slider.getProgress());
             buf.writeInt(DiscHolderHelper.getSlotFromUUID(playerInv, handler.uuid));
-            ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.SET_VOLUME, buf);
+            ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.SET_VOLUME, buf);
         });
 
         setActiveTrack(panel, DiscHolderHelper.getSelectedSlot(handler.holder));

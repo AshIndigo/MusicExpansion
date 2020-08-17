@@ -1,14 +1,16 @@
 package com.ashindigo.musicexpansion;
 
+import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
+import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.client.screen.*;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
-import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
-import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
@@ -41,27 +43,28 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ScreenRegistry.register(MusicExpansion.WALKMAN_TYPE, WalkmanScreen::new);
-        ScreenRegistry.register(MusicExpansion.BOOMBOX_TYPE, BoomboxScreen::new);
-        ScreenRegistry.register(MusicExpansion.DISC_RACK_TYPE, DiscRackScreen::new);
-        ScreenRegistry.register(MusicExpansion.RECORD_MAKER_TYPE, RecordMakerScreen::new);
-        ScreenRegistry.register(MusicExpansion.HAS_CONTROLLER_TYPE, HASControllerScreen::new);
+        ScreenRegistry.register(MusicExpansion.WALKMAN_HANDLER_TYPE, WalkmanScreen::new);
+        ScreenRegistry.register(MusicExpansion.BOOMBOX_HANDLER_TYPE, BoomboxScreen::new);
+        ScreenRegistry.register(MusicExpansion.DISC_RACK_HANDLER_TYPE, DiscRackScreen::new);
+        ScreenRegistry.register(MusicExpansion.RECORD_MAKER_HANDLER_TYPE, RecordMakerScreen::new);
+        ScreenRegistry.register(MusicExpansion.HAS_CONTROLLER_HANDLER_TYPE, HASControllerScreen::new);
+        ScreenRegistry.register(MusicExpansion.SPEAKER_HANDLER_TYPE, SpeakerScreen::new);
         playDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("play", GLFW.GLFW_KEY_UP));
         stopDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("stop", GLFW.GLFW_KEY_DOWN));
         nextDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("next", GLFW.GLFW_KEY_RIGHT));
         prevDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("back", GLFW.GLFW_KEY_LEFT));
         randDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("random", GLFW.GLFW_KEY_RIGHT_ALT));
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
-        registerPackets();
+        registerClientPackets();
         FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
     }
 
-    private void registerPackets() {
+    public static void registerClientPackets() {
         // Get whether or not to allow all configs
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.ALL_RECORDS,
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.ALL_RECORDS,
                 (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
         // Play track
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_JUKEBOX_TRACK, (packetContext, attachedData) -> {
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.PLAY_JUKEBOX_TRACK, (packetContext, attachedData) -> {
             ItemStack disc = attachedData.readItemStack();
             BlockPos songPosition = attachedData.readBlockPos();
             MinecraftClient mc = MinecraftClient.getInstance();
@@ -80,7 +83,7 @@ public class MusicExpansionClient implements ClientModInitializer {
             });
         });
         // Sync sound events
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.SYNC_EVENTS, (ctx, buf) -> {
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.SYNC_EVENTS, (ctx, buf) -> {
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
                 Identifier id = buf.readIdentifier();
@@ -90,20 +93,20 @@ public class MusicExpansionClient implements ClientModInitializer {
                 }
             }
         });
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.PLAY_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.PLAY_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
             ItemStack boombox = buf.readItemStack();
             UUID uuid = buf.readUuid();
             if (MinecraftClient.getInstance().world != null) {
                 ctx.getTaskQueue().execute(() ->  MusicHelper.playTrack(boombox, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(boombox, DiscHolderHelper.getSelectedSlot(boombox))), DiscHolderHelper.getUUID(boombox), uuid)));
             }
         });
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.STOP_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.STOP_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
             ItemStack boombox = buf.readItemStack();
             if (MinecraftClient.getInstance().world != null) {
                 ctx.getTaskQueue().execute(() ->  MusicHelper.stopTrack(boombox));
             }
         });
-        ClientSidePacketRegistry.INSTANCE.register(MusicExpansion.SET_VOLUME_ALL_CLIENT, (ctx, buf) -> {
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.SET_VOLUME_ALL_CLIENT, (ctx, buf) -> {
             ItemStack boombox = buf.readItemStack();
             if (MinecraftClient.getInstance().world != null) {
                 ctx.getTaskQueue().execute(() ->  ((ControllableVolume)MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(boombox))).setVolume(DiscHolderHelper.getVolume(boombox)));

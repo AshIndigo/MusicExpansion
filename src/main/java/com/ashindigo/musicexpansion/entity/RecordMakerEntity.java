@@ -27,7 +27,7 @@ public class RecordMakerEntity extends BlockEntity implements Inventory, BlockEn
     final DefaultedList<ItemStack> stacks;
 
     public RecordMakerEntity() {
-        super(MusicExpansion.recordMakerEntity);
+        super(MusicExpansion.RECORD_MAKER_ENTITY_TYPE);
         this.stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 

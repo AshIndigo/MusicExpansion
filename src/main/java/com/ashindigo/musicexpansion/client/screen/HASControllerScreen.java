@@ -13,7 +13,7 @@ import spinnery.widget.api.Size;
 
 import java.util.Optional;
 
-// Add box to set ID, and show how many speakers there are
+// Show how many speakers there are?
 public class HASControllerScreen extends BaseHandledScreen<HASControllerHandler> {
 
     public HASControllerScreen(HASControllerHandler handler, PlayerInventory playerInv, Text name) {
@@ -50,7 +50,10 @@ public class HASControllerScreen extends BaseHandledScreen<HASControllerHandler>
             handler.controller.setSelectedSlot(slot);
             setActiveTrack(panel, slot);
         });
+        // Enter ID
+        panel.createChild(WTextField::new, Position.of(panel).add(9, 58, 0), Size.of(20, 10));
         setActiveTrack(panel, handler.controller.getSelectedSlot());
+
     }
 
     private void playTrack(WAbstractWidget widget, float mouseX, float mouseY, int mouseButton) {

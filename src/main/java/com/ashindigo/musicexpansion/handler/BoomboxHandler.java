@@ -12,6 +12,6 @@ public class BoomboxHandler extends Abstract9DiscHolderHandler {
 
     @Override
     public ScreenHandlerType<?> getType() {
-        return MusicExpansion.BOOMBOX_TYPE;
+        return MusicExpansion.BOOMBOX_HANDLER_TYPE;
     }
 }

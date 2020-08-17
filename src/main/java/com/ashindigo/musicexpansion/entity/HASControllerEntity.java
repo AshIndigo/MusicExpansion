@@ -26,9 +26,10 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
 
     final DefaultedList<ItemStack> stacks;
     private int selectedSlot;
+    private int id;
 
     public HASControllerEntity() {
-        super(MusicExpansion.hasControllerType);
+        super(MusicExpansion.HAS_CONTROLLER_ENTITY_TYPE);
         setSelectedSlot(0);
         stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
@@ -51,29 +52,27 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
         for (int i = 0; i < inv.size(); i++) {
             setStack(i, inv.getStack(i));
         }
+        id = tag.getInt("id");
+        selectedSlot = tag.getInt("selected");
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
         InventoryUtilities.write(this, tag);
+        tag.putInt("id", id);
+        tag.putInt("selected", selectedSlot);
         super.toTag(tag);
         return tag;
     }
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        super.fromTag(getCachedState(), tag);
-        BaseInventory inv = InventoryUtilities.read(tag);
-        for (int i = 0; i < inv.size(); i++) {
-            setStack(i, inv.getStack(i));
-        }
+        fromTag(getCachedState(), tag);
     }
 
     @Override
     public CompoundTag toClientTag(CompoundTag tag) {
-        InventoryUtilities.write(this, tag);
-        super.toTag(tag);
-        return tag;
+        return toTag(tag);
     }
 
     @Override
@@ -116,14 +115,6 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
         return stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem;
     }
 
-    public int getSelectedSlot() {
-        return selectedSlot;
-    }
-
-    public void setSelectedSlot(int selectedSlot) {
-        this.selectedSlot = selectedSlot;
-    }
-
     @Override
     public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf) {
         buf.writeBlockPos(getPos());
@@ -137,5 +128,21 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
         return new HASControllerHandler(syncId, inv, getPos());
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setSelectedSlot(int selectedSlot) {
+        this.selectedSlot = selectedSlot;
+    }
+
+    public int getSelectedSlot() {
+        return selectedSlot;
     }
 }

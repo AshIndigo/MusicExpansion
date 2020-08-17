@@ -25,6 +25,6 @@ public class DiscRackHandler extends BaseScreenHandler {
 
     @Override
     public ScreenHandlerType<?> getType() {
-        return MusicExpansion.DISC_RACK_TYPE;
+        return MusicExpansion.DISC_RACK_HANDLER_TYPE;
     }
 }

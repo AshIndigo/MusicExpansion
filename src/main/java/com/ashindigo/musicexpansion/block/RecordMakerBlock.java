@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion.block;
 
-import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import io.netty.buffer.Unpooled;
@@ -48,7 +48,7 @@ public class RecordMakerBlock extends BlockWithEntity {
         if (!world.isClient) {
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBoolean(RecordJsonParser.isAllRecords());
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, MusicExpansion.ALL_RECORDS, passedData);
+            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PacketRegistry.ALL_RECORDS, passedData);
             player.openHandledScreen((ExtendedScreenHandlerFactory) world.getBlockEntity(pos));
         }
         return ActionResult.PASS;

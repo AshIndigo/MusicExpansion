@@ -27,7 +27,7 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
     final DefaultedList<ItemStack> stacks;
 
     public DiscRackEntity() {
-        super(MusicExpansion.discRackEntity);
+        super(MusicExpansion.DISC_RACK_ENTITY_TYPE);
         stacks = DefaultedList.ofSize(size(), ItemStack.EMPTY);
     }
 

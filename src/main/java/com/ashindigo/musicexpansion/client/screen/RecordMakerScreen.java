@@ -1,6 +1,7 @@
 package com.ashindigo.musicexpansion.client.screen;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.handler.RecordMakerHandler;
 import com.ashindigo.musicexpansion.widget.WTooltipDisc;
@@ -8,8 +9,10 @@ import com.ashindigo.musicexpansion.widget.WVerticalScrollableContainerDiscs;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.text.Text;
 import spinnery.client.screen.BaseHandledScreen;
 import spinnery.widget.WInterface;
@@ -22,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-// TODO Fix result slot whitelist
 public class RecordMakerScreen extends BaseHandledScreen<RecordMakerHandler> {
     public RecordMakerScreen(RecordMakerHandler handler, PlayerInventory playerInventory, Text name) {
         super(handler, playerInventory, name);
@@ -32,7 +34,7 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerHandler> {
         panel.setLabel(name); // 110
         WVerticalScrollableContainerDiscs scrollCont = mainInterface.createChild(WVerticalScrollableContainerDiscs::new, Position.of(panel).add(7, 14, 1), Size.of(198, 92));
         panel.createChild(WSlot::new, Position.of(panel, 9, 110, 2), MusicExpansion.SLOT_SIZE).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(0).accept(MusicExpansion.blankRecord).setWhitelist(); // Blank record slot
-        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), MusicExpansion.SLOT_SIZE).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(1);//.accept(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()).toArray(new ItemStack[0])).setWhitelist(); // Result slot
+        panel.createChild(WSlot::new, Position.of(panel, 45, 110, 2), MusicExpansion.SLOT_SIZE).setInventoryNumber(RecordMakerHandler.INVENTORY).setSlotNumber(1).accept(ItemTags.MUSIC_DISCS.values().toArray(new Item[]{})).setWhitelist(); // Result slot
         int c = 0;
         int y = 0;
         ArrayList<WTooltipDisc> row = new ArrayList<>(Collections.nCopies(9, null));
@@ -41,7 +43,7 @@ public class RecordMakerScreen extends BaseHandledScreen<RecordMakerHandler> {
                 PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
                 buf.writeBlockPos(handler.recordMaker.getPos());
                 buf.writeItemStack(widget.getStack());
-                ClientSidePacketRegistry.INSTANCE.sendToServer(MusicExpansion.CREATE_RECORD, buf);
+                ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CREATE_RECORD, buf);
             });
             if (!row.isEmpty()) {
                 row.set(c, slot); // Set Disc to row

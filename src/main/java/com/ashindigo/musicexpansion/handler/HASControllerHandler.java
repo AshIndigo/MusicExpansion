@@ -25,6 +25,6 @@ public class HASControllerHandler extends BaseScreenHandler {
 
     @Override
     public ScreenHandlerType<?> getType() {
-        return MusicExpansion.HAS_CONTROLLER_TYPE;
+        return MusicExpansion.HAS_CONTROLLER_HANDLER_TYPE;
     }
 }
