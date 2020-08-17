@@ -15,7 +15,7 @@ public class BoomboxMovingSound extends MovingSoundInstance implements Controlla
     private final PlayerEntity player;
     private final UUID uuid;
     private final UUID hostUUID;
-    private float backupVolume;
+    private float backupVolume = volume;
 
     public BoomboxMovingSound(SoundEvent soundEvent, UUID uuidDisc, UUID hostUUID) {
         super(soundEvent, SoundCategory.RECORDS);

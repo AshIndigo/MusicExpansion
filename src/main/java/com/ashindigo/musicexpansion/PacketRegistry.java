@@ -18,12 +18,14 @@ public class PacketRegistry {
     public static final Identifier ALL_RECORDS = new Identifier(MusicExpansion.MODID, "all_records");
     public static final Identifier PLAY_JUKEBOX_TRACK = new Identifier(MusicExpansion.MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MusicExpansion.MODID, "sync_events");
-    public static final Identifier PLAY_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "play_track_for_all_server");
-    public static final Identifier PLAY_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "play_track_for_all_client");
-    public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "stop_track_for_all_server");
-    public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "stop_track_for_all_client");
-    public static final Identifier SET_VOLUME_ALL_SERVER = new Identifier(MusicExpansion.MODID, "set_volume_all_server");
-    public static final Identifier SET_VOLUME_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "set_volume_all_client");
+    //    public static final Identifier PLAY_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "play_track_for_all_server");
+//    public static final Identifier PLAY_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "play_track_for_all_client");
+//    public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "stop_track_for_all_server");
+//    public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "stop_track_for_all_client");
+//    public static final Identifier SET_VOLUME_ALL_SERVER = new Identifier(MusicExpansion.MODID, "set_volume_all_server");
+//    public static final Identifier SET_VOLUME_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "set_volume_all_client");
+    public static final Identifier ALL_PLAYERS_SERVER = new Identifier(MusicExpansion.MODID, "all_players_server");
+    public static final Identifier ALL_PLAYERS_CLIENT = new Identifier(MusicExpansion.MODID, "all_players_client");
     public static final Identifier SET_VOLUME = new Identifier(MusicExpansion.MODID, "set_volume");
 
     public static void registerServerPackets() {
@@ -55,36 +57,25 @@ public class PacketRegistry {
                 }
             });
         });
-        // Play the specified track for all players, and supply the senders UUID
-        ServerSidePacketRegistry.INSTANCE.register(PLAY_TRACK_FOR_ALL_SERVER, (packetContext, attachedData) -> {
-            MinecraftServer server = packetContext.getPlayer().getServer();
+        ServerSidePacketRegistry.INSTANCE.register(ALL_PLAYERS_SERVER, (packetContext, attachedData) -> {
+            final MinecraftServer server = packetContext.getPlayer().getServer();
+            String name = attachedData.readString();
             PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-            data.writeItemStack(attachedData.readItemStack());
-            data.writeUuid(packetContext.getPlayer().getUuid());
+            data.writeString(name);
+            switch (name) {
+                case "set_volume":
+                case "stop_track":
+                    data.writeItemStack(attachedData.readItemStack());
+                    break;
+                case "play_track":
+                    data.writeItemStack(attachedData.readItemStack());
+                    data.writeUuid(packetContext.getPlayer().getUuid());
+                    break;
+                default: return;
+            }
             packetContext.getTaskQueue().execute(() -> {
                 if (server != null) {
-                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PLAY_TRACK_FOR_ALL_CLIENT, data));
-                }
-            });
-        });
-        // Stop the track for all players
-        ServerSidePacketRegistry.INSTANCE.register(STOP_TRACK_FOR_ALL_SERVER, (packetContext, attachedData) -> {
-            MinecraftServer server = packetContext.getPlayer().getServer();
-            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-            data.writeItemStack(attachedData.readItemStack());
-            packetContext.getTaskQueue().execute(() -> {
-                if (server != null) {
-                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, STOP_TRACK_FOR_ALL_CLIENT, data));
-                }
-            });
-        });
-        ServerSidePacketRegistry.INSTANCE.register(SET_VOLUME_ALL_SERVER, (packetContext, attachedData) -> {
-            MinecraftServer server = packetContext.getPlayer().getServer();
-            PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-            data.writeItemStack(attachedData.readItemStack());
-            packetContext.getTaskQueue().execute(() -> {
-                if (server != null) {
-                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, SET_VOLUME_ALL_CLIENT, data));
+                    PlayerStream.all(server).forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, ALL_PLAYERS_CLIENT, data));
                 }
             });
         });

@@ -28,13 +28,8 @@ public class DiscHolderHelper {
 
     public static Generic9DiscInventory getInventory(ItemStack stack, PlayerInventory inv) {
         if (!stack.getOrCreateTag().contains("Items")) {
-            // TODO, delete the check?
-            if (!inv.player.world.isClient) { // Set up inventory tag if needed, and copy over the selected slot int
-                int slot = getSelectedSlot(stack);
-                stack.setTag(Inventories.toTag(stack.getTag(), new Generic9DiscInventory().getStacks()));
-                CompoundTag tag = stack.getOrCreateTag();
-                tag.putInt("selected", slot);
-                stack.setTag(tag);
+            if (!inv.player.world.isClient) { // Is this ever called?
+                setupInitialTags(stack);
                 inv.markDirty();
             }
         }
@@ -145,7 +140,7 @@ public class DiscHolderHelper {
             tag.put("Items", invTag.getList("Items", 10));
         }
         if (!tag.contains("volume")) {
-            tag.putFloat("volume", 1.0F);
+            tag.putFloat("volume", 100.0F);
         }
         stack.setTag(tag);
     }

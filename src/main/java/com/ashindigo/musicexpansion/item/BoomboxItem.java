@@ -32,22 +32,25 @@ public class BoomboxItem extends Abstract9DiscItem {
     @Environment(EnvType.CLIENT)
     public void playSelectedDisc(ItemStack stack) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeString("play_track");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.PLAY_TRACK_FOR_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void stopSelectedDisc(ItemStack stack) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeString("stop_track");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.STOP_TRACK_FOR_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 
     @Override
     public void setVolume(ItemStack stack, float volume) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeString("set_volume");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.SET_VOLUME_ALL_SERVER, buf);
+        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 }

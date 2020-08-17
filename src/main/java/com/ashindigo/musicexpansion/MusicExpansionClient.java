@@ -9,8 +9,6 @@ import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
@@ -93,23 +91,29 @@ public class MusicExpansionClient implements ClientModInitializer {
                 }
             }
         });
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.PLAY_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
-            ItemStack boombox = buf.readItemStack();
-            UUID uuid = buf.readUuid();
-            if (MinecraftClient.getInstance().world != null) {
-                ctx.getTaskQueue().execute(() ->  MusicHelper.playTrack(boombox, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(boombox, DiscHolderHelper.getSelectedSlot(boombox))), DiscHolderHelper.getUUID(boombox), uuid)));
-            }
-        });
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.STOP_TRACK_FOR_ALL_CLIENT, (ctx, buf) -> {
-            ItemStack boombox = buf.readItemStack();
-            if (MinecraftClient.getInstance().world != null) {
-                ctx.getTaskQueue().execute(() ->  MusicHelper.stopTrack(boombox));
-            }
-        });
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.SET_VOLUME_ALL_CLIENT, (ctx, buf) -> {
-            ItemStack boombox = buf.readItemStack();
-            if (MinecraftClient.getInstance().world != null) {
-                ctx.getTaskQueue().execute(() ->  ((ControllableVolume)MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(boombox))).setVolume(DiscHolderHelper.getVolume(boombox)));
+        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.ALL_PLAYERS_CLIENT, (ctx, buf) -> {
+            String name = buf.readString();
+            switch (name) {
+                case "play_track":
+                    ItemStack playStack = buf.readItemStack();
+                    UUID uuid = buf.readUuid();
+                    if (MinecraftClient.getInstance().world != null) {
+                        ctx.getTaskQueue().execute(() -> MusicHelper.playTrack(playStack, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(playStack, DiscHolderHelper.getSelectedSlot(playStack))), DiscHolderHelper.getUUID(playStack), uuid)));
+                    }
+                    break;
+                case "stop_track":
+                    ItemStack stopStack = buf.readItemStack();
+                    if (MinecraftClient.getInstance().world != null) {
+                        ctx.getTaskQueue().execute(() -> MusicHelper.stopTrack(stopStack));
+                    }
+                    break;
+                case "set_volume":
+                    ItemStack volumeStack = buf.readItemStack();
+                    if (MinecraftClient.getInstance().world != null) {
+                        ctx.getTaskQueue().execute(() -> ((ControllableVolume) MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(volumeStack))).setVolume(DiscHolderHelper.getVolume(volumeStack)));
+                    }
+                    break;
+                default:
             }
         });
     }
@@ -139,7 +143,7 @@ public class MusicExpansionClient implements ClientModInitializer {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 ItemStack stack = client.player.inventory.getStack(iSlot);
-                ((Abstract9DiscItem)stack.getItem()).playSelectedDisc(stack);
+                ((Abstract9DiscItem) stack.getItem()).playSelectedDisc(stack);
             }
         }
     }
@@ -149,7 +153,7 @@ public class MusicExpansionClient implements ClientModInitializer {
             int iSlot = DiscHolderHelper.getActiveDiscHolderSlot(client.player.inventory);
             if (iSlot > -1) {
                 ItemStack stack = client.player.inventory.getStack(iSlot);
-                ((Abstract9DiscItem)stack.getItem()).stopSelectedDisc(stack);
+                ((Abstract9DiscItem) stack.getItem()).stopSelectedDisc(stack);
             }
         }
     }

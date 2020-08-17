@@ -14,7 +14,7 @@ public class WalkmanMovingSound extends MovingSoundInstance implements Controlla
     private final SoundEvent soundEvent;
     private final PlayerEntity player;
     private final UUID discUUID;
-    private float backupVolume;
+    private float backupVolume = volume;
 
     public WalkmanMovingSound(SoundEvent soundEvent, UUID discUUID) {
         super(soundEvent, SoundCategory.RECORDS);
