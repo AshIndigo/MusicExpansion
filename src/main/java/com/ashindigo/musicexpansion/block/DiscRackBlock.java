@@ -20,6 +20,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -32,9 +33,9 @@ public class DiscRackBlock extends BlockWithEntity {
     }
 
     @Override
-    public void buildTooltip(ItemStack stack, BlockView world, List<Text> tooltip, TooltipContext options) {
-        tooltip.add(new TranslatableText("desc.musicexpansion.discrack").formatted(Formatting.GRAY));
-        super.buildTooltip(stack, world, tooltip, options);
+    public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
+        tooltip.add(new TranslatableText("desc.musicexpansion.disc_rack").formatted(Formatting.GRAY));
+        super.appendTooltip(stack, world, tooltip, options);
     }
 
     @SuppressWarnings("deprecation") // onUse is deprecated for whatever reason.

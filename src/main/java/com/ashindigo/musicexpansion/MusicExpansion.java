@@ -4,17 +4,18 @@ import com.ashindigo.musicexpansion.block.DiscRackBlock;
 import com.ashindigo.musicexpansion.block.HASControllerBlock;
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
 import com.ashindigo.musicexpansion.block.SpeakerBlock;
+import com.ashindigo.musicexpansion.description.BoomboxDescription;
+import com.ashindigo.musicexpansion.description.DiscRackDescription;
+import com.ashindigo.musicexpansion.description.RecordMakerDescription;
+import com.ashindigo.musicexpansion.description.WalkmanDescription;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
 import com.ashindigo.musicexpansion.entity.HASControllerEntity;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import com.ashindigo.musicexpansion.entity.SpeakerEntity;
-import com.ashindigo.musicexpansion.handler.*;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.item.BoomboxItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
-import com.ashindigo.musicexpansion.item.CustomRecordItem;
 import com.ashindigo.musicexpansion.item.WalkmanItem;
-import com.ashindigo.musicexpansion.recipe.UpdateRecordRecipe;
 import com.mojang.datafixers.util.Function3;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -31,13 +32,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import spinnery.widget.api.Size;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,17 +56,16 @@ public class MusicExpansion implements ModInitializer {
     public static final String MODID = "musicexpansion";
     public static final String MODID_EXTERNAL = MODID + "external";
     public static final Logger logger = LogManager.getLogger(MODID);
-    public static final Size SLOT_SIZE = Size.of(18, 18);
-    public static SpecialRecipeSerializer<UpdateRecordRecipe> UPDATE_DISC;
-    public static ExtendedScreenHandlerType<WalkmanHandler> WALKMAN_HANDLER_TYPE;
-    public static ExtendedScreenHandlerType<BoomboxHandler> BOOMBOX_HANDLER_TYPE;
-    public static ExtendedScreenHandlerType<RecordMakerHandler> RECORD_MAKER_HANDLER_TYPE;
-    public static ExtendedScreenHandlerType<DiscRackHandler> DISC_RACK_HANDLER_TYPE;
-    public static ExtendedScreenHandlerType<HASControllerHandler> HAS_CONTROLLER_HANDLER_TYPE;
-    public static ExtendedScreenHandlerType<SpeakerHandler> SPEAKER_HANDLER_TYPE;
+    public static ExtendedScreenHandlerType<WalkmanDescription> WALKMAN_HANDLER_TYPE;
+    public static ExtendedScreenHandlerType<BoomboxDescription> BOOMBOX_HANDLER_TYPE;
+    public static ExtendedScreenHandlerType<RecordMakerDescription> RECORD_MAKER_HANDLER_TYPE;
+    public static ExtendedScreenHandlerType<DiscRackDescription> DISC_RACK_HANDLER_TYPE;
+    //public static ExtendedScreenHandlerType<HASControllerHandler> HAS_CONTROLLER_HANDLER_TYPE;
+    //public static ExtendedScreenHandlerType<SpeakerHandler> SPEAKER_HANDLER_TYPE;
     // Items/Blocks
     public static Item blankRecord;
     public static WalkmanItem walkman;
+    public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static BoomboxItem boombox;
     public static CustomDiscItem customDisc;
     public static RecordMakerBlock recordMakerBlock;
@@ -76,36 +76,14 @@ public class MusicExpansion implements ModInitializer {
     public static BlockEntityType<DiscRackEntity> DISC_RACK_ENTITY_TYPE;
     public static BlockEntityType<HASControllerEntity> HAS_CONTROLLER_ENTITY_TYPE;
     public static BlockEntityType<SpeakerEntity> SPEAKER_ENTITY_TYPE;
-    public static final ItemGroup MUSIC_GROUP = FabricItemGroupBuilder.build(new Identifier(MODID, "main"), () -> new ItemStack(walkman));
     public static ArrayList<Identifier> tracks = new ArrayList<>();
-
-    @Override
-    public void onInitialize() {
-        registerItemsBlocks();
-        // Whole bunch of handler/entity registry stuff
-        WALKMAN_HANDLER_TYPE = registerHandler("walkman", (integer, inventory, packetByteBuf) -> new WalkmanHandler(integer, inventory, packetByteBuf.readInt()));
-        BOOMBOX_HANDLER_TYPE = registerHandler("boombox", (integer, inventory, packetByteBuf) -> new BoomboxHandler(integer, inventory, packetByteBuf.readInt()));
-        RECORD_MAKER_HANDLER_TYPE = registerHandler("recordmaker", (integer, inventory, packetByteBuf) -> new RecordMakerHandler(integer, inventory, packetByteBuf.readBlockPos()));
-        RECORD_MAKER_ENTITY_TYPE = registerBlockEntity("recordmaker", RecordMakerEntity::new, recordMakerBlock);
-        DISC_RACK_HANDLER_TYPE = registerHandler("disc_rack", (integer, inventory, packetByteBuf) -> new DiscRackHandler(integer, inventory, packetByteBuf.readBlockPos()));
-        DISC_RACK_ENTITY_TYPE = registerBlockEntity("disc_rack", DiscRackEntity::new, discRackBlock);
-        HAS_CONTROLLER_HANDLER_TYPE = registerHandler("has_controller", (integer, inventory, packetByteBuf) -> new HASControllerHandler(integer, inventory, packetByteBuf.readBlockPos()));
-        HAS_CONTROLLER_ENTITY_TYPE = registerBlockEntity("has_controller", HASControllerEntity::new, hasControllerBlock);
-        SPEAKER_HANDLER_TYPE = registerHandler("speaker", (integer, inventory, packetByteBuf) -> new SpeakerHandler(integer, inventory, packetByteBuf.readBlockPos()));
-        SPEAKER_ENTITY_TYPE = registerBlockEntity("speaker", SpeakerEntity::new, speakerBlock);
-        // Upgrade old disc recipe
-        UPDATE_DISC = Registry.register(Registry.RECIPE_SERIALIZER, new Identifier(MODID, "update_disc"), new SpecialRecipeSerializer<>(UpdateRecordRecipe::new));
-        PacketRegistry.registerServerPackets();
-        registerTracks();
-        //registerOldRecords();
-    }
 
     private static void registerItemsBlocks() {
         walkman = registerItem("walkman", WalkmanItem::new);
         boombox = registerItem("boombox", BoomboxItem::new);
         blankRecord = registerItem("blank_record", () -> new Item(new Item.Settings().group(MUSIC_GROUP)));
         customDisc = registerItem("custom_disc", CustomDiscItem::new);
-        recordMakerBlock = registerBlock("recordmaker", RecordMakerBlock::new);
+        recordMakerBlock = registerBlock("record_maker", RecordMakerBlock::new);
         discRackBlock = registerBlock("disc_rack", DiscRackBlock::new);
         hasControllerBlock = registerBlock("has_controller", HASControllerBlock::new);
         speakerBlock = registerBlock("speaker", SpeakerBlock::new);
@@ -131,6 +109,37 @@ public class MusicExpansion implements ModInitializer {
         return (ExtendedScreenHandlerType<T>) ScreenHandlerRegistry.registerExtended(new Identifier(MODID, name), func::apply);
     }
 
+    public static ArrayList<ItemStack> getCraftableRecords(boolean all) {
+        ArrayList<ItemStack> discs = new ArrayList<>();
+        for (Identifier id : tracks) {
+            discs.add(DiscHelper.createCustomDisc(id));
+        }
+        if (all) {
+            for (Item disc : ItemTags.getTagGroup().getTagOrEmpty(ItemTags.MUSIC_DISCS.getId()).values()) {
+                discs.add(new ItemStack(disc));
+            }
+        }
+        return discs;
+    }
+
+    @Override
+    public void onInitialize() {
+        registerItemsBlocks();
+        // Whole bunch of handler/entity registry stuff
+        WALKMAN_HANDLER_TYPE = registerHandler("walkman", (integer, inventory, packetByteBuf) -> new WalkmanDescription(integer, inventory, packetByteBuf.readInt()));
+        BOOMBOX_HANDLER_TYPE = registerHandler("boombox", (integer, inventory, packetByteBuf) -> new BoomboxDescription(integer, inventory, packetByteBuf.readInt()));
+        RECORD_MAKER_HANDLER_TYPE = registerHandler("record_maker", (syncId, playerInventory, packetByteBuf) -> new RecordMakerDescription(syncId, playerInventory, ScreenHandlerContext.create(playerInventory.player.getEntityWorld(), packetByteBuf.readBlockPos())));
+        RECORD_MAKER_ENTITY_TYPE = registerBlockEntity("record_maker", RecordMakerEntity::new, recordMakerBlock);
+        DISC_RACK_HANDLER_TYPE = registerHandler("disc_rack", (syncId, playerInventory, packetByteBuf) -> new DiscRackDescription(syncId, playerInventory, ScreenHandlerContext.create(playerInventory.player.getEntityWorld(), packetByteBuf.readBlockPos())));
+        DISC_RACK_ENTITY_TYPE = registerBlockEntity("disc_rack", DiscRackEntity::new, discRackBlock);
+//        HAS_CONTROLLER_HANDLER_TYPE = registerHandler("has_controller", (integer, inventory, packetByteBuf) -> new HASControllerHandler(integer, inventory, packetByteBuf.readBlockPos()));
+//        HAS_CONTROLLER_ENTITY_TYPE = registerBlockEntity("has_controller", HASControllerEntity::new, hasControllerBlock);
+//        SPEAKER_HANDLER_TYPE = registerHandler("speaker", (integer, inventory, packetByteBuf) -> new SpeakerHandler(integer, inventory, packetByteBuf.readBlockPos()));
+//        SPEAKER_ENTITY_TYPE = registerBlockEntity("speaker", SpeakerEntity::new, speakerBlock);
+        PacketRegistry.registerServerPackets();
+        registerTracks();
+    }
+
     private void registerTracks() {
         try {
             tracks = RecordJsonParser.parse();
@@ -140,26 +149,5 @@ public class MusicExpansion implements ModInitializer {
         for (Identifier id : tracks) {
             Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
         }
-    }
-
-    @Deprecated
-    private static void registerOldRecords() {
-        for (Identifier track : tracks) {
-            Registry.register(Registry.ITEM, track, new CustomRecordItem(track, new SoundEvent(track)));
-        }
-    }
-
-
-    public static ArrayList<ItemStack> getCraftableRecords(boolean all) {
-        ArrayList<ItemStack> discs = new ArrayList<>();
-        for (Identifier id : tracks) {
-            discs.add(DiscHelper.createCustomDisc(id));
-        }
-        if (all) {
-            for (Item disc : ItemTags.getContainer().getOrCreate(ItemTags.MUSIC_DISCS.getId()).values()) {
-                discs.add(new ItemStack(disc));
-            }
-        }
-        return discs;
     }
 }

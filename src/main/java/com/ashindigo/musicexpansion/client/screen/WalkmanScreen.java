@@ -1,12 +1,12 @@
 package com.ashindigo.musicexpansion.client.screen;
 
-import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.description.WalkmanDescription;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-public class WalkmanScreen extends Abstract9DiscScreen<WalkmanHandler> {
+public class WalkmanScreen extends Abstract9DiscScreen<WalkmanDescription> {
 
-    public WalkmanScreen(WalkmanHandler handler, PlayerInventory playerInv, Text title) {
-        super(handler, playerInv, title);
+    public WalkmanScreen(WalkmanDescription description, PlayerInventory playerInventory, Text title) {
+        super(description, playerInventory, title);
     }
 }

@@ -45,8 +45,8 @@ public class MusicExpansionClient implements ClientModInitializer {
         ScreenRegistry.register(MusicExpansion.BOOMBOX_HANDLER_TYPE, BoomboxScreen::new);
         ScreenRegistry.register(MusicExpansion.DISC_RACK_HANDLER_TYPE, DiscRackScreen::new);
         ScreenRegistry.register(MusicExpansion.RECORD_MAKER_HANDLER_TYPE, RecordMakerScreen::new);
-        ScreenRegistry.register(MusicExpansion.HAS_CONTROLLER_HANDLER_TYPE, HASControllerScreen::new);
-        ScreenRegistry.register(MusicExpansion.SPEAKER_HANDLER_TYPE, SpeakerScreen::new);
+//        ScreenRegistry.register(MusicExpansion.HAS_CONTROLLER_HANDLER_TYPE, HASControllerScreen::new);
+//        ScreenRegistry.register(MusicExpansion.SPEAKER_HANDLER_TYPE, SpeakerScreen::new);
         playDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("play", GLFW.GLFW_KEY_UP));
         stopDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("stop", GLFW.GLFW_KEY_DOWN));
         nextDisc = KeyBindingHelper.registerKeyBinding(registerKeybind("next", GLFW.GLFW_KEY_RIGHT));

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "musicexpansion:block/discrack"
+      "model": "musicexpansion:block/disc_rack"
     }
   }
 }

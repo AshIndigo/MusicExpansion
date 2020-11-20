@@ -1,12 +1,12 @@
 package com.ashindigo.musicexpansion.client.screen;
 
-import com.ashindigo.musicexpansion.handler.BoomboxHandler;
+import com.ashindigo.musicexpansion.description.BoomboxDescription;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 
-public class BoomboxScreen extends Abstract9DiscScreen<BoomboxHandler> {
+public class BoomboxScreen extends Abstract9DiscScreen<BoomboxDescription> {
 
-    public BoomboxScreen(BoomboxHandler handler, PlayerInventory playerInv, Text title) {
-        super(handler, playerInv, title);
+    public BoomboxScreen(BoomboxDescription handler, PlayerInventory playerInventory, Text title) {
+        super(handler, playerInventory, title);
     }
 }

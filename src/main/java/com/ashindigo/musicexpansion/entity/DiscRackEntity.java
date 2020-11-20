@@ -1,28 +1,27 @@
 package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.handler.DiscRackHandler;
+import com.ashindigo.musicexpansion.description.DiscRackDescription;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
-import spinnery.common.inventory.BaseInventory;
-import spinnery.common.utility.InventoryUtilities;
 
-public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable, ExtendedScreenHandlerFactory {
+public class DiscRackEntity extends BlockEntity implements Inventory, ExtendedScreenHandlerFactory {
 
     final DefaultedList<ItemStack> stacks;
 
@@ -45,31 +44,12 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        BaseInventory inv = InventoryUtilities.read(tag);
-        for (int i = 0; i < inv.size(); i++) {
-            setStack(i, inv.getStack(i));
-        }
+        Inventories.fromTag(tag, stacks);
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        InventoryUtilities.write(this, tag);
-        super.toTag(tag);
-        return tag;
-    }
-
-    @Override
-    public void fromClientTag(CompoundTag tag) {
-        super.fromTag(getCachedState(), tag);
-        BaseInventory inv = InventoryUtilities.read(tag);
-        for (int i = 0; i < inv.size(); i++) {
-            setStack(i, inv.getStack(i));
-        }
-    }
-
-    @Override
-    public CompoundTag toClientTag(CompoundTag tag) {
-        InventoryUtilities.write(this, tag);
+        Inventories.toTag(tag, stacks);
         super.toTag(tag);
         return tag;
     }
@@ -121,12 +101,12 @@ public class DiscRackEntity extends BlockEntity implements Inventory, BlockEntit
 
     @Override
     public Text getDisplayName() {
-        return new TranslatableText("block.musicexpansion.discrack");
+        return new TranslatableText(MusicExpansion.discRackBlock.getTranslationKey());
     }
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new DiscRackHandler(syncId, inv, getPos());
+        return new DiscRackDescription(syncId, inv, ScreenHandlerContext.create(world, pos));
     }
 
 }

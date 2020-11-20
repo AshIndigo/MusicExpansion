@@ -1,7 +1,6 @@
 package com.ashindigo.musicexpansion.entity;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import com.ashindigo.musicexpansion.handler.HASControllerHandler;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -9,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
@@ -19,8 +19,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
-import spinnery.common.inventory.BaseInventory;
-import spinnery.common.utility.InventoryUtilities;
 
 public class HASControllerEntity extends BlockEntity implements Inventory, BlockEntityClientSerializable, ExtendedScreenHandlerFactory {
 
@@ -48,17 +46,14 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
     @Override
     public void fromTag(BlockState state, CompoundTag tag) {
         super.fromTag(state, tag);
-        BaseInventory inv = InventoryUtilities.read(tag);
-        for (int i = 0; i < inv.size(); i++) {
-            setStack(i, inv.getStack(i));
-        }
+        Inventories.fromTag(tag, stacks);
         id = tag.getInt("id");
         selectedSlot = tag.getInt("selected");
     }
 
     @Override
     public CompoundTag toTag(CompoundTag tag) {
-        InventoryUtilities.write(this, tag);
+        Inventories.toTag(tag, stacks);
         tag.putInt("id", id);
         tag.putInt("selected", selectedSlot);
         super.toTag(tag);
@@ -127,7 +122,7 @@ public class HASControllerEntity extends BlockEntity implements Inventory, Block
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new HASControllerHandler(syncId, inv, getPos());
+        return null;//new HASControllerHandler(syncId, inv, getPos());
     }
 
     public int getId() {

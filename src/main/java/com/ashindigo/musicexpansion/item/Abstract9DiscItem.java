@@ -93,7 +93,7 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     // Hard coded reach distance that was copied from ClientPlayerInteractionManager#getReachDistance()
     // Could pose an issue later?
     private boolean isRightClickingOnRack(World world, PlayerEntity player) {
-        HitResult result = player.rayTrace(player.isCreative() ? 5 : 4.5, 1, false);
+        HitResult result = player.raycast(player.isCreative() ? 5 : 4.5, 1, false);
         if (result.getType() == HitResult.Type.BLOCK) {
             return world.getBlockState(new BlockPos(result.getPos())).getBlock() instanceof DiscRackBlock;
         }
@@ -123,7 +123,7 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
                         player.inventory.markDirty();
                     }
                     discRack.markDirty();
-                    discRack.sync();
+                    //discRack.sync();
                     return ActionResult.SUCCESS;
                 }
             }

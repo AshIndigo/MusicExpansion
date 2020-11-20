@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "": {
+      "model": "musicexpansion:block/record_maker"
+    }
+  }
+}
+

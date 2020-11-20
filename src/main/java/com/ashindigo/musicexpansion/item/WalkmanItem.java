@@ -3,7 +3,7 @@ package com.ashindigo.musicexpansion.item;
 import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.client.WalkmanMovingSound;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
-import com.ashindigo.musicexpansion.handler.WalkmanHandler;
+import com.ashindigo.musicexpansion.description.WalkmanDescription;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
 import net.fabricmc.api.EnvType;
@@ -21,7 +21,7 @@ public class WalkmanItem extends Abstract9DiscItem {
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new WalkmanHandler(syncId, inv, player.getMainHandStack().getItem().getClass().isAssignableFrom(getClass()) ? Hand.MAIN_HAND.ordinal() : Hand.OFF_HAND.ordinal());
+        return new WalkmanDescription(syncId, inv, player.getMainHandStack().getItem().getClass().isAssignableFrom(getClass()) ? Hand.MAIN_HAND.ordinal() : Hand.OFF_HAND.ordinal());
     }
 
     @Override

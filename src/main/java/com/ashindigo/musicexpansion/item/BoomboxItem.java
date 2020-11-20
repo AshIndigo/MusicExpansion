@@ -1,7 +1,7 @@
 package com.ashindigo.musicexpansion.item;
 
 import com.ashindigo.musicexpansion.PacketRegistry;
-import com.ashindigo.musicexpansion.handler.BoomboxHandler;
+import com.ashindigo.musicexpansion.description.BoomboxDescription;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +20,7 @@ public class BoomboxItem extends Abstract9DiscItem {
 
     @Override
     public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player) {
-        return new BoomboxHandler(syncId, inv, player.getMainHandStack().getItem().getClass().isAssignableFrom(getClass()) ? Hand.MAIN_HAND.ordinal() : Hand.OFF_HAND.ordinal());
+        return new BoomboxDescription(syncId, inv, player.getMainHandStack().getItem().getClass().isAssignableFrom(getClass()) ? Hand.MAIN_HAND.ordinal() : Hand.OFF_HAND.ordinal());
     }
 
     @Override
