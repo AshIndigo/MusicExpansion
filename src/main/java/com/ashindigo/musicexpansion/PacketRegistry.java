@@ -18,12 +18,6 @@ public class PacketRegistry {
     public static final Identifier ALL_RECORDS = new Identifier(MusicExpansion.MODID, "all_records");
     public static final Identifier PLAY_JUKEBOX_TRACK = new Identifier(MusicExpansion.MODID, "play_track");
     public static final Identifier SYNC_EVENTS = new Identifier(MusicExpansion.MODID, "sync_events");
-    //    public static final Identifier PLAY_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "play_track_for_all_server");
-//    public static final Identifier PLAY_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "play_track_for_all_client");
-//    public static final Identifier STOP_TRACK_FOR_ALL_SERVER = new Identifier(MusicExpansion.MODID, "stop_track_for_all_server");
-//    public static final Identifier STOP_TRACK_FOR_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "stop_track_for_all_client");
-//    public static final Identifier SET_VOLUME_ALL_SERVER = new Identifier(MusicExpansion.MODID, "set_volume_all_server");
-//    public static final Identifier SET_VOLUME_ALL_CLIENT = new Identifier(MusicExpansion.MODID, "set_volume_all_client");
     public static final Identifier ALL_PLAYERS_SERVER = new Identifier(MusicExpansion.MODID, "all_players_server");
     public static final Identifier ALL_PLAYERS_CLIENT = new Identifier(MusicExpansion.MODID, "all_players_client");
     public static final Identifier SET_VOLUME = new Identifier(MusicExpansion.MODID, "set_volume");

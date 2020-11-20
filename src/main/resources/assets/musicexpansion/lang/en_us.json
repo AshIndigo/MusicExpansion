@@ -11,6 +11,7 @@
   "text.musicexpansion.active_status": "Active: ",
   "text.musicexpansion.blank_disk": "Blank disks",
   "text.musicexpansion.result": "Result",
+  "text.musicexpansion.volume": "Volume",
   "category.musicexpansion.binds": "Music Expansion",
   "desc.musicexpansion.record_maker": "Makes custom records when supplied with blank records",
   "desc.musicexpansion.walkman": "Plays records that are stored inside for you to hear",

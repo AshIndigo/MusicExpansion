@@ -25,14 +25,13 @@ public class Abstract9DiscHolderDescription extends SyncedGuiDescription {
 
     public Abstract9DiscHolderDescription(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInv, int hand) {
         super(type, syncId, playerInv);
-        WPlainPanel root = new WPlainPanel();
-        root.setSize(180, 168);
+        WGridPanel root = new WGridPanel();
         holder = playerInv.player.getStackInHand(Hand.values()[hand]);
         uuid = DiscHolderHelper.getUUID(holder);
         Generic9DiscInventory discHolderInv = DiscHolderHelper.getInventory(holder, playerInv);
         discHolderInv.addListener(sender -> {
             if (!playerInv.player.world.isClient) {
-//                 Set the items tag in inventory, by getting the tag and setting the "Items" tag to the resulting ListTag from Inventories.toTag() using the stacks from the current inventory
+//              Set the items tag in inventory, by getting the tag and setting the "Items" tag to the resulting ListTag from Inventories.toTag() using the stacks from the current inventory
                 CompoundTag invTag = Inventories.toTag(holder.getTag(), discHolderInv.getStacks());
                 if (invTag != null) {
                     holder.getOrCreateTag().put("Items",  invTag.getList("Items", 10));
@@ -40,15 +39,15 @@ public class Abstract9DiscHolderDescription extends SyncedGuiDescription {
                 }
             }
         });
-        root.add(new WSprite(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png")), 27, 16);
-        root.add(new WButton(new LiteralText("▶")), 9, 40);
-        root.add(new WButton(new LiteralText("⏹")), 45, 40);
-        root.add(new WButton(new LiteralText("⏮")), 81, 40);
-        root.add(new WButton(new LiteralText("⏭")), 117, 40);
-        root.add(new WButton(new LiteralText("?")), 153, 40);
-        root.add(new WLabeledSlider(0, 100, Axis.HORIZONTAL, new TranslatableText("text.musicexpansion.volume")), 9, 60);
-        root.add(new WItemSlot(discHolderInv, 0, 9, 1, false), 9, 16);
-        root.add(new WPlayerInvPanel(playerInventory, true), 9, 84);
+        root.add(new WItemSlot(discHolderInv, 0, 9, 1, false), 0, 1);
+        root.add(new WSprite(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png")), 0, 1);
+        root.add(new WButton(new LiteralText("▶")), 0, 2);
+        root.add(new WButton(new LiteralText("⏹")), 2, 2);
+        root.add(new WButton(new LiteralText("⏮")), 4, 2);
+        root.add(new WButton(new LiteralText("⏭")), 6, 2);
+        root.add(new WButton(new LiteralText("?")), 8, 2);
+        root.add(new WLabeledSlider(0, 100, Axis.HORIZONTAL, new TranslatableText("text.musicexpansion.volume")), 1, 3);
+        root.add(new WPlayerInvPanel(playerInventory, true), 0, 4);
         setRootPanel(root);
         root.validate(this);
     }

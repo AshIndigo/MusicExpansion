@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "musicexpansion:recordmaker"
+          "name": "musicexpansion:record_maker"
         }
       ],
       "conditions": [

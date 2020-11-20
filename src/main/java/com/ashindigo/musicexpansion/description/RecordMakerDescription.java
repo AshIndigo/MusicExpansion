@@ -1,20 +1,21 @@
 package com.ashindigo.musicexpansion.description;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
+import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
+import com.ashindigo.musicexpansion.widget.WRecordButton;
 import io.github.cottonmc.cotton.gui.SyncedGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
-import net.fabricmc.fabric.api.util.TriState;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MusicDiscItem;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerContext;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
-
-import java.util.function.BiConsumer;
+import net.minecraft.util.math.BlockPos;
 
 public class RecordMakerDescription extends SyncedGuiDescription {
 
@@ -23,10 +24,21 @@ public class RecordMakerDescription extends SyncedGuiDescription {
         WPlainPanel root = new WPlainPanel();
         root.setSize(162, 214);
         WGridPanel subRoot = new WGridPanel();
-        WListPanel<ItemStack, WButton> records = new WListPanel<>(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()), WButton::new, (stack, wButton) -> {
+        WListPanel<ItemStack, WRecordButton> records = new WListPanel<>(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()), WRecordButton::new, (stack, wButton) -> {
             wButton.setIcon(new ItemIcon(stack));
             wButton.setLabel(DiscHelper.getDesc(stack));
             wButton.setSize(20, 16);
+            wButton.setRecord(stack);
+            wButton.setOnClick(() -> {
+                PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+                final BlockPos[] pos = new BlockPos[1]; // Hack
+                ctx.run((world, blockPos) -> {
+                    pos[0] = blockPos;
+                });
+                buf.writeBlockPos(pos[0]);
+                buf.writeItemStack(wButton.getRecord());
+                ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CREATE_RECORD, buf);
+            });
             wButton.validate(this);
         });
         records.setListItemHeight(16);

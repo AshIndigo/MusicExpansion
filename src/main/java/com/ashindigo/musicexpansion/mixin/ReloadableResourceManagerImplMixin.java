@@ -20,8 +20,8 @@ public abstract class ReloadableResourceManagerImplMixin {
 
     @Shadow public abstract void addPack(ResourcePack resourcePack);
 
-    @Inject(method = "beginMonitoredReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/resource/ResourceReloadMonitor;", at = @At(value = "RETURN"))
+    @Inject(method = "beginMonitoredReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/resource/ResourceReloadMonitor;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManagerImpl;beginReloadInner(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/List;Ljava/util/concurrent/CompletableFuture;)Lnet/minecraft/resource/ResourceReloadMonitor;"))
     public void musicexpansion_beginMonitorReload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReloadMonitor> info) {
-        this.addPack(new MusicExpansionResourcePack());
+        addPack(new MusicExpansionResourcePack());
     }
 }
