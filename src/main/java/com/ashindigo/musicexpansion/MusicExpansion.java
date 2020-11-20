@@ -1,17 +1,13 @@
 package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.block.DiscRackBlock;
-import com.ashindigo.musicexpansion.block.HASControllerBlock;
 import com.ashindigo.musicexpansion.block.RecordMakerBlock;
-import com.ashindigo.musicexpansion.block.SpeakerBlock;
 import com.ashindigo.musicexpansion.description.BoomboxDescription;
 import com.ashindigo.musicexpansion.description.DiscRackDescription;
 import com.ashindigo.musicexpansion.description.RecordMakerDescription;
 import com.ashindigo.musicexpansion.description.WalkmanDescription;
 import com.ashindigo.musicexpansion.entity.DiscRackEntity;
-import com.ashindigo.musicexpansion.entity.HASControllerEntity;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
-import com.ashindigo.musicexpansion.entity.SpeakerEntity;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.item.BoomboxItem;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
@@ -69,12 +65,12 @@ public class MusicExpansion implements ModInitializer {
     public static CustomDiscItem customDisc;
     public static RecordMakerBlock recordMakerBlock;
     public static DiscRackBlock discRackBlock;
-    public static HASControllerBlock hasControllerBlock;
-    public static SpeakerBlock speakerBlock;
+//    public static HASControllerBlock hasControllerBlock;
+//    public static SpeakerBlock speakerBlock;
     public static BlockEntityType<RecordMakerEntity> RECORD_MAKER_ENTITY_TYPE;
     public static BlockEntityType<DiscRackEntity> DISC_RACK_ENTITY_TYPE;
-    public static BlockEntityType<HASControllerEntity> HAS_CONTROLLER_ENTITY_TYPE;
-    public static BlockEntityType<SpeakerEntity> SPEAKER_ENTITY_TYPE;
+//    public static BlockEntityType<HASControllerEntity> HAS_CONTROLLER_ENTITY_TYPE;
+//    public static BlockEntityType<SpeakerEntity> SPEAKER_ENTITY_TYPE;
     public static ArrayList<Identifier> tracks = new ArrayList<>();
 
     private static void registerItemsBlocks() {
@@ -84,8 +80,8 @@ public class MusicExpansion implements ModInitializer {
         customDisc = registerItem("custom_disc", CustomDiscItem::new);
         recordMakerBlock = registerBlock("record_maker", RecordMakerBlock::new);
         discRackBlock = registerBlock("disc_rack", DiscRackBlock::new);
-        hasControllerBlock = registerBlock("has_controller", HASControllerBlock::new);
-        speakerBlock = registerBlock("speaker", SpeakerBlock::new);
+//        hasControllerBlock = registerBlock("has_controller", HASControllerBlock::new);
+//        speakerBlock = registerBlock("speaker", SpeakerBlock::new);
 
     }
 
