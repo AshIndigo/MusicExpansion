@@ -44,14 +44,14 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
     @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         tooltip.add(getDescription());
-        tooltip.add(new TranslatableText("desc.musicexpansion.activekeybinds").formatted(Formatting.GRAY));
-        tooltip.add(new TranslatableText("text.musicexpansion.activestatus").append(WordUtils.capitalize(String.valueOf(DiscHolderHelper.isActive(stack)))).formatted(Formatting.GRAY));
+        tooltip.add(new TranslatableText("desc.musicexpansion.active_keybinds").formatted(Formatting.GRAY));
+        tooltip.add(new TranslatableText("text.musicexpansion.active_status").append(WordUtils.capitalize(String.valueOf(DiscHolderHelper.isActive(stack)))).formatted(Formatting.GRAY));
         if (MinecraftClient.getInstance().player != null) {
             ItemStack disc = DiscHolderHelper.getDiscInSlot(stack, DiscHolderHelper.getSelectedSlot(stack));
             if (!disc.isEmpty()) {
-                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack").append(DiscHelper.getDesc(disc)).formatted(Formatting.GRAY));
+                tooltip.add(new TranslatableText("text.musicexpansion.current_track").append(DiscHelper.getDesc(disc)).formatted(Formatting.GRAY));
             } else {
-                tooltip.add(new TranslatableText("text.musicexpansion.currenttrack.nothing").formatted(Formatting.GRAY));
+                tooltip.add(new TranslatableText("text.musicexpansion.current_track.nothing").formatted(Formatting.GRAY));
             }
         }
         super.appendTooltip(stack, world, tooltip, context);

@@ -196,9 +196,9 @@ public class MusicExpansionClient implements ClientModInitializer {
         if (client.player != null) {
             Text desc = DiscHelper.getDesc(DiscHolderHelper.getDiscInSlot(client.player.inventory.getStack(iSlot), slot));
             if (!desc.equals(new LiteralText(""))) {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack").append(desc), false);
+                client.player.sendMessage(new TranslatableText("text.musicexpansion.current_track").append(desc), false);
             } else {
-                client.player.sendMessage(new TranslatableText("text.musicexpansion.currenttrack.nothing"), false);
+                client.player.sendMessage(new TranslatableText("text.musicexpansion.current_track.nothing"), false);
             }
         }
     }
