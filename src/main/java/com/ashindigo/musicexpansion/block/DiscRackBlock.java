@@ -7,6 +7,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -20,11 +21,12 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class DiscRackBlock extends BlockWithEntity {
+public class DiscRackBlock extends BlockWithEntity implements InventoryProvider {
 
     private static final VoxelShape SHAPE = VoxelShapes.union(Block.createCuboidShape(0, 0, 5, 16, 6, 11));
 
@@ -81,5 +83,10 @@ public class DiscRackBlock extends BlockWithEntity {
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new DiscRackEntity();
+    }
+
+    @Override
+    public SidedInventory getInventory(BlockState state, WorldAccess world, BlockPos pos) {
+        return (SidedInventory) world.getBlockEntity(pos);
     }
 }

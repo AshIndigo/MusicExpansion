@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 // TODO Future Ash notes
+// TODO Small issues, positional audio is being a pain
 // HAS Stuff:
 // GUI needs a field to input the number
 // Need to add speakers too to actually act as a source of sound.
@@ -72,6 +73,7 @@ public class MusicExpansion implements ModInitializer {
 //    public static BlockEntityType<HASControllerEntity> HAS_CONTROLLER_ENTITY_TYPE;
 //    public static BlockEntityType<SpeakerEntity> SPEAKER_ENTITY_TYPE;
     public static ArrayList<Identifier> tracks = new ArrayList<>();
+    public static ArrayList<Identifier> tracksOrig;
 
     private static void registerItemsBlocks() {
         walkman = registerItem("walkman", WalkmanItem::new);
@@ -144,5 +146,6 @@ public class MusicExpansion implements ModInitializer {
         for (Identifier id : tracks) {
             Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
         }
+        tracksOrig = new ArrayList<>(tracks);
     }
 }

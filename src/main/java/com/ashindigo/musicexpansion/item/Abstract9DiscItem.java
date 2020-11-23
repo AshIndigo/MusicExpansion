@@ -123,7 +123,6 @@ public abstract class Abstract9DiscItem extends Item implements ExtendedScreenHa
                         player.inventory.markDirty();
                     }
                     discRack.markDirty();
-                    //discRack.sync();
                     return ActionResult.SUCCESS;
                 }
             }

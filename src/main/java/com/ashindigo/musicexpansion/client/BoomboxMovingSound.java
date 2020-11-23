@@ -25,6 +25,7 @@ public class BoomboxMovingSound extends MovingSoundInstance implements Controlla
         this.hostUUID = hostUUID;
         this.repeat = false;
         this.repeatDelay = 0;
+        this.attenuationType = AttenuationType.LINEAR;
     }
 
     @Override

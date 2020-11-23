@@ -8,13 +8,11 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.Material;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -27,16 +25,16 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class RecordMakerBlock extends BlockWithEntity {
+public class RecordMakerBlock extends BlockWithEntity implements InventoryProvider {
 
     public RecordMakerBlock() {
         super(FabricBlockSettings.of(Material.METAL).breakByHand(false).strength(3, 5).requiresTool().breakByTool(FabricToolTags.PICKAXES, 2));
     }
-
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable BlockView world, List<Text> tooltip, TooltipContext options) {
@@ -65,7 +63,6 @@ public class RecordMakerBlock extends BlockWithEntity {
                 ItemScatterer.spawn(world, pos, (RecordMakerEntity) blockEntity);
                 world.updateComparators(pos, this);
             }
-
             super.onStateReplaced(state, world, pos, newState, moved);
         }
     }
@@ -78,5 +75,10 @@ public class RecordMakerBlock extends BlockWithEntity {
     @Override
     public BlockEntity createBlockEntity(BlockView world) {
         return new RecordMakerEntity();
+    }
+
+    @Override
+    public SidedInventory getInventory(BlockState state, WorldAccess world, BlockPos pos) {
+        return (SidedInventory) world.getBlockEntity(pos);
     }
 }
