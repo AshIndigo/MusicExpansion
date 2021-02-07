@@ -40,7 +40,10 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 // TODO Future Ash notes
-// TODO Small issues, positional audio is being a pain
+// TODO Available tracks need to be synchronized properly upon connection/disconnect
+// TODO Boombox doesn't have positional audio/distance volume
+// TODO HAS needs to be finished/reimplemented
+// TODO Minecraft's audio sucks
 // HAS Stuff:
 // GUI needs a field to input the number
 // Need to add speakers too to actually act as a source of sound.

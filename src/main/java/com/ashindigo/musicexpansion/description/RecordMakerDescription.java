@@ -17,13 +17,14 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
+// TODO This list is acting up for some reason
 public class RecordMakerDescription extends SyncedGuiDescription {
 
     public RecordMakerDescription(int syncId, PlayerInventory playerInventory, ScreenHandlerContext ctx) {
         super(MusicExpansion.RECORD_MAKER_HANDLER_TYPE, syncId, playerInventory, getBlockInventory(ctx, 2), getBlockPropertyDelegate(ctx));
-        WPlainPanel root = new WPlainPanel();
+        WGridPanel root = new WGridPanel();
         root.setSize(162, 214);
-        WGridPanel subRoot = new WGridPanel();
+        //WGridPanel subRoot = new WGridPanel();
         WListPanel<ItemStack, WRecordButton> records = new WListPanel<>(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()), WRecordButton::new, (stack, wButton) -> {
             wButton.setIcon(new ItemIcon(stack));
             wButton.setLabel(DiscHelper.getDesc(stack));
@@ -39,19 +40,17 @@ public class RecordMakerDescription extends SyncedGuiDescription {
                 buf.writeItemStack(wButton.getRecord());
                 ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CREATE_RECORD, buf);
             });
-            wButton.validate(this);
+            //wButton.validate(this);
         });
         records.setListItemHeight(16);
-        root.add(records, 0, 16);
-        records.setSize(162, 160);
-        subRoot.add(new WLabel(new TranslatableText("text.musicexpansion.blank_disk").append(":")), 0, 5);
-        subRoot.add(new WLabel(new TranslatableText("text.musicexpansion.result").append(":")), 6, 5);
-        subRoot.add(new WItemSlot(blockInventory, 0, 1, 1, false), 4,5);
-        subRoot.add(new WItemSlot(blockInventory, 1, 1, 1, false), 8,5);
-        subRoot.add(new WPlayerInvPanel(playerInventory, true), 0, 6);
-        root.add(subRoot, 0, 90);
+        root.add(records, 0, 1);
+        records.setSize(162, 160 + 4); // 160
+        root.add(new WLabel(new TranslatableText("text.musicexpansion.blank_disk").append(":")), 0, 11);
+        root.add(new WLabel(new TranslatableText("text.musicexpansion.result").append(":")), 6, 11);
+        root.add(new WItemSlot(blockInventory, 0, 1, 1, false), 4, 11);
+        root.add(new WItemSlot(blockInventory, 1, 1, 1, false), 8, 11);
+        root.add(new WPlayerInvPanel(playerInventory, true), 0, 12);
         setRootPanel(root);
-        records.validate(this);
-        subRoot.validate(this);
+        root.validate(this);
     }
 }
