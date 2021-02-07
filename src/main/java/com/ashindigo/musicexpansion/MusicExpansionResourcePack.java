@@ -52,9 +52,10 @@ public class    MusicExpansionResourcePack extends AbstractFileResourcePack {
                 } else {
                     return getItemPredicateJson(id);
                 }
-            } else {
-                return getItemJson(id);
             }
+//            } else {
+//                return getItemJson(id);
+//            }
         }
         return new ByteArrayInputStream("".getBytes());
     }
@@ -147,6 +148,6 @@ public class    MusicExpansionResourcePack extends AbstractFileResourcePack {
 
     @Override
     public void close() {
-
+        // NO-OP
     }
 }

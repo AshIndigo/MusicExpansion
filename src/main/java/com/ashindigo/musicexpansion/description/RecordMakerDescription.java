@@ -17,14 +17,12 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 
-// TODO This list is acting up for some reason
 public class RecordMakerDescription extends SyncedGuiDescription {
 
     public RecordMakerDescription(int syncId, PlayerInventory playerInventory, ScreenHandlerContext ctx) {
         super(MusicExpansion.RECORD_MAKER_HANDLER_TYPE, syncId, playerInventory, getBlockInventory(ctx, 2), getBlockPropertyDelegate(ctx));
         WGridPanel root = new WGridPanel();
         root.setSize(162, 214);
-        //WGridPanel subRoot = new WGridPanel();
         WListPanel<ItemStack, WRecordButton> records = new WListPanel<>(MusicExpansion.getCraftableRecords(RecordJsonParser.isAllRecords()), WRecordButton::new, (stack, wButton) -> {
             wButton.setIcon(new ItemIcon(stack));
             wButton.setLabel(DiscHelper.getDesc(stack));
@@ -40,7 +38,6 @@ public class RecordMakerDescription extends SyncedGuiDescription {
                 buf.writeItemStack(wButton.getRecord());
                 ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CREATE_RECORD, buf);
             });
-            //wButton.validate(this);
         });
         records.setListItemHeight(16);
         root.add(records, 0, 1);

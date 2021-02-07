@@ -3,7 +3,10 @@ package com.ashindigo.musicexpansion;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.client.ControllableVolume;
-import com.ashindigo.musicexpansion.client.screen.*;
+import com.ashindigo.musicexpansion.client.screen.BoomboxScreen;
+import com.ashindigo.musicexpansion.client.screen.DiscRackScreen;
+import com.ashindigo.musicexpansion.client.screen.RecordMakerScreen;
+import com.ashindigo.musicexpansion.client.screen.WalkmanScreen;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import com.ashindigo.musicexpansion.helpers.DiscHolderHelper;
 import com.ashindigo.musicexpansion.helpers.MusicHelper;
@@ -11,8 +14,8 @@ import com.ashindigo.musicexpansion.item.Abstract9DiscItem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
@@ -59,14 +62,13 @@ public class MusicExpansionClient implements ClientModInitializer {
 
     public static void registerClientPackets() {
         // Get whether or not to allow all configs
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.ALL_RECORDS,
-                (packetContext, attachedData) -> RecordJsonParser.setAllRecords(attachedData.readBoolean()));
+        ClientPlayNetworking.registerGlobalReceiver(PacketRegistry.ALL_RECORDS, (client, handler, buf, sender) -> RecordJsonParser.setAllRecords(buf.readBoolean()));
         // Play track
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.PLAY_JUKEBOX_TRACK, (packetContext, attachedData) -> {
-            ItemStack disc = attachedData.readItemStack();
-            BlockPos songPosition = attachedData.readBlockPos();
+        ClientPlayNetworking.registerGlobalReceiver(PacketRegistry.PLAY_JUKEBOX_TRACK, (client, handler, buf, sender) -> {
+            ItemStack disc = buf.readItemStack();
+            BlockPos songPosition = buf.readBlockPos();
             MinecraftClient mc = MinecraftClient.getInstance();
-            packetContext.getTaskQueue().execute(() -> {
+            client.execute(() -> {
                 if (mc.player != null) {
                     if (!disc.isEmpty()) {
                         SoundEvent event = DiscHelper.getEvent(disc);
@@ -81,7 +83,7 @@ public class MusicExpansionClient implements ClientModInitializer {
             });
         });
         // Sync sound events
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.SYNC_EVENTS, (ctx, buf) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketRegistry.SYNC_EVENTS, (client, handler, buf, sender) -> {
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
                 Identifier id = buf.readIdentifier();
@@ -91,26 +93,26 @@ public class MusicExpansionClient implements ClientModInitializer {
                 }
             }
         });
-        ClientSidePacketRegistry.INSTANCE.register(PacketRegistry.ALL_PLAYERS_CLIENT, (ctx, buf) -> {
+        ClientPlayNetworking.registerGlobalReceiver(PacketRegistry.ALL_PLAYERS_CLIENT, (client, handler, buf, sender) -> {
             String name = buf.readString();
             switch (name) {
                 case "play_track":
                     ItemStack playStack = buf.readItemStack();
                     UUID uuid = buf.readUuid();
                     if (MinecraftClient.getInstance().world != null) {
-                        ctx.getTaskQueue().execute(() -> MusicHelper.playTrack(playStack, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(playStack, DiscHolderHelper.getSelectedSlot(playStack))), DiscHolderHelper.getUUID(playStack), uuid)));
+                        client.execute(() -> MusicHelper.playTrack(playStack, new BoomboxMovingSound(DiscHelper.getEvent(DiscHolderHelper.getDiscInSlot(playStack, DiscHolderHelper.getSelectedSlot(playStack))), DiscHolderHelper.getUUID(playStack), uuid)));
                     }
                     break;
                 case "stop_track":
                     ItemStack stopStack = buf.readItemStack();
                     if (MinecraftClient.getInstance().world != null) {
-                        ctx.getTaskQueue().execute(() -> MusicHelper.stopTrack(stopStack));
+                        client.execute(() -> MusicHelper.stopTrack(stopStack));
                     }
                     break;
                 case "set_volume":
                     ItemStack volumeStack = buf.readItemStack();
                     if (MinecraftClient.getInstance().world != null) {
-                        ctx.getTaskQueue().execute(() -> ((ControllableVolume) MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(volumeStack))).setVolume(DiscHolderHelper.getVolume(volumeStack)));
+                        client.execute(() -> ((ControllableVolume) MusicHelper.playingTracks.get(DiscHolderHelper.getUUID(volumeStack))).setVolume(DiscHolderHelper.getVolume(volumeStack)));
                     }
                     break;
                 default:
