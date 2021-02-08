@@ -6,7 +6,7 @@ import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
@@ -53,7 +53,7 @@ public class DiscHolderHelper {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeInt(slot);
         buf.writeInt(invSlot);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CHANGE_SLOT_PACKET, buf);
+        ClientPlayNetworking.send(PacketRegistry.CHANGE_SLOT_PACKET, buf);
     }
 
     /**

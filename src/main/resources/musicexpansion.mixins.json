@@ -5,12 +5,14 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MusicDiscItemMixin",
-    "PlayerManagerMixin",
+    "PlayerManagerMixin"
   ],
   "client": [
+    "ClientConnectionMixin",
+    "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin",
-    "WorldRendererMixin",
-    "ClientConnectionMixin"
+    "SoundSystemMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

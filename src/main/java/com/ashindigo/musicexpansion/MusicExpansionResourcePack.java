@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 // TODO Could probably shave off custom item model stuff now...
-public class    MusicExpansionResourcePack extends AbstractFileResourcePack {
+public class MusicExpansionResourcePack extends AbstractFileResourcePack {
 
     private final File fileDir;
 

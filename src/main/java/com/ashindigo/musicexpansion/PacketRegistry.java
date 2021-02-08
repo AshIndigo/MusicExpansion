@@ -2,13 +2,10 @@ package com.ashindigo.musicexpansion;
 
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.server.PlayerStream;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -54,7 +51,7 @@ public class PacketRegistry {
             });
         });
         ServerPlayNetworking.registerGlobalReceiver(ALL_PLAYERS_SERVER, (server, player, handler, buf, sender) -> {
-            String name = buf.readString();
+            String name = buf.readString(32767);
             PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
             data.writeString(name);
             switch (name) {
@@ -68,9 +65,7 @@ public class PacketRegistry {
                     break;
                 default: return;
             }
-            server.execute(() -> {
-                PlayerLookup.all(server).forEach(playerS -> ServerPlayNetworking.send(playerS, ALL_PLAYERS_CLIENT, data));
-            });
+            server.execute(() -> PlayerLookup.all(server).forEach(playerS -> ServerPlayNetworking.send(playerS, ALL_PLAYERS_CLIENT, data)));
         });
         ServerPlayNetworking.registerGlobalReceiver(SET_VOLUME, (server, player, handler, buf, sender) -> {
             float volume = buf.readFloat();

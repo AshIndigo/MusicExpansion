@@ -9,7 +9,7 @@ import io.github.cottonmc.cotton.gui.SyncedGuiDescription;
 import io.github.cottonmc.cotton.gui.widget.*;
 import io.github.cottonmc.cotton.gui.widget.icon.ItemIcon;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -36,7 +36,7 @@ public class RecordMakerDescription extends SyncedGuiDescription {
                 });
                 buf.writeBlockPos(pos[0]);
                 buf.writeItemStack(wButton.getRecord());
-                ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.CREATE_RECORD, buf);
+                ClientPlayNetworking.send(PacketRegistry.CREATE_RECORD, buf);
             });
         });
         records.setListItemHeight(16);

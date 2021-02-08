@@ -5,7 +5,7 @@ import com.ashindigo.musicexpansion.description.BoomboxDescription;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -34,7 +34,7 @@ public class BoomboxItem extends Abstract9DiscItem {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString("play_track");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
+        ClientPlayNetworking.send(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class BoomboxItem extends Abstract9DiscItem {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString("stop_track");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
+        ClientPlayNetworking.send(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 
     @Override
@@ -51,6 +51,6 @@ public class BoomboxItem extends Abstract9DiscItem {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeString("set_volume");
         buf.writeItemStack(stack);
-        ClientSidePacketRegistry.INSTANCE.sendToServer(PacketRegistry.ALL_PLAYERS_SERVER, buf);
+        ClientPlayNetworking.send(PacketRegistry.ALL_PLAYERS_SERVER, buf);
     }
 }

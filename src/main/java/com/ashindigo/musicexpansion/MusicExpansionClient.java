@@ -89,6 +89,8 @@ public class MusicExpansionClient implements ClientModInitializer {
                 Identifier id = buf.readIdentifier();
                 if (!Registry.SOUND_EVENT.containsId(id)) {
                     Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(id));
+                }
+                if (!MusicExpansion.tracks.contains(id)) {
                     MusicExpansion.tracks.add(id);
                 }
             }

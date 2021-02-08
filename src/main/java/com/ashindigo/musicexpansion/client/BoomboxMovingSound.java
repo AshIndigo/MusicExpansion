@@ -15,7 +15,7 @@ public class BoomboxMovingSound extends MovingSoundInstance implements Controlla
     private final PlayerEntity player;
     private final UUID uuid;
     private final UUID hostUUID;
-    private float backupVolume = volume;
+    private float backupVolume = volume; // Volume is clamped at 1.0F
 
     public BoomboxMovingSound(SoundEvent soundEvent, UUID uuidDisc, UUID hostUUID) {
         super(soundEvent, SoundCategory.RECORDS);
@@ -27,6 +27,7 @@ public class BoomboxMovingSound extends MovingSoundInstance implements Controlla
         this.repeatDelay = 0;
         this.attenuationType = AttenuationType.LINEAR;
     }
+
 
     @Override
     public void tick() { // https://stackoverflow.com/questions/57277755/music-discs-have-do-not-get-quieter-by-distance-in-my-minecraft-1-14-4-mod
@@ -59,4 +60,6 @@ public class BoomboxMovingSound extends MovingSoundInstance implements Controlla
         volume = vol;
         backupVolume = vol;
     }
+
+
 }

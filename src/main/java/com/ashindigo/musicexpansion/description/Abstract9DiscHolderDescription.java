@@ -16,6 +16,7 @@ import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.UUID;
 
@@ -23,8 +24,8 @@ public class Abstract9DiscHolderDescription extends SyncedGuiDescription {
 
     public final ItemStack holder;
     public final UUID uuid;
-    WGridPanel root;
-    WSprite selected = new WSprite(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png"));
+    final WGridPanel root;
+    final WSprite selected = new WSprite(new Identifier(MusicExpansion.MODID, "textures/misc/selected.png"));
 
     public Abstract9DiscHolderDescription(ScreenHandlerType<?> type, int syncId, PlayerInventory playerInv, int hand) {
         super(type, syncId, playerInv);
@@ -44,8 +45,8 @@ public class Abstract9DiscHolderDescription extends SyncedGuiDescription {
         });
         root.add(selected, 0, 1);
         root.add(new WItemSlot(discHolderInv, 0, 9, 1, false).setFilter(stack -> stack.getItem() instanceof MusicDiscItem || stack.getItem() instanceof CustomDiscItem), 0, 1);
-        root.add(new WButton(new LiteralText("▶")).setOnClick(() -> ((Abstract9DiscItem) holder.getItem()).playSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, uuid)))), 0, 2);
-        root.add(new WButton(new LiteralText("⏹")).setOnClick(() -> ((Abstract9DiscItem) holder.getItem()).stopSelectedDisc(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, uuid)))), 2, 2);
+        root.add(new WButton(new LiteralText("▶")).setOnClick(() -> ((Abstract9DiscItem) holder.getItem()).playSelectedDisc(playerInv.getStack(MathHelper.clamp(DiscHolderHelper.getSlotFromUUID(playerInv, uuid), 0, 8)))), 0, 2);
+        root.add(new WButton(new LiteralText("⏹")).setOnClick(() -> ((Abstract9DiscItem) holder.getItem()).stopSelectedDisc(playerInv.getStack(MathHelper.clamp(DiscHolderHelper.getSlotFromUUID(playerInv, uuid), 0, 8)))), 2, 2);
         root.add(new WButton(new LiteralText("⏮")).setOnClick(() -> changeSelectedSlot(Math.max(0, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, uuid))) - 1))), 4, 2);
         root.add(new WButton(new LiteralText("⏭")).setOnClick(() -> changeSelectedSlot(Math.min(8, DiscHolderHelper.getSelectedSlot(playerInv.getStack(DiscHolderHelper.getSlotFromUUID(playerInv, uuid))) + 1))), 6, 2);
         root.add(new WButton(new LiteralText("?")).setOnClick(() -> changeSelectedSlot(playerInv.player.getRandom().nextInt(9))), 8, 2);

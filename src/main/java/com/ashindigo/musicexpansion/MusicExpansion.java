@@ -40,8 +40,8 @@ import java.util.ArrayList;
 import java.util.function.Supplier;
 
 // TODO Future Ash notes
-// TODO Available tracks need to be synchronized properly upon connection/disconnect
-// TODO Boombox doesn't have positional audio/distance volume
+// TODO Available tracks need to be synchronized properly upon connection/disconnect - Think this is done?
+// TODO Boombox doesn't have positional audio/distance volume - Fixed, dang mono/stereo issue
 // TODO HAS needs to be finished/reimplemented
 // TODO Minecraft's audio sucks
 // HAS Stuff:

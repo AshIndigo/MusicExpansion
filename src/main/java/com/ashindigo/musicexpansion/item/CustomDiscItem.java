@@ -4,8 +4,8 @@ import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.helpers.DiscHelper;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.JukeboxBlock;
@@ -15,6 +15,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -25,8 +27,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class CustomDiscItem extends Item {
 
@@ -59,11 +61,11 @@ public class CustomDiscItem extends Item {
             ItemStack itemStack = context.getStack();
             if (!world.isClient) {
                 ((JukeboxBlock) Blocks.JUKEBOX).setRecord(world, blockPos, blockState, itemStack);
-                Stream<PlayerEntity> watchingPlayers = PlayerStream.around(world, blockPos, 64);
+                Collection<ServerPlayerEntity> watchingPlayers = PlayerLookup.around((ServerWorld) world, blockPos, 64);
                 PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
                 passedData.writeItemStack(itemStack);
                 passedData.writeBlockPos(blockPos);
-                watchingPlayers.forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PacketRegistry.PLAY_JUKEBOX_TRACK, passedData));
+                watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, PacketRegistry.PLAY_JUKEBOX_TRACK, passedData));
                 itemStack.decrement(1);
                 PlayerEntity playerEntity = context.getPlayer();
                 if (playerEntity != null) {

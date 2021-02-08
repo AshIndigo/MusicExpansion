@@ -4,7 +4,7 @@ import com.ashindigo.musicexpansion.PacketRegistry;
 import com.ashindigo.musicexpansion.RecordJsonParser;
 import com.ashindigo.musicexpansion.entity.RecordMakerEntity;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -48,7 +49,7 @@ public class RecordMakerBlock extends BlockWithEntity implements InventoryProvid
         if (!world.isClient) {
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBoolean(RecordJsonParser.isAllRecords());
-            ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, PacketRegistry.ALL_RECORDS, passedData);
+            ServerPlayNetworking.send((ServerPlayerEntity) player, PacketRegistry.ALL_RECORDS, passedData);
             player.openHandledScreen((ExtendedScreenHandlerFactory) world.getBlockEntity(pos));
         }
         return ActionResult.PASS;
