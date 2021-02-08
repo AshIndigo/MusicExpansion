@@ -16,6 +16,5 @@ public class ClientConnectionMixin {
     @Inject(method = "disconnect(Lnet/minecraft/text/Text;)V", at = @At("RETURN"))
     public void musicexpansion_disconnect(Text reason, CallbackInfo info) {
         MusicExpansion.tracks = new ArrayList<>(MusicExpansion.tracksOrig);
-        //RoughlyEnoughItemsCore.syncRecipes(null);
     }
 }

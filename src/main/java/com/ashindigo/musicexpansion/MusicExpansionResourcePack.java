@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Predicate;
 
-// TODO Could probably shave off custom item model stuff now...
 public class MusicExpansionResourcePack extends AbstractFileResourcePack {
 
     private final File fileDir;
@@ -53,9 +52,6 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
                     return getItemPredicateJson(id);
                 }
             }
-//            } else {
-//                return getItemJson(id);
-//            }
         }
         return new ByteArrayInputStream("".getBytes());
     }
@@ -102,15 +98,6 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
             overrides.add(root);
         }
         file.add("overrides", overrides);
-        return new ByteArrayInputStream(file.toString().getBytes());
-    }
-
-    public static ByteArrayInputStream getItemJson(Identifier identifier) {
-        JsonObject file = new JsonObject();
-        file.addProperty("parent", "item/generated");
-        JsonObject texture = new JsonObject();
-        texture.addProperty("layer0", identifier.getNamespace() + ":items/" + identifier.getPath());
-        file.add("textures", texture);
         return new ByteArrayInputStream(file.toString().getBytes());
     }
 

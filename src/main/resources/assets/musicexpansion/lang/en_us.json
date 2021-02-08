@@ -12,6 +12,7 @@
   "text.musicexpansion.blank_disk": "Blank disks",
   "text.musicexpansion.result": "Result",
   "text.musicexpansion.volume": "Volume",
+  "text.musicexpansion.reload_textures": "Please reload your resource pack if records are missing textures!",
   "category.musicexpansion.binds": "Music Expansion",
   "desc.musicexpansion.record_maker": "Makes custom records when supplied with blank records",
   "desc.musicexpansion.walkman": "Plays records that are stored inside for you to hear",

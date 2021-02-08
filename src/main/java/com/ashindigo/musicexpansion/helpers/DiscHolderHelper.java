@@ -145,14 +145,13 @@ public class DiscHolderHelper {
         stack.setTag(tag);
     }
 
-    // TODO Will offhand be an issue?
     public static boolean containsUUID(UUID uuid, PlayerInventory inventory) {
         for (ItemStack stack : inventory.main) {
             if (getUUID(stack).equals(uuid)) {
                 return true;
             }
         }
-        return false;
+        return getUUID(inventory.offHand.get(0)).equals(uuid);
     }
 
     public static void toggleActive(ItemStack stack) {
