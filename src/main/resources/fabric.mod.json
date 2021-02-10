@@ -35,6 +35,7 @@
   "depends": {
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.16.x",
+    "libgui": ">=3.3.2+1.16.4"
   }
 }

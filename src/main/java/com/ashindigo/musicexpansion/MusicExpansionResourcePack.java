@@ -116,7 +116,7 @@ public class MusicExpansionResourcePack extends AbstractFileResourcePack {
         }
         if (var2.getNamespace().equals(MusicExpansion.MODID_EXTERNAL)) {
             return !var2.getPath().endsWith(".mcmeta");
-        } else return var2.getPath().contains("custom_disc") && var2.getPath().endsWith(".json");
+        } else return var2.getPath().contains("models/item/custom_disc.json") || var2.getPath().matches("models/item/custom_disc_([0-9]|[1-9][0-9]|[1-9][0-9][0-9]).json$");
     }
 
     @Override
