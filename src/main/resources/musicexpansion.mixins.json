@@ -4,7 +4,7 @@
   "package": "com.ashindigo.musicexpansion.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MusicDiscItemMixin",
+    "MusicDiscItemAccessor",
     "PlayerManagerMixin"
   ],
   "client": [
@@ -12,7 +12,7 @@
     "ClientPlayNetworkHandlerMixin",
     "ReloadableResourceManagerImplMixin",
     "SoundSystemMixin",
-    "WorldRendererMixin"
+    "WorldRendererAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,7 +2,7 @@ package com.ashindigo.musicexpansion.helpers;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
-import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
+import com.ashindigo.musicexpansion.mixin.MusicDiscItemAccessor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundTag;
@@ -76,7 +76,7 @@ public class DiscHelper {
      */
     public static SoundEvent getEvent(ItemStack stack) {
         if (stack.getItem() instanceof MusicDiscItem) {
-            return ((MusicDiscItemAccessor) stack.getItem()).musicexpansion_getSound();
+            return ((MusicDiscItemAccessor) stack.getItem()).getSound();
         } else if (stack.getItem() instanceof CustomDiscItem) {
             return getSetTrack(stack).orElse(DiscHolderHelper.MISSING_EVENT);
         }

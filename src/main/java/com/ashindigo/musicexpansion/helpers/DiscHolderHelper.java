@@ -2,7 +2,7 @@ package com.ashindigo.musicexpansion.helpers;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
 import com.ashindigo.musicexpansion.PacketRegistry;
-import com.ashindigo.musicexpansion.accessor.MusicDiscItemAccessor;
+import com.ashindigo.musicexpansion.mixin.MusicDiscItemAccessor;
 import com.ashindigo.musicexpansion.inventory.Generic9DiscInventory;
 import com.ashindigo.musicexpansion.item.CustomDiscItem;
 import io.netty.buffer.Unpooled;
@@ -90,7 +90,7 @@ public class DiscHolderHelper {
                     return true;
                 }
             } else if (disc.getItem() instanceof MusicDiscItem) {
-                if (((MusicDiscItemAccessor) disc.getItem()).musicexpansion_getSound().getId().equals(event.getId())) {
+                if (((MusicDiscItemAccessor) disc.getItem()).getSound().getId().equals(event.getId())) {
                     return true;
                 }
             }

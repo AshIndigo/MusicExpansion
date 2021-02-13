@@ -1,6 +1,6 @@
 package com.ashindigo.musicexpansion;
 
-import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
+import com.ashindigo.musicexpansion.mixin.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.client.ControllableVolume;
 import com.ashindigo.musicexpansion.client.DiskRackRenderer;
@@ -78,7 +78,7 @@ public class MusicExpansionClient implements ClientModInitializer {
                         if (event != null) {
                             mc.inGameHud.setRecordPlayingOverlay(DiscHelper.getDesc(disc));
                             SoundInstance soundInstance = PositionedSoundInstance.record(event, songPosition.getX(), songPosition.getY(), songPosition.getZ());
-                            ((WorldRendererAccessor) mc.worldRenderer).musicexpansion_getPlayingSongs().put(songPosition, soundInstance);
+                            ((WorldRendererAccessor) mc.worldRenderer).getPlayingSongs().put(songPosition, soundInstance);
                             mc.getSoundManager().play(soundInstance);
                         }
                     }
