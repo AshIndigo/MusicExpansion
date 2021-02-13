@@ -3,6 +3,7 @@ package com.ashindigo.musicexpansion;
 import com.ashindigo.musicexpansion.accessor.WorldRendererAccessor;
 import com.ashindigo.musicexpansion.client.BoomboxMovingSound;
 import com.ashindigo.musicexpansion.client.ControllableVolume;
+import com.ashindigo.musicexpansion.client.DiskRackRenderer;
 import com.ashindigo.musicexpansion.client.screen.BoomboxScreen;
 import com.ashindigo.musicexpansion.client.screen.DiscRackScreen;
 import com.ashindigo.musicexpansion.client.screen.RecordMakerScreen;
@@ -15,6 +16,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -58,6 +60,7 @@ public class MusicExpansionClient implements ClientModInitializer {
         ClientTickEvents.END_CLIENT_TICK.register(MusicExpansionClient::tick);
         registerClientPackets();
         FabricModelPredicateProviderRegistry.register(MusicExpansion.customDisc, new Identifier(MusicExpansion.MODID, "custom_disc"), (stack, world, entity) -> 1F * MusicExpansion.tracks.indexOf(Identifier.tryParse(stack.getOrCreateTag().getString("track"))));
+        BlockEntityRendererRegistry.INSTANCE.register(MusicExpansion.DISC_RACK_ENTITY_TYPE, DiskRackRenderer::new);
     }
 
     public static void registerClientPackets() {

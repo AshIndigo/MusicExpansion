@@ -9,6 +9,7 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -31,7 +32,7 @@ public class DiscRackBlock extends BlockWithEntity implements InventoryProvider 
     private static final VoxelShape SHAPE = VoxelShapes.union(Block.createCuboidShape(0, 0, 5, 16, 6, 11));
 
     public DiscRackBlock() {
-        super(FabricBlockSettings.of(Material.WOOD).breakByHand(true).nonOpaque());
+        super(FabricBlockSettings.of(Material.WOOD).breakByHand(true).nonOpaque().strength(2.5F).sounds(BlockSoundGroup.WOOD));
     }
 
     @Override

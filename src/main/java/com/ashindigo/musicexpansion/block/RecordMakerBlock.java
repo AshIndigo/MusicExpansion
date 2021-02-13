@@ -16,6 +16,7 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -34,7 +35,7 @@ import java.util.List;
 public class RecordMakerBlock extends BlockWithEntity implements InventoryProvider {
 
     public RecordMakerBlock() {
-        super(FabricBlockSettings.of(Material.METAL).breakByHand(false).strength(3, 5).requiresTool().breakByTool(FabricToolTags.PICKAXES, 2));
+        super(FabricBlockSettings.of(Material.METAL).breakByHand(false).strength(3, 5).sounds(BlockSoundGroup.METAL).requiresTool().breakByTool(FabricToolTags.PICKAXES, 2));
     }
 
     @Override

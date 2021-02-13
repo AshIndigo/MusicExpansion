@@ -1,7 +1,8 @@
 {
-	"parent": "block/block",
 	"credit": "Made with Blockbench",
+	"parent": "block/block",
 	"textures": {
+		"particle": "minecraft:block/oak_planks",
 		"base": "minecraft:block/oak_planks",
 		"rod": "minecraft:block/stripped_oak_log"
 	},
@@ -10,7 +11,6 @@
 			"name": "base",
 			"from": [0, 0, 5],
 			"to": [16, 0.2, 11],
-			"color": 4,
 			"faces": {
 				"north": {"uv": [0, 0, 16, 0.2], "texture": "#base"},
 				"east": {"uv": [0, 0, 6, 0.2], "texture": "#base"},
@@ -22,9 +22,8 @@
 		},
 		{
 			"name": "0",
-			"from": [0, 0.2, 5],
-			"to": [0.5, 6.2, 11],
-			"color": 2,
+			"from": [0, 0.2, 6],
+			"to": [0.5, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -36,9 +35,8 @@
 		},
 		{
 			"name": "1",
-			"from": [1.7, 0.2, 5],
-			"to": [2.2, 6.2, 11],
-			"color": 2,
+			"from": [1.5, 0.2, 6],
+			"to": [2, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -50,9 +48,8 @@
 		},
 		{
 			"name": "2",
-			"from": [3.5, 0.2, 5],
-			"to": [4, 6.2, 11],
-			"color": 2,
+			"from": [3.25, 0.2, 6],
+			"to": [3.75, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -64,9 +61,8 @@
 		},
 		{
 			"name": "3",
-			"from": [5.3, 0.2, 5],
-			"to": [5.8, 6.2, 11],
-			"color": 2,
+			"from": [5, 0.2, 6],
+			"to": [5.5, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -78,9 +74,8 @@
 		},
 		{
 			"name": "4",
-			"from": [7.1, 0.2, 5],
-			"to": [7.6, 6.2, 11],
-			"color": 2,
+			"from": [6.75, 0.2, 6],
+			"to": [7.25, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -92,9 +87,8 @@
 		},
 		{
 			"name": "5",
-			"from": [8.8, 0.2, 5],
-			"to": [9.3, 6.2, 11],
-			"color": 2,
+			"from": [8.5, 0.2, 6],
+			"to": [9, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -106,9 +100,8 @@
 		},
 		{
 			"name": "6",
-			"from": [10.6, 0.2, 5],
-			"to": [11.1, 6.2, 11],
-			"color": 2,
+			"from": [10.25, 0.2, 6],
+			"to": [10.75, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -120,9 +113,8 @@
 		},
 		{
 			"name": "7",
-			"from": [12.4, 0.2, 5],
-			"to": [12.9, 6.2, 11],
-			"color": 2,
+			"from": [12, 0.2, 6],
+			"to": [12.5, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -134,9 +126,8 @@
 		},
 		{
 			"name": "8",
-			"from": [14.2, 0.2, 5],
-			"to": [14.7, 6.2, 11],
-			"color": 2,
+			"from": [13.75, 0.2, 6],
+			"to": [14.25, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -148,9 +139,8 @@
 		},
 		{
 			"name": "9",
-			"from": [15.5, 0.2, 5],
-			"to": [16, 6.2, 11],
-			"color": 2,
+			"from": [15.5, 0.2, 6],
+			"to": [16, 4.2, 10],
 			"faces": {
 				"north": {"uv": [0, 0, 0.5, 6], "texture": "#rod"},
 				"east": {"uv": [0, 0, 6, 6], "texture": "#rod"},
@@ -162,12 +152,11 @@
 		}
 	],
 	"display": {
-      "fixed": {
-		"rotation": [ 0, 90, 0 ],
-		"translation": [ 0, 0, 0 ],
-		"scale": [ 0.5, 0.5, 0.5 ]
-	  }
-    },
+		"fixed": {
+			"rotation": [0, 90, 0],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
 	"groups": [0,
 		{
 			"name": "sticks",
