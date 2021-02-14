@@ -17,6 +17,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -119,6 +120,12 @@ public class MusicExpansion implements ModInitializer {
             }
         }
         return discs;
+    }
+
+    public static void doREIThing() { // This is stupid but it works
+        if (FabricLoader.getInstance().isModLoaded("roughlyenoughitems")) {
+            me.shedaniel.rei.RoughlyEnoughItemsCore.syncRecipes(null);
+        }
     }
 
     @Override
