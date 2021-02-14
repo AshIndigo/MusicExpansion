@@ -1,7 +1,6 @@
 package com.ashindigo.musicexpansion.mixin;
 
 import com.ashindigo.musicexpansion.MusicExpansion;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
